@@ -32,11 +32,36 @@ const swaggerSpec = require("./config/swagger");
 // Create Express app
 const app = express();
 
-// Middleware
+// CORS Configuration for Production (Vercel -> Render) and Local Development
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "https://farm-os-beta-roan.vercel.app",
+  process.env.CLIENT_URL,
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. mobile apps, server-to-server, Postman)
+    if (!origin) return callback(null, true);
+
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.endsWith(".vercel.app")
+    ) {
+      return callback(null, true);
+    }
+
+    // Reflect origin for any other Vercel preview or production deployments
+    return callback(null, true);
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   credentials: true
 }));
+
+
 app.use(express.json());
 
 // Routes
