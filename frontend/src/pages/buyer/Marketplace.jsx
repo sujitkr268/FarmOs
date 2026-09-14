@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import API from '../../api/axios'
 import { useAuth } from '../../context/AuthContext'
+import { MandiPrices } from '../../components/MandiPrices'
 import './marketplace.css'
 
 export const Marketplace = () => {
   const { user, isAuthenticated } = useAuth()
+  const [activeTab, setActiveTab] = useState('farmer_harvests') // 'farmer_harvests' | 'mandi_prices'
 
   // Data states
   const [harvests, setHarvests] = useState([])
@@ -147,13 +149,61 @@ export const Marketplace = () => {
       <div className="marketplace-header">
         <h1 className="marketplace-title">🏪 Agriculture Marketplace</h1>
         <p className="marketplace-subtitle">
-          Browse fresh, verified farm produce directly from farmers across the region.
+          Browse verified farmer listings & real-time government mandi prices across India.
         </p>
+
+        {/* Navigation Tabs */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '1rem',
+          marginTop: '1.5rem',
+          flexWrap: 'wrap'
+        }}>
+          <button
+            onClick={() => setActiveTab('farmer_harvests')}
+            style={{
+              padding: '0.65rem 1.4rem',
+              borderRadius: '12px',
+              backgroundColor: activeTab === 'farmer_harvests' ? 'var(--accent-gold)' : 'rgba(255, 255, 255, 0.06)',
+              color: activeTab === 'farmer_harvests' ? '#080a0e' : 'var(--text-primary)',
+              fontWeight: 700,
+              fontSize: '0.92rem',
+              border: '1px solid ' + (activeTab === 'farmer_harvests' ? 'var(--accent-gold)' : 'var(--border-color)'),
+              transition: 'all 0.2s ease',
+              boxShadow: activeTab === 'farmer_harvests' ? '0 4px 14px var(--accent-gold-glow)' : 'none'
+            }}
+          >
+            🌾 Direct Farmer Harvests
+          </button>
+
+          <button
+            onClick={() => setActiveTab('mandi_prices')}
+            style={{
+              padding: '0.65rem 1.4rem',
+              borderRadius: '12px',
+              backgroundColor: activeTab === 'mandi_prices' ? 'var(--accent-gold)' : 'rgba(255, 255, 255, 0.06)',
+              color: activeTab === 'mandi_prices' ? '#080a0e' : 'var(--text-primary)',
+              fontWeight: 700,
+              fontSize: '0.92rem',
+              border: '1px solid ' + (activeTab === 'mandi_prices' ? 'var(--accent-gold)' : 'var(--border-color)'),
+              transition: 'all 0.2s ease',
+              boxShadow: activeTab === 'mandi_prices' ? '0 4px 14px var(--accent-gold-glow)' : 'none'
+            }}
+          >
+            📊 Live Govt Mandi Prices
+          </button>
+        </div>
       </div>
 
-      {/* Global Alerts */}
-      {error && <div className="alert-message alert-error" style={{ marginBottom: '1.5rem' }}>{error}</div>}
-      {success && <div className="alert-message alert-success" style={{ marginBottom: '1.5rem' }}>{success}</div>}
+      {/* Conditional Content by Active Tab */}
+      {activeTab === 'mandi_prices' ? (
+        <MandiPrices />
+      ) : (
+        <>
+          {/* Global Alerts */}
+          {error && <div className="alert-message alert-error" style={{ marginBottom: '1.5rem' }}>{error}</div>}
+          {success && <div className="alert-message alert-success" style={{ marginBottom: '1.5rem' }}>{success}</div>}
 
       {/* Filter & Search Bar */}
       <div className="filter-bar">
@@ -342,6 +392,8 @@ export const Marketplace = () => {
             </form>
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   )

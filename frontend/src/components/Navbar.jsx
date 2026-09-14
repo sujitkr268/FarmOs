@@ -83,6 +83,46 @@ export const Navbar = () => {
           </Link>
 
           <Link
+            to="/market-prices"
+            style={{
+              color: location.pathname === '/market-prices' ? 'var(--accent-gold)' : 'var(--text-secondary)',
+              fontWeight: location.pathname === '/market-prices' ? 600 : 500,
+              fontSize: '0.95rem',
+              transition: 'color 0.2s'
+            }}
+          >
+            Mandi Prices
+          </Link>
+
+          <Link
+            to="/weather"
+            style={{
+              color: location.pathname === '/weather' ? 'var(--accent-gold)' : 'var(--text-secondary)',
+              fontWeight: location.pathname === '/weather' ? 600 : 500,
+              fontSize: '0.95rem',
+              transition: 'color 0.2s'
+            }}
+          >
+            Weather
+          </Link>
+
+          <Link
+            to="/assistant"
+            style={{
+              color: location.pathname === '/assistant' ? 'var(--accent-gold)' : 'var(--text-secondary)',
+              fontWeight: location.pathname === '/assistant' ? 600 : 500,
+              fontSize: '0.95rem',
+              transition: 'color 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.3rem'
+            }}
+          >
+            <span>🤖</span>
+            <span>FarmOS Assistant</span>
+          </Link>
+
+          <Link
             to={getDashboardPath()}
             style={{
               color: location.pathname.includes('/dashboard') ? 'var(--accent-gold)' : 'var(--text-secondary)',
