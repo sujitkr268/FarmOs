@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { sendChatMessage } from '../api/chatApi'
+import { MarketComparison } from './MarketComparison'
 
 // Helper function to render simple markdown formatting (bold, headers, tables, bullet lists)
 const renderFormattedText = (text) => {
@@ -146,9 +147,9 @@ export const FarmOSAssistant = () => {
 
   // Example Prompt Chips
   const exampleQuestions = [
+    'Where should I sell 500 kg potato?',
     'What is the potato price in West Bengal?',
-    'What is the weather in Kolkata today?',
-    'What fertilizer is good for potatoes?'
+    'What is the weather in Kolkata today?'
   ]
 
   // Auto-scroll to bottom of chat
@@ -339,16 +340,32 @@ export const FarmOSAssistant = () => {
               <span style={{
                 fontSize: '0.72rem',
                 fontWeight: 700,
-                color: msg.context.type === 'market' ? 'var(--accent-gold-light)' : '#60a5fa',
-                backgroundColor: msg.context.type === 'market' ? 'rgba(212, 175, 55, 0.15)' : 'rgba(96, 165, 250, 0.15)',
-                border: '1px solid ' + (msg.context.type === 'market' ? 'var(--border-gold)' : 'rgba(96, 165, 250, 0.3)'),
+                color: msg.context.type === 'opportunity'
+                  ? 'var(--accent-gold)'
+                  : msg.context.type === 'market'
+                    ? 'var(--accent-gold-light)'
+                    : '#60a5fa',
+                backgroundColor: msg.context.type === 'opportunity'
+                  ? 'rgba(212, 175, 55, 0.2)'
+                  : msg.context.type === 'market'
+                    ? 'rgba(212, 175, 55, 0.15)'
+                    : 'rgba(96, 165, 250, 0.15)',
+                border: '1px solid ' + (
+                  msg.context.type === 'opportunity' || msg.context.type === 'market'
+                    ? 'var(--border-gold)'
+                    : 'rgba(96, 165, 250, 0.3)'
+                ),
                 padding: '0.15rem 0.55rem',
                 borderRadius: '12px',
                 marginBottom: '0.4rem',
                 textTransform: 'uppercase',
                 letterSpacing: '0.04em'
               }}>
-                {msg.context.type === 'market' ? '📊 Real-Time Mandi Data Injected' : '🌤️ Live Open-Meteo Weather Injected'}
+                {msg.context.type === 'opportunity'
+                  ? '🏆 FarmOS Opportunity Engine Evaluated'
+                  : msg.context.type === 'market'
+                    ? '📊 Real-Time Mandi Data Injected'
+                    : '🌤️ Live Open-Meteo Weather Injected'}
               </span>
             )}
 
@@ -371,12 +388,18 @@ export const FarmOSAssistant = () => {
               padding: '1rem 1.25rem',
               borderRadius: msg.sender === 'user' ? '20px 20px 4px 20px' : '20px 20px 20px 4px',
               fontSize: '0.92rem',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+              boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+              width: msg.sender === 'assistant' && msg.context?.type === 'opportunity' ? '100%' : undefined
             }}>
               {msg.sender === 'user' ? (
                 <span style={{ fontWeight: 600 }}>{msg.text}</span>
               ) : (
-                renderFormattedText(msg.text)
+                <>
+                  {renderFormattedText(msg.text)}
+                  {msg.context?.type === 'opportunity' && msg.context?.data && (
+                    <MarketComparison data={msg.context.data} />
+                  )}
+                </>
               )}
             </div>
           </div>

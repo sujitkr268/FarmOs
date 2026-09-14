@@ -107,22 +107,6 @@ export const Navbar = () => {
           </Link>
 
           <Link
-            to="/assistant"
-            style={{
-              color: location.pathname === '/assistant' ? 'var(--accent-gold)' : 'var(--text-secondary)',
-              fontWeight: location.pathname === '/assistant' ? 600 : 500,
-              fontSize: '0.95rem',
-              transition: 'color 0.2s',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.3rem'
-            }}
-          >
-            <span>🤖</span>
-            <span>FarmOS Assistant</span>
-          </Link>
-
-          <Link
             to={getDashboardPath()}
             style={{
               color: location.pathname.includes('/dashboard') ? 'var(--accent-gold)' : 'var(--text-secondary)',

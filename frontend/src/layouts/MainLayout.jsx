@@ -2,6 +2,7 @@ import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { Navbar } from '../components/Navbar'
 import { Footer } from '../components/Footer'
+import { FloatingAssistant } from '../components/FloatingAssistant'
 
 export const MainLayout = () => {
   return (
@@ -11,6 +12,7 @@ export const MainLayout = () => {
         <Outlet />
       </main>
       <Footer />
+      <FloatingAssistant />
     </div>
   )
 }
