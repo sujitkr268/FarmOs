@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import API from '../../api/axios'
 import { useAuth } from '../../context/AuthContext'
 import { MandiPrices } from '../../components/MandiPrices'
+import { EnamInfo } from '../../components/EnamInfo'
 import './marketplace.css'
 
 export const Marketplace = () => {
   const { user, isAuthenticated } = useAuth()
-  const [activeTab, setActiveTab] = useState('farmer_harvests') // 'farmer_harvests' | 'mandi_prices'
+  const [activeTab, setActiveTab] = useState('farmer_harvests') // 'farmer_harvests' | 'mandi_prices' | 'enam_info'
 
   // Data states
   const [harvests, setHarvests] = useState([])
@@ -193,12 +194,31 @@ export const Marketplace = () => {
           >
             📊 Live Govt Mandi Prices
           </button>
+
+          <button
+            onClick={() => setActiveTab('enam_info')}
+            style={{
+              padding: '0.65rem 1.4rem',
+              borderRadius: '12px',
+              backgroundColor: activeTab === 'enam_info' ? 'var(--accent-gold)' : 'rgba(255, 255, 255, 0.06)',
+              color: activeTab === 'enam_info' ? '#080a0e' : 'var(--text-primary)',
+              fontWeight: 700,
+              fontSize: '0.92rem',
+              border: '1px solid ' + (activeTab === 'enam_info' ? 'var(--accent-gold)' : 'var(--border-color)'),
+              transition: 'all 0.2s ease',
+              boxShadow: activeTab === 'enam_info' ? '0 4px 14px var(--accent-gold-glow)' : 'none'
+            }}
+          >
+            🏛️ e-NAM Market Info
+          </button>
         </div>
       </div>
 
       {/* Conditional Content by Active Tab */}
       {activeTab === 'mandi_prices' ? (
         <MandiPrices />
+      ) : activeTab === 'enam_info' ? (
+        <EnamInfo />
       ) : (
         <>
           {/* Global Alerts */}
