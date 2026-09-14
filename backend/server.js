@@ -34,7 +34,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: "https://farm-os-beta-roan.vercel.app",
+  origin: "http://localhost:3000",
   credentials: true
 }));
 app.use(express.json());
