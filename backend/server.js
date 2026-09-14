@@ -1,6 +1,7 @@
 const dotenv = require("dotenv");
 const path = require("path");
 const fs = require("fs");
+// Render auto-deploy trigger - Market Opportunity Assistant
 
 // Load environment variables from potential .env locations
 [
