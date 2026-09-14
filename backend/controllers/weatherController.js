@@ -30,11 +30,15 @@ const getWeather = async (req, res) => {
     }
 
     const result = await fetchWeatherData(latitude, longitude)
+    if (!result.success) {
+      return res.status(result.status || 429).json(result)
+    }
     return res.status(200).json(result)
   } catch (error) {
     console.error('Get Weather Error:', error.message)
     return res.status(500).json({
       success: false,
+      is_fallback: true,
       message: 'Unable to retrieve weather forecast data',
       error: error.message
     })
