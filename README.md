@@ -403,6 +403,37 @@ FarmOS provides explicit, transparent guidance regarding the **National Agricult
 
 ---
 
+## 🏛️ Verified Agricultural Business & Trader Directory
+
+FarmOS provides a transparent, dual-category directory that strictly separates **External Public Businesses** from **Voluntarily Registered FarmOS Buyers**:
+
+### 1. Public Trader / Business Directory (`public_traders`)
+- Real existing agricultural businesses discovered from legitimate public/official sources (APEDA, WBSAMB, APMCs, WB Rice Millers Association, Government MSME Udyam).
+- No registration required on FarmOS.
+- Stores only publicly available business info + source/evidence URLs.
+- **Verification Levels**:
+  - 🟢 **FarmOS Verified Business** (`source_verified`): Supported by government registration/statutory board evidence (APEDA, WBSAMB, APMC license).
+  - 🌐 **Public Business Information** (`website_verified`): Verified official business website exists.
+  - 🏢 **Public Business Listing** (`unverified` / `needs_review`): Public market yard directory listing without independent government reference.
+
+### 2. FarmOS Registered & Verified Buyers (`users` table, `role = 'buyer'`)
+- Voluntary registration on FarmOS.
+- Requires email/phone registration, buyer profile, optional e-NAM / Udyam reference, and admin review (`pending` → `verified` / `rejected`).
+- **Privacy & Consent Control**: Phone and email contact details are displayed **ONLY** when `show_contact_publicly = true`.
+
+### API Endpoints
+- `GET /api/traders` (Filters: `state`, `district`, `mandi`, `commodity`, `business_type`, `verification_status`)
+- `GET /api/traders/:id`
+- `GET /api/buyers` (Filters: `state`, `district`, `commodity`, `verification_status`)
+- `GET /api/buyers/:id`
+- `PUT /api/buyers/profile` (Protected buyer profile update)
+- `GET /api/admin/buyers/pending` (Admin review)
+- `PUT /api/admin/buyers/:id/verify` (Admin approval)
+- `PUT /api/admin/buyers/:id/reject` (Admin rejection)
+- `POST /api/admin/traders`, `PUT /api/admin/traders/:id`, `DELETE /api/admin/traders/:id` (Admin directory management)
+
+---
+
 ## 🔐 13. Authentication & Authorization
 
 FarmOS enforces role-based access control using **JSON Web Tokens (JWT)** and **bcryptjs** password hashing.

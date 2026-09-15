@@ -8,6 +8,7 @@ import { RegisterPage } from './pages/public/RegisterPage'
 import { MarketPricesPage } from './pages/public/MarketPricesPage'
 import { WeatherPage } from './pages/public/WeatherPage'
 import { AssistantPage } from './pages/public/AssistantPage'
+import { TraderDirectoryPage } from './pages/public/TraderDirectoryPage'
 import { FarmerDashboard } from './pages/farmer/FarmerDashboard'
 import { BuyerDashboard } from './pages/buyer/BuyerDashboard'
 import { Marketplace } from './pages/buyer/Marketplace'
@@ -20,6 +21,7 @@ function App() {
       {/* Public Routes */}
       <Route element={<MainLayout />}>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/traders" element={<TraderDirectoryPage />} />
         <Route path="/market-prices" element={<MarketPricesPage />} />
         <Route path="/weather" element={<WeatherPage />} />
         <Route path="/assistant" element={<AssistantPage />} />

@@ -1,17 +1,12 @@
+const { pool } = require("../config/db");
 const { fetchMandiPrices } = require("./marketService");
 const { geocodeLocation, getRoadRoute, calculateFreight } = require("./logisticsService");
 
 /**
  * FarmOS Opportunity Engine Service with Smart Freight Logistics
- * 
- * Computes deterministic market comparisons, gross value estimates,
- * road transport freight cost estimates, net return calculation,
- * and FarmOS Opportunity Scores (0-100) based on real Agmarknet mandi data.
+ * & Potential Buyer / Relevant Trader Matching
  */
 
-/**
- * Helper to normalize harvest quantity to standard quintals (1 quintal = 100 kg)
- */
 const convertToQuintals = (quantity, unit = "kg") => {
   const qty = parseFloat(quantity) || 1;
   const u = (unit || "kg").toLowerCase().trim();
@@ -20,13 +15,153 @@ const convertToQuintals = (quantity, unit = "kg") => {
   if (u === "ton" || u === "tonne") return qty * 10;
   if (u === "quintal" || u === "qtl") return qty;
   
-  // Default heuristic: if quantity > 50, assume kg, else assume quintal
   return qty > 50 ? qty / 100 : qty;
 };
 
-/**
- * Evaluate Market Opportunities for a given crop harvest
- */
+const normalizeCommodity = (commodityStr) => {
+  const c = (commodityStr || "").toLowerCase().trim();
+  if (c.includes("potato")) return "Potato";
+  if (c.includes("rice") || c.includes("paddy") || c.includes("basmati")) return "Rice";
+  if (c.includes("wheat") || c.includes("flour")) return "Wheat";
+  if (c.includes("jute")) return "Jute";
+  if (c.includes("tea")) return "Tea";
+  if (c.includes("mango")) return "Mango";
+  if (c.includes("mustard") || c.includes("oil")) return "Mustard";
+  if (c.includes("ginger") || c.includes("spice")) return "Spices";
+  return commodityStr.trim();
+};
+
+const findPotentialBuyers = async (crop, state = "", district = "") => {
+  try {
+    const normCrop = normalizeCommodity(crop);
+
+    // 1. Fetch public traders
+    const publicTradersRes = await pool.query(
+      `SELECT
+        id, business_name, business_type, state, district, city, mandi,
+        commodities, buying_capacity, official_website, official_contact_url,
+        public_phone, public_email, verification_source, source_url, source_type,
+        verification_status, 'public_trader' AS category
+       FROM public_traders
+       WHERE verification_status IN ('source_verified', 'website_verified', 'unverified')`
+    );
+
+    // 2. Fetch verified registered FarmOS buyers
+    const registeredBuyersRes = await pool.query(
+      `SELECT
+        id, name, business_name, role, location, state, district, mandi,
+        commodities, buying_capacity, official_website, enam_reference, udyam_reference,
+        show_contact_publicly, phone, email, verification_status, 'registered_buyer' AS category
+       FROM users
+       WHERE role = 'buyer' AND verification_status = 'verified'`
+    );
+
+    const candidates = [];
+
+    // Process public traders
+    for (const pt of publicTradersRes.rows) {
+      const traderCommodities = (pt.commodities || "").toLowerCase();
+      if (traderCommodities.includes(normCrop.toLowerCase()) || traderCommodities.includes(crop.toLowerCase())) {
+        let score = 0;
+
+        if (district && pt.district && pt.district.toLowerCase() === district.toLowerCase()) {
+          score += 50;
+        } else if (state && pt.state && pt.state.toLowerCase() === state.toLowerCase()) {
+          score += 30;
+        } else {
+          score += 10;
+        }
+
+        if (pt.verification_status === 'source_verified') score += 30;
+        else if (pt.verification_status === 'website_verified') score += 20;
+        else score += 10;
+
+        if (pt.buying_capacity) score += 10;
+
+        candidates.push({
+          id: pt.id,
+          category: 'public_trader',
+          business_name: pt.business_name,
+          business_type: pt.business_type,
+          location: `${pt.district || pt.city || pt.state}, ${pt.state}`,
+          state: pt.state,
+          district: pt.district,
+          mandi: pt.mandi || 'N/A',
+          commodities: pt.commodities,
+          buying_capacity: pt.buying_capacity || 'Not specified',
+          official_website: pt.official_website,
+          official_contact_url: pt.official_contact_url,
+          public_phone: pt.public_phone,
+          public_email: pt.public_email,
+          verification_source: pt.verification_source,
+          source_url: pt.source_url,
+          source_type: pt.source_type,
+          verification_status: pt.verification_status,
+          badge_label: pt.verification_status === 'source_verified'
+            ? '🟢 FarmOS Verified Business'
+            : (pt.verification_status === 'website_verified' ? '🌐 Public Business Info' : '🏢 Public Listing'),
+          match_score: score,
+          wording_label: 'Potential Buyer / Relevant Trader'
+        });
+      }
+    }
+
+    // Process registered buyers
+    for (const rb of registeredBuyersRes.rows) {
+      const buyerCommodities = (rb.commodities || "").toLowerCase();
+      if (buyerCommodities.includes(normCrop.toLowerCase()) || buyerCommodities.includes(crop.toLowerCase())) {
+        let score = 20;
+
+        const buyerDistrict = rb.district || rb.location || "";
+        const buyerState = rb.state || rb.location || "";
+
+        if (district && buyerDistrict.toLowerCase().includes(district.toLowerCase())) {
+          score += 50;
+        } else if (state && buyerState.toLowerCase().includes(state.toLowerCase())) {
+          score += 30;
+        } else {
+          score += 10;
+        }
+
+        score += 30; // Verified buyer
+
+        const showContact = Boolean(rb.show_contact_publicly);
+
+        candidates.push({
+          id: rb.id,
+          category: 'registered_buyer',
+          business_name: rb.business_name || rb.name + " Traders",
+          contact_person: rb.name,
+          location: `${rb.district || rb.location}, ${rb.state || ''}`,
+          state: rb.state || rb.location,
+          district: rb.district || '',
+          mandi: rb.mandi || 'N/A',
+          commodities: rb.commodities,
+          buying_capacity: rb.buying_capacity || 'Not specified',
+          official_website: rb.official_website || null,
+          has_enam_ref: Boolean(rb.enam_reference),
+          has_udyam_ref: Boolean(rb.udyam_reference),
+          verification_status: 'verified',
+          badge_label: '🔵 FarmOS Registered Buyer',
+          public_phone: showContact ? rb.phone : null,
+          public_email: showContact ? rb.email : null,
+          show_contact_publicly: showContact,
+          match_score: score,
+          wording_label: 'Potential Buyer / Relevant Trader'
+        });
+      }
+    }
+
+    // Sort candidates by match score
+    candidates.sort((a, b) => b.match_score - a.match_score);
+
+    return candidates.slice(0, 6);
+  } catch (err) {
+    console.error("Error finding potential buyers:", err.message);
+    return [];
+  }
+};
+
 const evaluateOpportunities = async (params = {}) => {
   const crop = params.crop || params.commodity || "Potato";
   const quantityInput = params.quantity !== undefined ? params.quantity : 500;
@@ -47,7 +182,6 @@ const evaluateOpportunities = async (params = {}) => {
     limit: 15
   });
 
-  // Fallback: If no records for specific district, fetch state-wide
   if ((!marketResult.data || marketResult.data.length === 0) && district) {
     marketResult = await fetchMandiPrices({
       state: state,
@@ -56,7 +190,6 @@ const evaluateOpportunities = async (params = {}) => {
     });
   }
 
-  // Second Fallback: If no records for state/crop, search crop only
   if (!marketResult.data || marketResult.data.length === 0) {
     marketResult = await fetchMandiPrices({
       commodity: crop,
@@ -65,6 +198,9 @@ const evaluateOpportunities = async (params = {}) => {
   }
 
   const rawRecords = marketResult.data || [];
+
+  // Find potential buyers matching this crop and region
+  const potentialBuyers = await findPotentialBuyers(crop, state, district);
 
   if (rawRecords.length === 0) {
     return {
@@ -79,18 +215,16 @@ const evaluateOpportunities = async (params = {}) => {
       total_markets_analyzed: 0,
       recommended: null,
       comparison: [],
+      potential_buyers: potentialBuyers,
       message: `No active mandi price records found matching crop "${crop}".`
     };
   }
 
-  // Determine origin coordinates for freight logistics calculation if location is provided
   const originInput = farmerLocation || (district ? `${district}, ${state}` : state);
   const originCoords = await geocodeLocation(originInput);
 
-  // Find peak modal price in dataset for relative scoring
   const maxModalPrice = Math.max(...rawRecords.map((r) => Number(r.modal_price) || 0), 1);
 
-  // Process & Score each market deterministically
   const processedMarkets = await Promise.all(
     rawRecords.map(async (item) => {
       const modalPrice = Number(item.modal_price) || 0;
@@ -99,13 +233,6 @@ const evaluateOpportunities = async (params = {}) => {
 
       const estimatedGrossValue = Math.round(qtyInQuintals * modalPrice);
 
-      /**
-       * FarmOS Opportunity Score Formula (0 - 100):
-       * 1. Price Ratio Score (0 to 70 points):
-       *    Relative strength of modal price vs highest modal price in dataset.
-       * 2. Price-Range Consistency Indicator (0 to 30 points):
-       *    Measures price spread consistency (min_price / max_price).
-       */
       const priceScore = maxModalPrice > 0 ? (modalPrice / maxModalPrice) * 70 : 0;
       const consistencyRatio = (maxPrice > 0 && minPrice > 0) ? Math.min(1, minPrice / maxPrice) : 0.8;
       const rangeConsistencyScore = consistencyRatio * 30;
@@ -115,7 +242,6 @@ const evaluateOpportunities = async (params = {}) => {
         Math.max(0, Math.round(priceScore + rangeConsistencyScore))
       );
 
-      // Freight Calculation
       let freight = null;
       if (originCoords) {
         const destInput = `${item.market}, ${item.district || item.state}`;
@@ -153,7 +279,6 @@ const evaluateOpportunities = async (params = {}) => {
         max_price: maxPrice,
         estimated_gross_value: estimatedGrossValue,
         
-        // Logistics & Freight fields
         estimated_distance: freight ? `${freight.distance_km} km` : "Not available",
         distance_km: freight ? freight.distance_km : null,
         travel_time_mins: freight ? freight.duration_minutes : null,
@@ -173,11 +298,9 @@ const evaluateOpportunities = async (params = {}) => {
     })
   );
 
-  // Check if logistics estimates were calculated
   const hasLogisticsData = processedMarkets.some((m) => m.distance_km !== null);
 
   if (hasLogisticsData) {
-    // Re-rank candidate markets by Estimated Net Return (highest profit after freight transport cost)
     processedMarkets.sort((a, b) => {
       if (b.estimated_net_return !== a.estimated_net_return) {
         return b.estimated_net_return - a.estimated_net_return;
@@ -185,7 +308,6 @@ const evaluateOpportunities = async (params = {}) => {
       return b.farmos_opportunity_score - a.farmos_opportunity_score;
     });
   } else {
-    // Fallback: Sort markets by FarmOS Opportunity Score
     processedMarkets.sort((a, b) => b.farmos_opportunity_score - a.farmos_opportunity_score);
   }
 
@@ -194,7 +316,7 @@ const evaluateOpportunities = async (params = {}) => {
 
   const warnings = [
     "Estimated opportunity based on reported Agmarknet benchmark prices, not a guaranteed profit.",
-    "Estimated Freight Costs are calculated using standard transport rates and road distance models; actual quotes may vary."
+    "Potential buyers/traders listed below are matching relevant businesses based on commodity and location. FarmOS does not guarantee transactions."
   ];
 
   if (!hasLocation) {
@@ -248,6 +370,7 @@ const evaluateOpportunities = async (params = {}) => {
       warnings: warnings
     },
     comparison: processedMarkets,
+    potential_buyers: potentialBuyers,
     scoring_documentation: {
       score_name: "FarmOS Opportunity Score & Net Return Ranking",
       scale: "0 - 100",
@@ -260,5 +383,6 @@ const evaluateOpportunities = async (params = {}) => {
 
 module.exports = {
   evaluateOpportunities,
-  convertToQuintals
+  convertToQuintals,
+  findPotentialBuyers
 };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { PotentialBuyersCard } from './PotentialBuyersCard'
 
 const VEHICLES = {
   mini_truck: { id: 'mini_truck', name: 'Mini Truck (1T / Tata Ace / Pickup)', capacity: 1000, rate: 20, min: 500 },
@@ -298,6 +299,9 @@ export const MarketComparison = ({ data }) => {
           {showDetails ? '▲ Show Top 5 Only' : `▼ View All ${comparisonList.length} Mandi Markets`}
         </button>
       )}
+
+      {/* Potential Buyers & Relevant Traders Matching Section */}
+      <PotentialBuyersCard buyers={data.potential_buyers} />
 
       {/* Warnings & Source Attribution Footer */}
       <div style={{

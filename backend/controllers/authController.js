@@ -6,12 +6,32 @@ const jwt = require("jsonwebtoken");
 
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password, role, phone, location } = req.body;
+    const {
+      name,
+      email,
+      password,
+      role,
+      phone,
+      location,
+
+      // Optional buyer profile fields
+      business_name,
+      contact_person,
+      state,
+      district,
+      mandi,
+      commodities,
+      buying_capacity,
+      enam_reference,
+      udyam_reference,
+      official_website,
+      show_contact_publicly
+    } = req.body;
 
     // Check required fields
     if (!name || !email || !password || !phone || !location) {
       return res.status(400).json({
-        message: "Please provide all required fields"
+        message: "Please provide all required fields (name, email, password, phone, location)"
       });
     }
 
@@ -43,6 +63,8 @@ const registerUser = async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const initialVerificationStatus = userRole === "buyer" ? "pending" : "verified";
+
     // Insert user into PostgreSQL
     const result = await pool.query(
       `
@@ -52,10 +74,25 @@ const registerUser = async (req, res) => {
         password,
         role,
         phone,
-        location
+        location,
+        business_name,
+        contact_person,
+        state,
+        district,
+        mandi,
+        commodities,
+        buying_capacity,
+        enam_reference,
+        udyam_reference,
+        official_website,
+        show_contact_publicly,
+        verification_status
       )
-      VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING id, name, email, role, phone, location, created_at
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+      RETURNING
+        id, name, email, role, phone, location, business_name, contact_person,
+        state, district, mandi, commodities, buying_capacity, enam_reference,
+        udyam_reference, official_website, show_contact_publicly, verification_status, created_at
       `,
       [
         name.trim(),
@@ -63,14 +100,28 @@ const registerUser = async (req, res) => {
         hashedPassword,
         userRole,
         phone.trim(),
-        location.trim()
+        location.trim(),
+        business_name ? business_name.trim() : null,
+        contact_person ? contact_person.trim() : name.trim(),
+        state ? state.trim() : null,
+        district ? district.trim() : null,
+        mandi ? mandi.trim() : null,
+        commodities ? commodities.trim() : null,
+        buying_capacity ? buying_capacity.trim() : null,
+        enam_reference ? enam_reference.trim() : null,
+        udyam_reference ? udyam_reference.trim() : null,
+        official_website ? official_website.trim() : null,
+        typeof show_contact_publicly === "boolean" ? show_contact_publicly : false,
+        initialVerificationStatus
       ]
     );
 
     const user = result.rows[0];
 
     return res.status(201).json({
-      message: "User registered successfully",
+      message: userRole === "buyer"
+        ? "Buyer account registered! Submitted for admin review & verification."
+        : "User registered successfully",
       user
     });
 
@@ -104,7 +155,10 @@ const loginUser = async (req, res) => {
     // Find user in PostgreSQL
     const result = await pool.query(
       `
-      SELECT id, name, email, password, role
+      SELECT
+        id, name, email, password, role, phone, location, business_name,
+        contact_person, state, district, mandi, commodities, buying_capacity,
+        enam_reference, udyam_reference, official_website, show_contact_publicly, verification_status
       FROM users
       WHERE email = $1
       `,
@@ -157,12 +211,24 @@ const loginUser = async (req, res) => {
     return res.status(200).json({
       message: "Login successful",
       token,
-
       user: {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: user.role,
+        phone: user.phone,
+        location: user.location,
+        business_name: user.business_name,
+        state: user.state,
+        district: user.district,
+        mandi: user.mandi,
+        commodities: user.commodities,
+        buying_capacity: user.buying_capacity,
+        enam_reference: user.enam_reference,
+        udyam_reference: user.udyam_reference,
+        official_website: user.official_website,
+        show_contact_publicly: user.show_contact_publicly,
+        verification_status: user.verification_status
       }
     });
 
@@ -181,19 +247,11 @@ const loginUser = async (req, res) => {
 
 const getProfile = async (req, res) => {
   try {
-
-    // req.user comes from authMiddleware
     return res.status(200).json({
       user: req.user
     });
-
   } catch (error) {
-
-    console.error(
-      "Get Profile Error:",
-      error.message
-    );
-
+    console.error("Get Profile Error:", error.message);
     return res.status(500).json({
       message: "Server error",
       error: error.message
@@ -201,8 +259,6 @@ const getProfile = async (req, res) => {
   }
 };
 
-
-// ================= EXPORT =================
 
 module.exports = {
   registerUser,

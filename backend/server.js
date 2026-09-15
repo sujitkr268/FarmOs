@@ -1,7 +1,6 @@
 const dotenv = require("dotenv");
 const path = require("path");
 const fs = require("fs");
-// Render auto-deploy trigger - Market Opportunity Assistant
 
 // Load environment variables from potential .env locations
 [
@@ -20,6 +19,12 @@ const cors = require("cors");
 
 const { connectDB } = require("./config/db");
 
+// Models & Seeders
+const User = require("./models/User");
+const { createPublicTradersTable } = require("./models/PublicTrader");
+const { seedPublicTraders } = require("./database/seedTraders");
+
+// Routes
 const authRoutes = require("./routes/authRoutes");
 const harvestRoutes = require("./routes/harvestRoutes");
 const orderRoutes = require("./routes/orderRoutes");
@@ -30,6 +35,9 @@ const chatRoutes = require("./routes/chatRoutes");
 const enamRoutes = require("./routes/enamRoutes");
 const opportunityRoutes = require("./routes/opportunityRoutes");
 const logisticsRoutes = require("./routes/logisticsRoutes");
+const traderRoutes = require("./routes/traderRoutes");
+const buyerRoutes = require("./routes/buyerRoutes");
+
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./config/swagger");
 
@@ -47,7 +55,6 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (e.g. mobile apps, server-to-server, Postman)
     if (!origin) return callback(null, true);
 
     if (
@@ -57,14 +64,12 @@ app.use(cors({
       return callback(null, true);
     }
 
-    // Reflect origin for any other Vercel preview or production deployments
     return callback(null, true);
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   credentials: true
 }));
-
 
 app.use(express.json());
 
@@ -79,6 +84,9 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/enam", enamRoutes);
 app.use("/api/opportunities", opportunityRoutes);
 app.use("/api/logistics", logisticsRoutes);
+app.use("/api/traders", traderRoutes);
+app.use("/api/buyers", buyerRoutes);
+
 // Swagger API Documentation
 app.use(
   "/api-docs",
@@ -93,10 +101,18 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-// Connect Database
-connectDB();
+// Initialize Database & Seed
+const initDB = async () => {
+  await connectDB();
+  await User.createUsersTable();
+  await createPublicTradersTable();
+  await seedPublicTraders();
+};
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+initDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}).catch((err) => {
+  console.error("Database initialization failed:", err.message);
 });

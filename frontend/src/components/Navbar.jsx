@@ -38,6 +38,7 @@ export const Navbar = () => {
   const navItems = [
     { label: 'Home', path: '/' },
     { label: 'Marketplace', path: '/buyer/marketplace' },
+    { label: 'Trader Directory', path: '/traders' },
     { label: 'Mandi Prices', path: '/market-prices' },
     { label: 'Weather', path: '/weather' },
     { label: getDashboardLabel(), path: getDashboardPath() }

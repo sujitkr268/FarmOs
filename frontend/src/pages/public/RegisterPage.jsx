@@ -10,7 +10,19 @@ export const RegisterPage = () => {
     password: '',
     phone: '',
     location: '',
-    role: 'farmer' // Default role
+    role: 'farmer',
+    
+    // Optional buyer fields
+    business_name: '',
+    state: 'West Bengal',
+    district: '',
+    mandi: '',
+    commodities: '',
+    buying_capacity: '',
+    enam_reference: '',
+    udyam_reference: '',
+    official_website: '',
+    show_contact_publicly: false
   })
 
   const [loading, setLoading] = useState(false)
@@ -20,9 +32,10 @@ export const RegisterPage = () => {
   const navigate = useNavigate()
 
   const handleChange = (e) => {
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: value
     })
     setError('')
     setSuccess('')
@@ -34,7 +47,6 @@ export const RegisterPage = () => {
     setError('')
     setSuccess('')
 
-    // Prevent public user from selecting admin
     if (formData.role !== 'farmer' && formData.role !== 'buyer') {
       setError('Registration is only allowed for Farmer or Buyer accounts.')
       setLoading(false)
@@ -42,39 +54,44 @@ export const RegisterPage = () => {
     }
 
     try {
-      const response = await API.post('/auth/register', {
+      const payload = {
         name: formData.name,
         email: formData.email,
         password: formData.password,
         phone: formData.phone,
         location: formData.location,
         role: formData.role
-      })
+      }
 
-      setSuccess('Account created successfully! Redirecting to login...')
-      
+      if (formData.role === 'buyer') {
+        payload.business_name = formData.business_name || formData.name + ' Traders'
+        payload.state = formData.state || 'West Bengal'
+        payload.district = formData.district || formData.location
+        payload.mandi = formData.mandi
+        payload.commodities = formData.commodities
+        payload.buying_capacity = formData.buying_capacity
+        payload.enam_reference = formData.enam_reference
+        payload.udyam_reference = formData.udyam_reference
+        payload.official_website = formData.official_website
+        payload.show_contact_publicly = formData.show_contact_publicly
+      }
+
+      const response = await API.post('/auth/register', payload)
+
+      const successMsg = formData.role === 'buyer'
+        ? 'Buyer account registered! Submitted for admin verification. Redirecting to login...'
+        : 'Account created successfully! Redirecting to login...'
+
+      setSuccess(successMsg)
+
       setTimeout(() => {
         navigate('/login')
-      }, 1500)
+      }, 1800)
 
     } catch (err) {
-      console.error('Registration API Call Failed:', {
-        status: err.response?.status,
-        statusText: err.response?.statusText,
-        data: err.response?.data,
-        message: err.message,
-        config: {
-          url: err.config?.url,
-          method: err.config?.method,
-          data: err.config?.data
-        }
-      })
-
-      const statusCode = err.response?.status ? `[HTTP ${err.response.status}] ` : '[Network Error] '
-      const serverMsg = err.response?.data?.message || err.response?.data?.error || err.message
-      const details = err.response?.data ? ` Details: ${JSON.stringify(err.response.data)}` : ''
-
-      setError(`${statusCode}${serverMsg}${details}`)
+      console.error('Registration API Call Failed:', err)
+      const serverMsg = err.response?.data?.message || err.message
+      setError(serverMsg)
     } finally {
       setLoading(false)
     }
@@ -82,72 +99,91 @@ export const RegisterPage = () => {
 
   return (
     <div className="auth-wrapper">
-      <div className="auth-card" style={{ maxWidth: '480px' }}>
+      <div className="auth-card" style={{ maxWidth: formData.role === 'buyer' ? '600px' : '480px', transition: 'all 0.3s' }}>
         <h2 className="auth-title">Join FarmOS</h2>
-        <p className="auth-subtitle">Create an account to manage or purchase produce</p>
+        <p className="auth-subtitle">Create an account as a Farmer or Registered Buyer</p>
 
         {error && <div className="alert-message alert-error">{error}</div>}
         {success && <div className="alert-message alert-success">{success}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form" style={{ marginTop: (error || success) ? '1rem' : '0' }}>
           <div className="form-group">
-            <label htmlFor="name">Full Name</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
+            <label htmlFor="role">Account Type *</label>
+            <select
+              id="role"
+              name="role"
               className="form-control"
-              placeholder="e.g. Ramesh Kumar"
-              value={formData.name}
+              value={formData.role}
               onChange={handleChange}
               required
-            />
+            >
+              <option value="farmer">Farmer (Produce Seller)</option>
+              <option value="buyer">Buyer (Voluntary Registered Buyer Account)</option>
+            </select>
+          </div>
+
+          <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
+            <div className="form-group">
+              <label htmlFor="name">Full Name *</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                className="form-control"
+                placeholder="e.g. Ramesh Kumar"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="email">Email Address *</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                className="form-control"
+                placeholder="e.g. ramesh@farmos.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
+            <div className="form-group">
+              <label htmlFor="password">Password *</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                className="form-control"
+                placeholder="At least 6 characters"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="phone">Phone Number *</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                className="form-control"
+                placeholder="e.g. 9876543210"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Email Address</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="form-control"
-              placeholder="e.g. ramesh@farmos.com"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              className="form-control"
-              placeholder="At least 6 characters"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="phone">Phone Number</label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              className="form-control"
-              placeholder="e.g. 9876543210"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="location">Location / District</label>
+            <label htmlFor="location">Location / District *</label>
             <input
               type="text"
               id="location"
@@ -160,23 +196,128 @@ export const RegisterPage = () => {
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="role">Account Type</label>
-            <select
-              id="role"
-              name="role"
-              className="form-control"
-              value={formData.role}
-              onChange={handleChange}
-              required
-            >
-              <option value="farmer">Farmer (Produce Seller)</option>
-              <option value="buyer">Buyer (Commercial Produce Buyer)</option>
-            </select>
-          </div>
+          {/* Buyer Specific Fields */}
+          {formData.role === 'buyer' && (
+            <div style={{
+              backgroundColor: 'rgba(59, 130, 246, 0.08)',
+              border: '1px solid rgba(59, 130, 246, 0.3)',
+              borderRadius: '12px',
+              padding: '1rem',
+              marginTop: '0.5rem',
+              marginBottom: '0.5rem'
+            }}>
+              <h4 style={{ color: '#60a5fa', margin: '0 0 0.85rem 0', fontSize: '0.92rem' }}>
+                🏢 Buyer Business Profile Details
+              </h4>
 
-          <button type="submit" className="auth-btn" disabled={loading}>
-            {loading ? 'Creating Account...' : 'Register Account'}
+              <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+                <label htmlFor="business_name">Business / Company Name</label>
+                <input
+                  type="text"
+                  id="business_name"
+                  name="business_name"
+                  className="form-control"
+                  placeholder="e.g. Bengal Grain Processors Ltd."
+                  value={formData.business_name}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                <div className="form-group">
+                  <label htmlFor="commodities">Commodities Purchased</label>
+                  <input
+                    type="text"
+                    id="commodities"
+                    name="commodities"
+                    className="form-control"
+                    placeholder="e.g. Potato, Rice, Wheat"
+                    value={formData.commodities}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="buying_capacity">Buying Capacity</label>
+                  <input
+                    type="text"
+                    id="buying_capacity"
+                    name="buying_capacity"
+                    className="form-control"
+                    placeholder="e.g. 500 MT/month"
+                    value={formData.buying_capacity}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginTop: '0.75rem' }}>
+                <div className="form-group">
+                  <label htmlFor="enam_reference">Optional e-NAM Reference</label>
+                  <input
+                    type="text"
+                    id="enam_reference"
+                    name="enam_reference"
+                    className="form-control"
+                    placeholder="e.g. ENAM/WB/TR/9041"
+                    value={formData.enam_reference}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="udyam_reference">Optional Udyam/MSME Ref</label>
+                  <input
+                    type="text"
+                    id="udyam_reference"
+                    name="udyam_reference"
+                    className="form-control"
+                    placeholder="e.g. UDYAM-WB-03-0012345"
+                    value={formData.udyam_reference}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div className="form-group" style={{ marginTop: '0.75rem' }}>
+                <label htmlFor="official_website">Official Business Website</label>
+                <input
+                  type="url"
+                  id="official_website"
+                  name="official_website"
+                  className="form-control"
+                  placeholder="https://..."
+                  value={formData.official_website}
+                  onChange={handleChange}
+                />
+              </div>
+
+              {/* Explicit Public Contact Consent Switch */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.6rem',
+                marginTop: '1rem',
+                paddingTop: '0.75rem',
+                borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+              }}>
+                <input
+                  type="checkbox"
+                  id="show_contact_publicly"
+                  name="show_contact_publicly"
+                  checked={formData.show_contact_publicly}
+                  onChange={handleChange}
+                  style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                />
+                <label htmlFor="show_contact_publicly" style={{ fontSize: '0.82rem', color: '#c9d1d9', cursor: 'pointer' }}>
+                  I explicitly consent to displaying my business phone number & email publicly on the FarmOS Directory.
+                </label>
+              </div>
+            </div>
+          )}
+
+          <button type="submit" className="auth-btn" disabled={loading} style={{ marginTop: '1rem' }}>
+            {loading ? 'Submitting Registration...' : (formData.role === 'buyer' ? 'Register Buyer Account' : 'Register Account')}
           </button>
         </form>
 

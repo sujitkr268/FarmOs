@@ -8,105 +8,38 @@ const {
   getDashboardStats
 } = require("../controllers/adminController");
 
+const {
+  getPendingBuyers,
+  verifyBuyer,
+  rejectBuyer
+} = require("../controllers/buyerController");
+
+const {
+  createPublicTrader,
+  updatePublicTrader,
+  deletePublicTrader
+} = require("../controllers/traderController");
+
 const protect = require("../middleware/authMiddleware");
 const authorizeRoles = require("../middleware/roleMiddleware");
 
+// All routes require Admin role
+router.use(protect, authorizeRoles("admin"));
 
-// ================= ADMIN ROUTES =================
-/**
- * @swagger
- * /api/admin/users:
- *   get:
- *     summary: Get all users
- *     tags:
- *       - Admin
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Users retrieved successfully
- *       403:
- *         description: Admin access required
- */
+// Dashboard Stats & Lists
+router.get("/users", getAllUsers);
+router.get("/harvests", getAllHarvests);
+router.get("/orders", getAllOrders);
+router.get("/dashboard", getDashboardStats);
 
-// Get all users
-router.get(
-  "/users",
-  protect,
-  authorizeRoles("admin"),
-  getAllUsers
-);
-// ================= GET ALL HARVESTS =================
+// Registered Buyer Approvals
+router.get("/buyers/pending", getPendingBuyers);
+router.put("/buyers/:id/verify", verifyBuyer);
+router.put("/buyers/:id/reject", rejectBuyer);
 
-/**
- * @swagger
- * /api/admin/harvests:
- *   get:
- *     summary: Get all harvests
- *     tags:
- *       - Admin
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Harvests retrieved successfully
- *       403:
- *         description: Admin access required
- */
+// Public Trader Directory Management
+router.post("/traders", createPublicTrader);
+router.put("/traders/:id", updatePublicTrader);
+router.delete("/traders/:id", deletePublicTrader);
 
-router.get(
-  "/harvests",
-  protect,
-  authorizeRoles("admin"),
-  getAllHarvests
-);
-// ================= GET ALL ORDERS =================
-
-
-/**
- * @swagger
- * /api/admin/orders:
- *   get:
- *     summary: Get all orders
- *     tags:
- *       - Admin
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Orders retrieved successfully
- *       403:
- *         description: Admin access required
- */
-
-router.get(
-  "/orders",
-  protect,
-  authorizeRoles("admin"),
-  getAllOrders
-);
-// ================= ADMIN DASHBOARD STATS =================
-
-/**
- * @swagger
- * /api/admin/dashboard:
- *   get:
- *     summary: Get admin dashboard statistics
- *     tags:
- *       - Admin
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Dashboard statistics retrieved successfully
- *       403:
- *         description: Admin access required
- */
-
-router.get(
-  "/dashboard",
-  protect,
-  authorizeRoles("admin"),
-  getDashboardStats
-);
 module.exports = router;
