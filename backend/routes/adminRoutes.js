@@ -5,7 +5,10 @@ const {
   getAllUsers,
   getAllHarvests,
   getAllOrders,
-  getDashboardStats
+  getDashboardStats,
+  getPendingFarmers,
+  verifyFarmer,
+  rejectFarmer
 } = require("../controllers/adminController");
 
 const {
@@ -36,6 +39,11 @@ router.get("/dashboard", getDashboardStats);
 router.get("/buyers/pending", getPendingBuyers);
 router.put("/buyers/:id/verify", verifyBuyer);
 router.put("/buyers/:id/reject", rejectBuyer);
+
+// Registered Farmer Approvals
+router.get("/farmers/pending", getPendingFarmers);
+router.put("/farmers/:id/verify", verifyFarmer);
+router.put("/farmers/:id/reject", rejectFarmer);
 
 // Public Trader Directory Management
 router.post("/traders", createPublicTrader);

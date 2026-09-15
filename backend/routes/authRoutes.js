@@ -4,7 +4,8 @@ const router = express.Router();
 const {
   registerUser,
   loginUser,
-  getProfile
+  getProfile,
+  updateProfile
 } = require("../controllers/authController");
 
 const protect = require("../middleware/authMiddleware");
@@ -144,12 +145,18 @@ router.get(
     });
   }
 );
-// ================= GET PROFILE =================
+// ================= GET & UPDATE PROFILE =================
 
 router.get(
   "/profile",
   protect,
   getProfile
+);
+
+router.put(
+  "/profile",
+  protect,
+  updateProfile
 );
 
 module.exports = router;

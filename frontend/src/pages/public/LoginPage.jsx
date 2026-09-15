@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import API from '../../api/axios'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
@@ -16,6 +16,11 @@ export const LoginPage = () => {
 
   const { login } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+
+  const from = location.state?.from?.pathname
+    ? `${location.state.from.pathname}${location.state.from.search || ''}`
+    : null
 
   const handleChange = (e) => {
     setFormData({
@@ -41,15 +46,17 @@ export const LoginPage = () => {
       // Save token and user in AuthContext (which syncs to localStorage)
       login(token, user)
 
-      // Redirect user based on role
-      if (user.role === 'farmer') {
-        navigate('/farmer/dashboard')
+      // Redirect user to saved location if present, else default role dashboard
+      if (from) {
+        navigate(from, { replace: true })
+      } else if (user.role === 'farmer') {
+        navigate('/farmer/dashboard', { replace: true })
       } else if (user.role === 'buyer') {
-        navigate('/buyer/dashboard')
+        navigate('/buyer/dashboard', { replace: true })
       } else if (user.role === 'admin') {
-        navigate('/admin/dashboard')
+        navigate('/admin/dashboard', { replace: true })
       } else {
-        navigate('/')
+        navigate('/', { replace: true })
       }
     } catch (err) {
       console.error('Login Error:', err)

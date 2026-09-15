@@ -178,7 +178,15 @@ const getDashboardStats = async (req, res) => {
 
         (SELECT COUNT(*)
          FROM orders
-         WHERE status = 'accepted') AS accepted_orders
+         WHERE status = 'accepted') AS accepted_orders,
+
+        (SELECT COUNT(*)
+         FROM users
+         WHERE role = 'farmer' AND verification_status = 'pending') AS pending_farmer_verifications,
+
+        (SELECT COUNT(*)
+         FROM users
+         WHERE role = 'buyer' AND verification_status = 'pending') AS pending_buyer_verifications
     `);
 
     return res.status(200).json({
@@ -198,9 +206,102 @@ const getDashboardStats = async (req, res) => {
     });
   }
 };
+
+// ================= FARMER VERIFICATION ADMIN CONTROLLERS =================
+
+const getPendingFarmers = async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT
+        id, name, email, phone, location, role,
+        farm_size, crops_grown, village, farmer_reference, fpo_info,
+        verification_evidence, verification_status, verification_notes, created_at
+      FROM users
+      WHERE role = 'farmer' AND verification_status = 'pending'
+      ORDER BY created_at DESC
+    `);
+
+    return res.status(200).json({
+      count: result.rows.length,
+      farmers: result.rows
+    });
+  } catch (error) {
+    console.error("Get Pending Farmers Error:", error.message);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+const verifyFarmer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { verification_notes } = req.body;
+
+    const result = await pool.query(
+      `
+      UPDATE users
+      SET
+        verification_status = 'verified',
+        verification_notes = $1,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = $2 AND role = 'farmer'
+      RETURNING id, name, email, role, verification_status, verification_notes
+      `,
+      [verification_notes || "Verified by FarmOS Admin", id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Farmer not found or already verified" });
+    }
+
+    return res.status(200).json({
+      message: "Farmer verified successfully",
+      farmer: result.rows[0]
+    });
+  } catch (error) {
+    console.error("Verify Farmer Error:", error.message);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+const rejectFarmer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { verification_notes } = req.body;
+
+    const result = await pool.query(
+      `
+      UPDATE users
+      SET
+        verification_status = 'unverified',
+        verification_notes = $1,
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = $2 AND role = 'farmer'
+      RETURNING id, name, email, role, verification_status, verification_notes
+      `,
+      [verification_notes || "Verification evidence incomplete", id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Farmer not found" });
+    }
+
+    return res.status(200).json({
+      message: "Farmer verification rejected",
+      farmer: result.rows[0]
+    });
+  } catch (error) {
+    console.error("Reject Farmer Error:", error.message);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getAllHarvests,
   getAllOrders,
-getDashboardStats
+  getDashboardStats,
+  getPendingFarmers,
+  verifyFarmer,
+  rejectFarmer
 };
+

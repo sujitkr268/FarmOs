@@ -2,15 +2,18 @@ import React, { useState, useEffect } from 'react';
 import API from '../../api/axios';
 import { getPublicTraders, createPublicTrader, updatePublicTrader, deletePublicTrader } from '../../api/traderApi';
 import { getPendingBuyers, verifyBuyer, rejectBuyer } from '../../api/buyerApi';
+import { getPendingFarmersApi, verifyFarmerApi, rejectFarmerApi } from '../../api/adminApi';
+import TrustBadge from '../../components/TrustBadge';
 import { useLanguage } from '../../context/LanguageContext';
 
 export const AdminDashboard = () => {
   const { t } = useLanguage();
-  const [activeTab, setActiveTab] = useState('buyers'); // 'buyers', 'traders', 'stats'
+  const [activeTab, setActiveTab] = useState('buyers'); // 'buyers', 'farmers', 'traders', 'stats'
 
   // Data states
   const [stats, setStats] = useState(null);
   const [pendingBuyers, setPendingBuyers] = useState([]);
+  const [pendingFarmers, setPendingFarmers] = useState([]);
   const [publicTraders, setPublicTraders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -51,6 +54,9 @@ export const AdminDashboard = () => {
       } else if (activeTab === 'buyers') {
         const data = await getPendingBuyers();
         setPendingBuyers(data.buyers || []);
+      } else if (activeTab === 'farmers') {
+        const data = await getPendingFarmersApi();
+        setPendingFarmers(data.farmers || []);
       } else if (activeTab === 'traders') {
         const data = await getPublicTraders({});
         setPublicTraders(data.traders || []);
@@ -94,6 +100,36 @@ export const AdminDashboard = () => {
     } catch (err) {
       console.error('Reject Buyer Error:', err);
       setError(err.response?.data?.message || 'Failed to reject buyer.');
+    }
+  };
+
+  // Handle Verify Farmer
+  const handleVerifyFarmer = async (id, name) => {
+    try {
+      const notes = prompt(`Enter verification note for Farmer ${name}:`, 'Verified PM-KISAN/Land Record Evidence');
+      if (notes === null) return;
+
+      await verifyFarmerApi(id, notes);
+      setSuccess(`Farmer "${name}" verified successfully!`);
+      fetchData();
+    } catch (err) {
+      console.error('Verify Farmer Error:', err);
+      setError(err.response?.data?.message || 'Failed to verify farmer.');
+    }
+  };
+
+  // Handle Reject Farmer
+  const handleRejectFarmer = async (id, name) => {
+    try {
+      const notes = prompt(`Enter rejection note for Farmer ${name}:`, 'Incomplete evidence or invalid reference');
+      if (notes === null) return;
+
+      await rejectFarmerApi(id, notes);
+      setSuccess(`Farmer "${name}" verification rejected.`);
+      fetchData();
+    } catch (err) {
+      console.error('Reject Farmer Error:', err);
+      setError(err.response?.data?.message || 'Failed to reject farmer.');
     }
   };
 
@@ -222,6 +258,21 @@ export const AdminDashboard = () => {
         </button>
 
         <button
+          onClick={() => setActiveTab('farmers')}
+          style={{
+            padding: '0.6rem 1.2rem',
+            borderRadius: '8px',
+            border: activeTab === 'farmers' ? '1px solid #10b981' : '1px solid rgba(255, 255, 255, 0.1)',
+            backgroundColor: activeTab === 'farmers' ? 'rgba(16, 185, 129, 0.2)' : 'transparent',
+            color: activeTab === 'farmers' ? '#34d399' : '#c9d1d9',
+            fontWeight: 700,
+            cursor: 'pointer'
+          }}
+        >
+          🌾 Pending Farmers ({pendingFarmers.length})
+        </button>
+
+        <button
           onClick={() => setActiveTab('traders')}
           style={{
             padding: '0.6rem 1.2rem',
@@ -241,9 +292,9 @@ export const AdminDashboard = () => {
           style={{
             padding: '0.6rem 1.2rem',
             borderRadius: '8px',
-            border: activeTab === 'stats' ? '1px solid #10b981' : '1px solid rgba(255, 255, 255, 0.1)',
-            backgroundColor: activeTab === 'stats' ? 'rgba(16, 185, 129, 0.2)' : 'transparent',
-            color: activeTab === 'stats' ? '#34d399' : '#c9d1d9',
+            border: activeTab === 'stats' ? '1px solid #a855f7' : '1px solid rgba(255, 255, 255, 0.1)',
+            backgroundColor: activeTab === 'stats' ? 'rgba(168, 85, 247, 0.2)' : 'transparent',
+            color: activeTab === 'stats' ? '#c084fc' : '#c9d1d9',
             fontWeight: 700,
             cursor: 'pointer'
           }}
@@ -318,6 +369,87 @@ export const AdminDashboard = () => {
 
                   <button
                     onClick={() => handleRejectBuyer(b.id, b.business_name)}
+                    style={{
+                      padding: '0.55rem 1.1rem',
+                      borderRadius: '8px',
+                      backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                      color: '#ef4444',
+                      fontWeight: 700,
+                      border: '1px solid #ef4444',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    ❌ Reject
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      ) : activeTab === 'farmers' ? (
+        // PENDING FARMER VERIFICATION APPLICATIONS TAB
+        pendingFarmers.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '3rem', color: '#8b949e' }}>
+            🎉 No pending farmer verification applications right now! All farmer submissions reviewed.
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            {pendingFarmers.map((f) => (
+              <div
+                key={f.id}
+                style={{
+                  backgroundColor: 'rgba(22, 27, 34, 0.85)',
+                  border: '1px solid rgba(16, 185, 129, 0.4)',
+                  borderRadius: '16px',
+                  padding: '1.25rem 1.5rem',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  flexWrap: 'wrap',
+                  gap: '1rem'
+                }}
+              >
+                <div style={{ flex: '1 1 300px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                    <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#f0f6fc', margin: 0 }}>
+                      {f.name}
+                    </h3>
+                    <TrustBadge status={f.verification_status} role="farmer" size="sm" />
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.6rem', fontSize: '0.85rem', color: '#c9d1d9', marginTop: '0.75rem' }}>
+                    <div>📍 <strong>Location:</strong> {f.village || f.location}</div>
+                    <div>📞 <strong>Phone:</strong> {f.phone}</div>
+                    <div>🌾 <strong>Crops:</strong> {f.crops_grown || 'Not specified'}</div>
+                    <div>📏 <strong>Farm Size:</strong> {f.farm_size || 'Not specified'}</div>
+                    <div>🏛️ <strong>FPO Info:</strong> {f.fpo_info || 'Independent'}</div>
+                    <div>🆔 <strong>PM-KISAN / KCC Ref:</strong> <span style={{ fontFamily: 'monospace', color: '#34d399' }}>{f.farmer_reference || 'None'}</span></div>
+                  </div>
+
+                  {f.verification_evidence && (
+                    <div style={{ marginTop: '0.75rem', padding: '0.6rem', backgroundColor: 'rgba(13, 17, 23, 0.7)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', fontSize: '0.8rem', color: '#8b949e' }}>
+                      📝 <strong>Evidence Submitted:</strong> {f.verification_evidence}
+                    </div>
+                  )}
+                </div>
+
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={() => handleVerifyFarmer(f.id, f.name)}
+                    style={{
+                      padding: '0.55rem 1.1rem',
+                      borderRadius: '8px',
+                      backgroundColor: '#22c55e',
+                      color: '#000000',
+                      fontWeight: 800,
+                      border: 'none',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    ✅ Verify Farmer
+                  </button>
+                  <button
+                    onClick={() => handleRejectFarmer(f.id, f.name)}
                     style={{
                       padding: '0.55rem 1.1rem',
                       borderRadius: '8px',

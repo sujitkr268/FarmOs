@@ -28,6 +28,12 @@ const createUsersTable = async () => {
     ALTER TABLE users ADD COLUMN IF NOT EXISTS show_contact_publicly BOOLEAN DEFAULT false;
     ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_status VARCHAR(50) DEFAULT 'pending';
     ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_notes TEXT;
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS farm_size VARCHAR(100);
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS crops_grown TEXT;
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS village VARCHAR(100);
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS farmer_reference VARCHAR(100);
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS fpo_info VARCHAR(255);
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_evidence TEXT;
   `;
 
   try {

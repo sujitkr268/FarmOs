@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import { MandiPrices } from '../../components/MandiPrices'
 import { EnamInfo } from '../../components/EnamInfo'
 import { useLanguage } from '../../context/LanguageContext'
+import TrustBadge from '../../components/TrustBadge'
 import './marketplace.css'
 
 export const Marketplace = () => {
@@ -305,8 +306,11 @@ export const Marketplace = () => {
 
                 {/* Farmer Info - Displayed only if present in API response */}
                 {harvest.farmer_name && (
-                  <div className="farmer-badge">
-                    <div className="farmer-name">🧑‍🌾 Farmer: {harvest.farmer_name}</div>
+                  <div className="farmer-badge" style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', marginBottom: '0.6rem' }}>
+                    <div className="farmer-name" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.4rem' }}>
+                      <span>🧑‍🌾 Farmer: <strong>{harvest.farmer_name}</strong></span>
+                      <TrustBadge status={harvest.farmer_verification_status || 'verified'} role="farmer" size="sm" />
+                    </div>
                     {harvest.farmer_phone && (
                       <div className="farmer-contact">📞 {harvest.farmer_phone}</div>
                     )}

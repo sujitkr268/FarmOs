@@ -95,7 +95,8 @@ const getAllHarvests = async (req, res) => {
 
         users.id AS farmer_id,
         users.name AS farmer_name,
-        users.phone AS farmer_phone
+        users.phone AS farmer_phone,
+        users.verification_status AS farmer_verification_status
 
       FROM harvests
 

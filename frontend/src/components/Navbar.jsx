@@ -20,31 +20,40 @@ export const Navbar = () => {
     navigate('/login')
   }
 
-  // Determine active dashboard link target
-  const getDashboardPath = () => {
-    if (!user) return '/login'
-    if (user.role === 'farmer') return '/farmer/dashboard'
-    if (user.role === 'buyer') return '/buyer/dashboard'
-    if (user.role === 'admin') return '/admin/dashboard'
-    return '/'
-  }
+  // Build role-specific nav items for authenticated users
+  let navItems = []
 
-  const getDashboardLabel = () => {
-    if (!user) return t('nav.dashboard')
-    if (user.role === 'farmer') return t('nav.farmerDashboard')
-    if (user.role === 'buyer') return t('nav.buyerDashboard')
-    if (user.role === 'admin') return t('nav.adminDashboard')
-    return t('nav.dashboard')
+  if (isAuthenticated && user) {
+    if (user.role === 'farmer') {
+      navItems = [
+        { label: t('nav.farmerDashboard'), path: '/farmer/dashboard' },
+        { label: t('nav.mandiPrices'), path: '/market-prices' },
+        { label: t('nav.marketplace'), path: '/marketplace' },
+        { label: t('nav.weather'), path: '/weather' },
+        { label: t('nav.traderDirectory'), path: '/traders' },
+        { label: t('nav.assistant'), path: '/assistant' },
+        { label: 'Profile', path: '/profile' }
+      ]
+    } else if (user.role === 'buyer') {
+      navItems = [
+        { label: t('nav.buyerDashboard'), path: '/buyer/dashboard' },
+        { label: t('nav.mandiPrices'), path: '/market-prices' },
+        { label: t('nav.marketplace'), path: '/marketplace' },
+        { label: t('nav.weather'), path: '/weather' },
+        { label: t('nav.traderDirectory'), path: '/traders' },
+        { label: t('nav.assistant'), path: '/assistant' },
+        { label: 'Profile', path: '/profile' }
+      ]
+    } else if (user.role === 'admin') {
+      navItems = [
+        { label: t('nav.adminDashboard'), path: '/admin/dashboard' },
+        { label: t('nav.traderDirectory'), path: '/traders' },
+        { label: t('nav.mandiPrices'), path: '/market-prices' },
+        { label: t('nav.marketplace'), path: '/marketplace' },
+        { label: 'Profile', path: '/profile' }
+      ]
+    }
   }
-
-  const navItems = [
-    { label: t('nav.home'), path: '/' },
-    { label: t('nav.marketplace'), path: '/buyer/marketplace' },
-    { label: t('nav.traderDirectory'), path: '/traders' },
-    { label: t('nav.mandiPrices'), path: '/market-prices' },
-    { label: t('nav.weather'), path: '/weather' },
-    { label: getDashboardLabel(), path: getDashboardPath() }
-  ]
 
   return (
     <header style={{
@@ -75,31 +84,29 @@ export const Navbar = () => {
           <span style={{ color: '#ffffff' }}>Farm<span style={{ color: 'var(--accent-gold)' }}>OS</span></span>
         </Link>
 
-        {/* Center: Desktop Navigation Links */}
-        <nav style={{ display: 'none', alignItems: 'center', gap: '1.75rem' }} className="desktop-nav">
-          {navItems.map((item, idx) => {
-            const isActive = item.path === '/' 
-              ? location.pathname === '/' 
-              : item.path.includes('/dashboard') 
-                ? location.pathname.includes('/dashboard')
-                : location.pathname === item.path
+        {/* Center: Desktop Navigation Links (Only for logged-in users) */}
+        {isAuthenticated && (
+          <nav style={{ display: 'none', alignItems: 'center', gap: '1.5rem' }} className="desktop-nav">
+            {navItems.map((item, idx) => {
+              const isActive = location.pathname === item.path
 
-            return (
-              <Link
-                key={idx}
-                to={item.path}
-                style={{
-                  color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
-                  fontWeight: isActive ? 600 : 500,
-                  fontSize: '0.92rem',
-                  transition: 'color 0.2s'
-                }}
-              >
-                {item.label}
-              </Link>
-            )
-          })}
-        </nav>
+              return (
+                <Link
+                  key={idx}
+                  to={item.path}
+                  style={{
+                    color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                    fontWeight: isActive ? 600 : 500,
+                    fontSize: '0.9rem',
+                    transition: 'color 0.2s'
+                  }}
+                >
+                  {item.label}
+                </Link>
+              )
+            })}
+          </nav>
+        )}
 
         {/* Right: Language Switcher & Desktop Auth Actions */}
         <div style={{ display: 'none', alignItems: 'center', gap: '1rem' }} className="desktop-auth">

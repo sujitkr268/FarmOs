@@ -211,5 +211,20 @@
     "tagline": "FarmOS — Empowering Farmers, Transforming Agri-Trade.",
     "rights": "All rights reserved.",
     "govDataDisclaimer": "Benchmark mandi prices sourced from Govt. of India Agmarknet (data.gov.in). Weather data powered by Open-Meteo. Intelligent answers powered by Google Gemini AI."
+  },
+  "profile": {
+    "title": "User Profile",
+    "subtitle": "Manage your account, role details, and trust verification status.",
+    "editProfile": "Edit Profile",
+    "submitVerification": "Submit Verification Evidence",
+    "publicContact": "Public Contact Information",
+    "farmerDetails": "Farmer Profile & Agriculture Information",
+    "buyerDetails": "Business & Buyer Information"
+  },
+  "settings": {
+    "title": "Settings & Preferences",
+    "subtitle": "Manage language preferences, privacy settings, and account options.",
+    "language": "Language",
+    "privacy": "Privacy & Public Contact Consent"
   }
 }

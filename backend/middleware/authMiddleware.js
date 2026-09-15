@@ -29,7 +29,13 @@ const protect = async (req, res, next) => {
     // Find user in PostgreSQL
     const result = await pool.query(
       `
-      SELECT id, name, email, role, phone, location
+      SELECT 
+        id, name, email, role, phone, location,
+        business_name, contact_person, state, district, mandi, commodities, buying_capacity,
+        enam_reference, udyam_reference, official_website, show_contact_publicly,
+        verification_status, verification_notes,
+        farm_size, crops_grown, village, farmer_reference, fpo_info, verification_evidence,
+        created_at
       FROM users
       WHERE id = $1
       `,
