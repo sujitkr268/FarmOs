@@ -29,6 +29,7 @@ const weatherRoutes = require("./routes/weatherRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const enamRoutes = require("./routes/enamRoutes");
 const opportunityRoutes = require("./routes/opportunityRoutes");
+const logisticsRoutes = require("./routes/logisticsRoutes");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./config/swagger");
 
@@ -77,6 +78,7 @@ app.use("/api/weather", weatherRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/enam", enamRoutes);
 app.use("/api/opportunities", opportunityRoutes);
+app.use("/api/logistics", logisticsRoutes);
 // Swagger API Documentation
 app.use(
   "/api-docs",

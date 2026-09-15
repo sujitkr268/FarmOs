@@ -19,12 +19,13 @@ Keep your answers well-structured, concise, and easy to read.`
 
     if (contextType === 'opportunity') {
       promptContent += `SPECIAL INSTRUCTIONS FOR AI OPPORTUNITY EXPLANATION:
-The FarmOS Opportunity Engine evaluated real Agmarknet mandi market data and computed the market rankings, estimated gross values, and FarmOS Opportunity Scores (0-100).
+The FarmOS Opportunity Engine evaluated real Agmarknet mandi market data and computed the market rankings, estimated gross values, freight logistics costs, net returns, and FarmOS Opportunity Scores (0-100).
 1. Explain FarmOS's calculated recommendation clearly to the farmer.
-2. State the recommended market, reported benchmark modal price (₹/quintal), and estimated gross return.
+2. State the recommended market, reported benchmark modal price (₹/quintal), estimated gross return, estimated freight cost, and estimated net return.
 3. Do NOT invent prices, transport costs, or rankings independently. Refer strictly to the calculated numbers provided.
-4. Mention that the FarmOS Opportunity Score is calculated by FarmOS based on price relative to regional peaks and price-range consistency.
-5. Emphasize that recommendations are estimated market opportunities based on reported Agmarknet prices, not guaranteed profits.\n\n`
+4. Mention that the FarmOS Opportunity Score and Net Return ranking prioritize maximum profit after road freight expenses.
+5. If logistics data (vehicle name, vehicles required, distance, estimated freight cost) is included, explain the transport details clearly. Always label transport costs as "Estimated Freight Cost".
+6. Emphasize that recommendations are estimated market opportunities based on reported Agmarknet benchmark prices and standard transport rate models, not guaranteed profits or fixed freight quotes.\n\n`
     }
   }
 

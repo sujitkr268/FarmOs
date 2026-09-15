@@ -126,8 +126,8 @@ FarmOS does not replace government mandis or make false earnings guarantees; it 
 | **Order Management** | Buyers place orders; Farmers accept/reject with atomic DB transactions | ✅ Implemented |
 | **e-NAM Market Guidance** | Official e-NAM portal links, trading workflow steps, and APMC directory | ✅ Implemented |
 | **Swagger API Docs** | Interactive OpenAPI / Swagger documentation mounted at `/api-docs` | ✅ Implemented |
+| **Smart Freight Logistics** | OpenRouteService road routing, vehicle selection, Estimated Freight Cost & Net Return ranking | ✅ Implemented |
 | **Online Payment Gateway** | Stripe / Razorpay integration for digital escrow payments | 🔮 Future Scope |
-| **Smart Freight Logistics** | Real-time transport cost calculation and driver matching | 🔮 Future Scope |
 | **WhatsApp/SMS Alerts** | Automated price drop and weather warning push notifications | 🔮 Future Scope |
 
 ---
@@ -281,6 +281,35 @@ flowchart TD
     SumScore --> Sort["Sort Mandis Descending by Opportunity Score"]
     Sort --> Recommend["Top Result = 🏆 Recommended Market"]
 ```
+
+### 8.2 Smart Freight Logistics & Net Return Calculation Model
+
+A mandi with the highest gross market price may not yield the highest net profit if transport expenses to that market are excessive.
+
+FarmOS integrates a **Smart Freight Logistics Engine** (`backend/services/logisticsService.js`) to estimate road transport distances, select appropriate vehicle types, and calculate **Estimated Net Return**:
+
+#### 1. Estimated Freight Cost Calculation
+$$\text{Vehicles Required } (V_n) = \left\lceil \frac{\text{Quantity in kg}}{\text{Vehicle Capacity (kg)}} \right\rceil$$
+$$\text{Trip Cost (₹)} = \max\left(\text{Min Charge}, \text{Road Distance (km)} \times \text{Base Rate (₹/km)}\right)$$
+$$\text{Estimated Freight Cost (₹)} = \text{Trip Cost} \times V_n$$
+
+#### 2. Vehicle Rates & Capacity Schedule
+
+| Vehicle Category | Typical Vehicles | Capacity | Base Rate (₹/km) | Minimum Charge (₹) |
+| :--- | :--- | :---: | :---: | :---: |
+| **Mini Truck** | Tata Ace, Bolero Pickup | 1,000 kg (1T) | ₹20 / km | ₹500 |
+| **Small Truck** | Eicher 14ft, Canter | 3,000 kg (3T) | ₹30 / km | ₹1,000 |
+| **Medium Truck** | 6-Wheeler, 17ft Eicher | 9,000 kg (9T) | ₹45 / km | ₹2,000 |
+| **Heavy Truck** | 10-Wheeler, Multi-Axle | 20,000 kg (20T) | ₹65 / km | ₹3,500 |
+
+#### 3. Estimated Net Return Formula
+$$\text{Estimated Net Return (₹)} = \text{Estimated Gross Revenue (₹)} - \text{Estimated Freight Cost (₹)}$$
+
+#### 4. Road Distance Routing & Fallbacks
+1. **OpenRouteService API**: Queries `driving-car` directions endpoint using origin/destination coordinates.
+2. **Known APMC Coordinates Dictionary**: Pre-configured geocoding dictionary covering major West Bengal APMCs and districts.
+3. **Geographical Estimation Fallback**: Uses Haversine straight-line distance scaled by a $1.35\times$ road circuity factor if routing services are offline.
+4. **Market Re-Ranking**: When logistics data is available, candidate markets are re-ranked by **Estimated Net Return** (highest net profit first).
 
 ---
 
@@ -514,6 +543,7 @@ FarmOs/
 ├── backend/
 │   ├── config/
 │   │   ├── db.js                 # PostgreSQL Pool connection setup (Neon DB)
+│   │   ├── logisticsRates.js     # Freight vehicle capacities & per-km rate config
 │   │   └── swagger.js            # OpenAPI / Swagger specification
 │   ├── controllers/
 │   │   ├── adminController.js    # Admin dashboard & management logic
@@ -521,6 +551,7 @@ FarmOs/
 │   │   ├── chatController.js     # AI assistant intent detection & routing
 │   │   ├── enamController.js     # e-NAM official resources controller
 │   │   ├── harvestController.js  # Crop harvest CRUD operations
+│   │   ├── logisticsController.js# Freight estimation & vehicle options controller
 │   │   ├── marketController.js   # Live Mandi price query controller
 │   │   ├── opportunityController.js # Market Opportunity engine controller
 │   │   ├── orderController.js    # Buyer & farmer order workflow controller
@@ -536,6 +567,7 @@ FarmOs/
 │   │   ├── chatRoutes.js
 │   │   ├── enamRoutes.js
 │   │   ├── harvestRoutes.js
+│   │   ├── logisticsRoutes.js
 │   │   ├── marketRoutes.js
 │   │   ├── opportunityRoutes.js
 │   │   ├── orderRoutes.js
@@ -543,8 +575,9 @@ FarmOs/
 │   ├── services/
 │   │   ├── chatService.js        # Gemini AI integration & prompt builder
 │   │   ├── enamService.js        # e-NAM guidance & APMC info service
+│   │   ├── logisticsService.js   # Road routing (OpenRouteService + Haversine fallback)
 │   │   ├── marketService.js      # Govt Agmarknet (data.gov.in) API service
-│   │   ├── opportunityService.js # Opportunity calculation & scoring engine
+│   │   ├── opportunityService.js # Opportunity calculation & Net Return ranking engine
 │   │   └── weatherService.js     # Open-Meteo service with 15-min Map cache
 │   ├── .env                      # Environment variables
 │   ├── package.json              # Backend dependencies & scripts
@@ -585,7 +618,9 @@ FarmOs/
 | `POST` | `/api/auth/login` | Authenticate user & return JWT | ❌ Public | All |
 | `GET` | `/api/auth/profile` | Get current user profile | ✅ Yes | All |
 | `GET` | `/api/market/prices` | Query live Mandi prices (Agmarknet) | ❌ Public | All |
-| `GET/POST`| `/api/opportunities/compare`| Compare markets & compute scores | ❌ Public | All |
+| `GET/POST`| `/api/opportunities/compare`| Compare markets, compute scores & Net Return | ❌ Public | All |
+| `POST/GET`| `/api/logistics/estimate`| Calculate road routing & Estimated Freight Cost | ❌ Public | All |
+| `GET` | `/api/logistics/vehicles`| Get vehicle capacities & transport rate schedule | ❌ Public | All |
 | `GET` | `/api/weather` | Fetch hyper-local weather & 7-day forecast | ❌ Public | All |
 | `POST` | `/api/chat` | Send prompt to AI Assistant | ❌ Public | All |
 | `GET` | `/api/enam/info` | Retrieve official e-NAM market resources | ❌ Public | All |

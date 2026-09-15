@@ -21,7 +21,8 @@ const detectIntent = (text) => {
   const opportunityKeywords = [
     "where should i sell", "where to sell", "best market", "best selling",
     "best opportunity", "best return", "highest price", "highest return",
-    "opportunity", "compare market", "compare prices", "which mandi", "which market"
+    "opportunity", "compare market", "compare prices", "which mandi", "which market",
+    "freight", "transport", "vehicle", "truck", "logistics", "net return", "shipping cost", "delivery cost"
   ];
 
   const marketKeywords = [
