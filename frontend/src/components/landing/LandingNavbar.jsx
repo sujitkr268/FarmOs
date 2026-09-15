@@ -30,13 +30,13 @@ export const LandingNavbar = () => {
   }
 
   const navLinks = [
-    { label: 'Home', path: '/', isHome: true },
+    { label: t('nav.home', 'Home'), path: '/', isHome: true },
     { label: t('nav.marketPrices', 'Market Prices'), path: '/market-prices' },
     { label: t('nav.marketplace', 'Marketplace'), path: '/marketplace' },
     { label: t('nav.weather', 'Weather'), path: '/weather' },
     { label: t('nav.traders', 'Traders'), path: '/traders' },
     { label: t('nav.assistant', 'AI Assistant'), path: '/assistant' },
-    { label: 'About', path: '/#about' }
+    { label: t('nav.about', 'About'), path: '/#about' }
   ]
 
   return (
