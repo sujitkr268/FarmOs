@@ -157,13 +157,14 @@ const ProfilePage = () => {
 
       {/* User Header Card */}
       <div style={{
-        backgroundColor: '#111b15',
-        border: '1px solid rgba(31, 56, 42, 0.8)',
+        backgroundColor: '#ffffff',
+        border: '1px solid #e2e8f0',
         borderRadius: '20px',
         overflow: 'hidden',
-        marginBottom: '1.75rem'
+        marginBottom: '1.75rem',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.04)'
       }}>
-        <div style={{ background: 'linear-gradient(135deg, #0d2217 0%, #16261d 100%)', height: '110px', position: 'relative' }}></div>
+        <div style={{ background: 'linear-gradient(135deg, #0b2319 0%, #163e2e 100%)', height: '110px', position: 'relative' }}></div>
         <div style={{ padding: '0 1.5rem 1.5rem 1.5rem', position: 'relative' }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: '-3rem', marginBottom: '1rem', gap: '1rem' }}>
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: '1rem' }}>
@@ -172,22 +173,22 @@ const ProfilePage = () => {
                 height: '84px',
                 borderRadius: '18px',
                 backgroundColor: '#10b981',
-                color: '#080e0a',
+                color: '#ffffff',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontWeight: 800,
                 fontSize: '2.5rem',
-                border: '4px solid #111b15',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)'
+                border: '4px solid #ffffff',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)'
               }}>
                 {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
               </div>
               <div>
-                <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', margin: 0 }}>{user?.name}</h2>
+                <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em', margin: 0 }}>{user?.name}</h2>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '0.25rem' }}>
                   <span style={{ textTransform: 'capitalize', fontWeight: 600, color: '#10b981', fontSize: '0.85rem' }}>{user?.role}</span>
-                  <span style={{ color: '#6b7280' }}>•</span>
+                  <span style={{ color: '#94a3b8' }}>•</span>
                   <TrustBadge status={user?.verification_status} role={user?.role} size="sm" />
                 </div>
               </div>
@@ -196,14 +197,14 @@ const ProfilePage = () => {
             <div style={{ display: 'flex', gap: '0.75rem' }}>
               <button
                 onClick={() => setShowEditModal(true)}
-                style={{ padding: '0.6rem 1.25rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem', cursor: 'pointer' }}
+                style={{ padding: '0.6rem 1.25rem', backgroundColor: '#10b981', color: '#ffffff', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem', cursor: 'pointer' }}
               >
                 ✏️ Edit Profile
               </button>
               {(user?.role === 'farmer' || user?.role === 'buyer') && user?.verification_status !== 'verified' && (
                 <button
                   onClick={() => setShowVerifyModal(true)}
-                  style={{ padding: '0.6rem 1.25rem', backgroundColor: '#f59e0b', color: '#080e0a', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem', cursor: 'pointer' }}
+                  style={{ padding: '0.6rem 1.25rem', backgroundColor: '#f59e0b', color: '#0f172a', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem', cursor: 'pointer' }}
                 >
                   🛡️ Submit Verification
                 </button>
@@ -211,17 +212,17 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', pt: '1rem', borderTop: '1px solid rgba(31, 56, 42, 0.6)', fontSize: '0.85rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', pt: '1rem', borderTop: '1px solid #f1f5f9', fontSize: '0.85rem' }}>
             <div>
-              <span style={{ color: '#9ca3af', display: 'block', fontSize: '0.75rem' }}>Email Address</span>
-              <span style={{ color: '#f3f4f6', fontWeight: 600 }}>{user?.email}</span>
+              <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem' }}>Email Address</span>
+              <span style={{ color: '#0f172a', fontWeight: 600 }}>{user?.email}</span>
             </div>
             <div>
-              <span style={{ color: '#9ca3af', display: 'block', fontSize: '0.75rem' }}>Phone Number</span>
-              <span style={{ color: '#f3f4f6', fontWeight: 600 }}>{user?.phone || 'Not provided'}</span>
+              <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem' }}>Phone Number</span>
+              <span style={{ color: '#0f172a', fontWeight: 600 }}>{user?.phone || 'Not provided'}</span>
             </div>
             <div>
-              <span style={{ color: '#9ca3af', display: 'block', fontSize: '0.75rem' }}>Location / State</span>
+              <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem' }}>Location / State</span>
               <span style={{ color: '#10b981', fontWeight: 600 }}>📍 {user?.location || 'Not provided'}</span>
             </div>
           </div>
@@ -233,11 +234,11 @@ const ProfilePage = () => {
         {/* Left Column: Role Details */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {/* Public Contact Consent Banner */}
-          <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
+          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '18px', padding: '1.5rem', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
               <div>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f3f4f6' }}>Public Contact Information</h3>
-                <p style={{ fontSize: '0.82rem', color: '#9ca3af', marginTop: '0.2rem' }}>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a' }}>Public Contact Information</h3>
+                <p style={{ fontSize: '0.82rem', color: '#64748b', marginTop: '0.2rem' }}>
                   Display phone number and email publicly on trade directory listings.
                 </p>
               </div>
@@ -252,7 +253,7 @@ const ProfilePage = () => {
                   position: 'absolute',
                   cursor: 'pointer',
                   inset: 0,
-                  backgroundColor: user?.show_contact_publicly ? '#10b981' : '#1f382a',
+                  backgroundColor: user?.show_contact_publicly ? '#10b981' : '#cbd5e1',
                   transition: '0.2s',
                   borderRadius: '34px'
                 }}>
@@ -270,31 +271,31 @@ const ProfilePage = () => {
                 </span>
               </label>
             </div>
-            <div style={{ marginTop: '0.75rem', fontSize: '0.78rem', color: '#9ca3af', fontWeight: 500 }}>
+            <div style={{ marginTop: '0.75rem', fontSize: '0.78rem', color: '#64748b', fontWeight: 500 }}>
               State: {user?.show_contact_publicly ? '🟢 Publicly Visible' : '🔒 Hidden from directory search'}
             </div>
           </div>
 
           {/* Farmer Role Details */}
           {user?.role === 'farmer' && (
-            <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '1rem' }}>🌾 Agriculture Details</h3>
+            <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '18px', padding: '1.5rem', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>🌾 Agriculture Details</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', fontSize: '0.85rem' }}>
-                <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>Farm Size</span>
-                  <span style={{ fontWeight: 700, color: '#f3f4f6' }}>{user?.farm_size || 'Not specified'}</span>
+                <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Farm Size</span>
+                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{user?.farm_size || 'Not specified'}</span>
                 </div>
-                <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>Crops Grown</span>
+                <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Crops Grown</span>
                   <span style={{ fontWeight: 700, color: '#10b981' }}>{user?.crops_grown || 'Not specified'}</span>
                 </div>
-                <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>Village / Panchayat</span>
-                  <span style={{ fontWeight: 700, color: '#f3f4f6' }}>{user?.village || user?.location || 'Not specified'}</span>
+                <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Village / Panchayat</span>
+                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{user?.village || user?.location || 'Not specified'}</span>
                 </div>
-                <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>FPO / Cooperative</span>
-                  <span style={{ fontWeight: 700, color: '#f3f4f6' }}>{user?.fpo_info || 'Independent Farmer'}</span>
+                <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>FPO / Cooperative</span>
+                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{user?.fpo_info || 'Independent Farmer'}</span>
                 </div>
               </div>
             </div>
@@ -302,15 +303,15 @@ const ProfilePage = () => {
 
           {/* Buyer Role Details */}
           {user?.role === 'buyer' && (
-            <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '1rem' }}>🏢 Business Information</h3>
+            <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '18px', padding: '1.5rem', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>🏢 Business Information</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', fontSize: '0.85rem' }}>
-                <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>Firm Name</span>
-                  <span style={{ fontWeight: 700, color: '#f3f4f6' }}>{user?.business_name || 'Not specified'}</span>
+                <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Firm Name</span>
+                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{user?.business_name || 'Not specified'}</span>
                 </div>
-                <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>Primary Mandi</span>
+                <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Primary Mandi</span>
                   <span style={{ fontWeight: 700, color: '#10b981' }}>{user?.mandi || 'Not specified'}</span>
                 </div>
               </div>
@@ -320,8 +321,8 @@ const ProfilePage = () => {
 
         {/* Right Column: Verification Status Card */}
         <div>
-          <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '0.85rem' }}>🛡️ Trust Verification</h3>
+          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '18px', padding: '1.5rem', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.85rem' }}>🛡️ Trust Verification</h3>
             <div style={{ marginBottom: '1rem' }}>
               <TrustBadge status={user?.verification_status} role={user?.role} size="lg" />
             </div>

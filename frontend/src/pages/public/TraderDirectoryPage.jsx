@@ -80,24 +80,24 @@ export const TraderDirectoryPage = () => {
       maxWidth: '1280px',
       margin: '0 auto',
       padding: '2rem 1.25rem',
-      color: 'var(--text-primary, #f0f6fc)'
+      color: 'var(--text-heading, #0f172a)'
     }}>
       {/* Header Banner */}
       <div style={{
-        backgroundColor: 'rgba(22, 27, 34, 0.85)',
-        border: '1px solid var(--border-gold, #d4af37)',
-        borderRadius: '16px',
+        backgroundColor: '#ffffff',
+        border: '1px solid #e2e8f0',
+        borderRadius: '20px',
         padding: '2rem 1.5rem',
         marginBottom: '2rem',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
           <span style={{ fontSize: '2rem' }}>🏛️</span>
-          <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#f59e0b', margin: 0 }}>
+          <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0b2319', margin: 0 }}>
             Verified Agricultural Businesses & Directory
           </h1>
         </div>
-        <p style={{ color: '#8b949e', fontSize: '0.95rem', maxWidth: '850px', lineHeight: '1.5', margin: '0.5rem 0 0 0' }}>
+        <p style={{ color: '#475569', fontSize: '0.95rem', maxWidth: '850px', lineHeight: '1.5', margin: '0.5rem 0 0 0' }}>
           Discover legitimate agricultural traders, wholesalers, rice millers, APMC market functionaries, and voluntary FarmOS-registered buyers. Every external business is tied strictly to official government, APEDA, WBSAMB, or business website source evidence.
         </p>
       </div>
@@ -108,7 +108,7 @@ export const TraderDirectoryPage = () => {
         alignItems: 'center',
         gap: '0.75rem',
         marginBottom: '1.5rem',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        borderBottom: '1px solid #e2e8f0',
         paddingBottom: '0.75rem'
       }}>
         <button
@@ -116,9 +116,9 @@ export const TraderDirectoryPage = () => {
           style={{
             padding: '0.65rem 1.4rem',
             borderRadius: '10px',
-            border: activeTab === 'traders' ? '1px solid #d4af37' : '1px solid rgba(255, 255, 255, 0.1)',
-            backgroundColor: activeTab === 'traders' ? 'rgba(212, 175, 55, 0.18)' : 'rgba(255, 255, 255, 0.04)',
-            color: activeTab === 'traders' ? '#fbbf24' : '#c9d1d9',
+            border: activeTab === 'traders' ? '1px solid #0b2319' : '1px solid #e2e8f0',
+            backgroundColor: activeTab === 'traders' ? '#0b2319' : '#ffffff',
+            color: activeTab === 'traders' ? '#ffffff' : '#475569',
             fontWeight: 700,
             fontSize: '0.95rem',
             cursor: 'pointer',
@@ -133,9 +133,9 @@ export const TraderDirectoryPage = () => {
           style={{
             padding: '0.65rem 1.4rem',
             borderRadius: '10px',
-            border: activeTab === 'buyers' ? '1px solid #3b82f6' : '1px solid rgba(255, 255, 255, 0.1)',
-            backgroundColor: activeTab === 'buyers' ? 'rgba(59, 130, 246, 0.18)' : 'rgba(255, 255, 255, 0.04)',
-            color: activeTab === 'buyers' ? '#60a5fa' : '#c9d1d9',
+            border: activeTab === 'buyers' ? '1px solid #0b2319' : '1px solid #e2e8f0',
+            backgroundColor: activeTab === 'buyers' ? '#0b2319' : '#ffffff',
+            color: activeTab === 'buyers' ? '#ffffff' : '#475569',
             fontWeight: 700,
             fontSize: '0.95rem',
             cursor: 'pointer',
@@ -148,11 +148,12 @@ export const TraderDirectoryPage = () => {
 
       {/* Search & Filter Form */}
       <form onSubmit={handleSearchSubmit} style={{
-        backgroundColor: 'rgba(22, 27, 34, 0.6)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        borderRadius: '12px',
+        backgroundColor: '#ffffff',
+        border: '1px solid #e2e8f0',
+        borderRadius: '16px',
         padding: '1.25rem',
-        marginBottom: '1.5rem'
+        marginBottom: '1.5rem',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.03)'
       }}>
         <div style={{
           display: 'grid',
@@ -161,7 +162,7 @@ export const TraderDirectoryPage = () => {
           marginBottom: '1rem'
         }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#8b949e', marginBottom: '0.3rem' }}>Search Business / Name</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>Search Business / Name</label>
             <input
               type="text"
               placeholder="e.g. Bardhaman Agro, Rice, Potato..."
@@ -169,18 +170,18 @@ export const TraderDirectoryPage = () => {
               onChange={(e) => setSearch(e.target.value)}
               style={{
                 width: '100%',
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#f8fafc',
+                border: '1px solid #cbd5e1',
                 borderRadius: '8px',
                 padding: '0.5rem 0.75rem',
-                color: '#f0f6fc',
+                color: '#0f172a',
                 fontSize: '0.88rem'
               }}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#8b949e', marginBottom: '0.3rem' }}>State</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>State</label>
             <input
               type="text"
               placeholder="e.g. West Bengal"
@@ -188,18 +189,18 @@ export const TraderDirectoryPage = () => {
               onChange={(e) => setStateFilter(e.target.value)}
               style={{
                 width: '100%',
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#f8fafc',
+                border: '1px solid #cbd5e1',
                 borderRadius: '8px',
                 padding: '0.5rem 0.75rem',
-                color: '#f0f6fc',
+                color: '#0f172a',
                 fontSize: '0.88rem'
               }}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#8b949e', marginBottom: '0.3rem' }}>District</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>District</label>
             <input
               type="text"
               placeholder="e.g. Hooghly, Bardhaman, Kolkata..."
@@ -207,18 +208,18 @@ export const TraderDirectoryPage = () => {
               onChange={(e) => setDistrictFilter(e.target.value)}
               style={{
                 width: '100%',
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#f8fafc',
+                border: '1px solid #cbd5e1',
                 borderRadius: '8px',
                 padding: '0.5rem 0.75rem',
-                color: '#f0f6fc',
+                color: '#0f172a',
                 fontSize: '0.88rem'
               }}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#8b949e', marginBottom: '0.3rem' }}>Mandi / APMC</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>Mandi / APMC</label>
             <input
               type="text"
               placeholder="e.g. Sheoraphuli APMC..."
@@ -226,18 +227,18 @@ export const TraderDirectoryPage = () => {
               onChange={(e) => setMandiFilter(e.target.value)}
               style={{
                 width: '100%',
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#f8fafc',
+                border: '1px solid #cbd5e1',
                 borderRadius: '8px',
                 padding: '0.5rem 0.75rem',
-                color: '#f0f6fc',
+                color: '#0f172a',
                 fontSize: '0.88rem'
               }}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#8b949e', marginBottom: '0.3rem' }}>Commodity</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>Commodity</label>
             <input
               type="text"
               placeholder="e.g. Potato, Rice, Wheat..."
@@ -245,11 +246,11 @@ export const TraderDirectoryPage = () => {
               onChange={(e) => setCommodityFilter(e.target.value)}
               style={{
                 width: '100%',
-                backgroundColor: '#0d1117',
-                border: '1px solid #30363d',
+                backgroundColor: '#f8fafc',
+                border: '1px solid #cbd5e1',
                 borderRadius: '8px',
                 padding: '0.5rem 0.75rem',
-                color: '#f0f6fc',
+                color: '#0f172a',
                 fontSize: '0.88rem'
               }}
             />
@@ -257,17 +258,17 @@ export const TraderDirectoryPage = () => {
 
           {activeTab === 'traders' && (
             <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', color: '#8b949e', marginBottom: '0.3rem' }}>Verification Level</label>
+              <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>Verification Level</label>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 style={{
                   width: '100%',
-                  backgroundColor: '#0d1117',
-                  border: '1px solid #30363d',
+                  backgroundColor: '#f8fafc',
+                  border: '1px solid #cbd5e1',
                   borderRadius: '8px',
                   padding: '0.5rem 0.75rem',
-                  color: '#f0f6fc',
+                  color: '#0f172a',
                   fontSize: '0.88rem'
                 }}
               >

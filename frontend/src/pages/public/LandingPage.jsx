@@ -6,153 +6,174 @@ import './LandingPage.css'
 export const LandingPage = () => {
   const { t } = useLanguage()
 
+  const features = [
+    {
+      title: 'Market Intelligence',
+      description: 'Real-time APMC mandi prices and historical price trends across all major regional hubs.',
+      icon: '📈'
+    },
+    {
+      title: 'Smart Logistics',
+      description: 'Calculates exact freight transport costs and net return margins before you ship.',
+      icon: '🚚'
+    },
+    {
+      title: 'Potential Buyers',
+      description: 'Direct connections with verified wholesalers, traders, and institutional buyers.',
+      icon: '🤝'
+    },
+    {
+      title: 'Weather Intelligence',
+      description: '7-day localized agricultural weather forecasts to plan harvest and transport timing.',
+      icon: '🌤️'
+    },
+    {
+      title: 'AI Assistant',
+      description: 'Powered by Gemini AI to give instant agronomy advice, price guidance, and selling insights.',
+      icon: '💬'
+    },
+    {
+      title: 'Trusted Marketplace',
+      description: 'Government verification badges (PM-KISAN, e-NAM, Udyam) for safe transparent deals.',
+      icon: '🛡️'
+    }
+  ]
+
+  const workflowSteps = [
+    { step: '1', title: 'Harvest', desc: 'Register crop stock' },
+    { step: '2', title: 'Market Prices', desc: 'Check live mandi rates' },
+    { step: '3', title: 'Opportunity Analysis', desc: 'Calculate net profit' },
+    { step: '4', title: 'Logistics', desc: 'Estimate freight costs' },
+    { step: '5', title: 'Potential Buyers', desc: 'Connect with verified buyers' },
+    { step: '6', title: 'Better Decision', desc: 'Maximize your harvest income' }
+  ]
+
   return (
-    <div className="landing-container">
-      {/* 1. HERO SECTION WITH REALISTIC AGRICULTURE LANDSCAPE BACKGROUND */}
-      <section className="hero-section">
-        <div className="hero-wrapper">
-          {/* Hero Left Content */}
-          <div className="hero-left">
-            <div className="hero-badge">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-              </svg>
-              {t('home.heroBadge')}
-            </div>
-            
-            <h1 className="hero-title">
-              {t('home.heroTitleLine1')}<br />
-              {t('home.heroTitleLine2')}
-            </h1>
-            
-            <p className="hero-description">
-              {t('home.heroDesc')}
-            </p>
-            
-            <div className="hero-actions">
-              <Link to="/buyer/marketplace" className="btn-gold">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
-                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                </svg>
-                {t('home.exploreMarketplace')}
-              </Link>
-              
-              <Link to="/register" className="btn-outline-dark">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
-                  <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-3.05 11a22.35 22.35 0 0 1-3.95 2z" />
-                </svg>
-                {t('home.getStartedFree')}
-              </Link>
-            </div>
+    <div style={{ backgroundColor: '#f3f7f4', minHeight: '100vh', color: '#0f172a' }}>
+      {/* 1. HERO SECTION */}
+      <section style={{
+        background: 'linear-gradient(135deg, #0b2319 0%, #103828 50%, #071912 100%)',
+        color: '#ffffff',
+        padding: '5rem 1.5rem 6rem 1.5rem',
+        textAlign: 'center',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+            border: '1px solid rgba(16, 185, 129, 0.4)',
+            color: '#34d399',
+            padding: '0.35rem 0.95rem',
+            borderRadius: '20px',
+            fontSize: '0.82rem',
+            fontWeight: 700,
+            marginBottom: '1.5rem'
+          }}>
+            🌱 Premium Agricultural Technology Platform
           </div>
 
-          {/* Hero Right: 3 Top Floating Benefit Cards */}
-          <div className="hero-floating-cards">
-            {/* Card 1 */}
-            <div className="floating-card">
-              <span className="floating-card-num">1</span>
-              <div className="floating-card-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <polyline points="16 11 18 13 22 9" />
-                </svg>
-              </div>
-              <div className="floating-card-title">
-                {t('home.card1Title')}
-              </div>
-            </div>
+          <h1 style={{ fontSize: '2.8rem', fontWeight: 800, lineHeight: 1.2, letterSpacing: '-0.02em', marginBottom: '1.25rem' }}>
+            Connecting Every Harvest to Its Best Opportunity
+          </h1>
 
-            {/* Card 2 */}
-            <div className="floating-card">
-              <span className="floating-card-num">2</span>
-              <div className="floating-card-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17" />
-                  <path d="m7 21 1.6-1.4c.4-.4.9-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.8-2.8l-2.6 2.4" />
-                  <circle cx="17" cy="6" r="3" />
-                </svg>
-              </div>
-              <div className="floating-card-title">
-                {t('home.card2Title')}
-              </div>
-            </div>
+          <p style={{ fontSize: '1.15rem', color: '#cbd5e1', lineHeight: 1.6, maxWidth: '750px', margin: '0 auto 2.25rem' }}>
+            FarmOS helps farmers compare markets, calculate transport costs, discover potential buyers and make better selling decisions.
+          </p>
 
-            {/* Card 3 */}
-            <div className="floating-card">
-              <span className="floating-card-num">3</span>
-              <div className="floating-card-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11Z" />
-                  <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-                </svg>
-              </div>
-              <div className="floating-card-title">
-                {t('home.card3Title')}
-              </div>
-            </div>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link
+              to="/register"
+              style={{
+                padding: '0.85rem 2rem',
+                borderRadius: '12px',
+                backgroundColor: '#10b981',
+                color: '#ffffff',
+                fontWeight: 800,
+                fontSize: '1rem',
+                boxShadow: '0 4px 18px rgba(16, 185, 129, 0.4)',
+                transition: 'transform 0.2s'
+              }}
+            >
+              Get Started
+            </Link>
+
+            <Link
+              to="/marketplace"
+              style={{
+                padding: '0.85rem 2rem',
+                borderRadius: '12px',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+                color: '#ffffff',
+                fontWeight: 700,
+                fontSize: '1rem'
+              }}
+            >
+              Explore FarmOS
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* 2. MAIN FEATURE CARDS ROW */}
-      <section className="features-section">
-        <div className="features-grid">
-          {/* Card 1 */}
-          <div className="feature-card-premium">
-            <div className="feature-card-badge-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <circle cx="12" cy="12" r="9" />
-                <path d="m9 12 2 2 4-4" />
-              </svg>
-            </div>
-            
-            <div className="feature-icon-wrapper">
-              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            </div>
-            
-            <h3>{t('home.feature1Title')}</h3>
-            <p>{t('home.feature1Desc')}</p>
+      {/* 2. HOW FARMOS WORKS FLOW */}
+      <section style={{ maxWidth: '1200px', margin: '-2.5rem auto 4rem auto', padding: '0 1.5rem', position: 'relative', zIndex: 10 }}>
+        <div style={{
+          backgroundColor: '#ffffff',
+          border: '1px solid #e2e8f0',
+          borderRadius: '20px',
+          padding: '2rem 1.5rem',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.05)'
+        }}>
+          <h2 style={{ fontSize: '1.2rem', fontWeight: 800, textAlign: 'center', color: '#0f172a', marginBottom: '1.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            How FarmOS Works
+          </h2>
 
-            <div className="card-divider"></div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1rem', textAlign: 'center' }}>
+            {workflowSteps.map((w, idx) => (
+              <div key={idx} style={{ backgroundColor: '#f8fafc', padding: '1rem 0.75rem', borderRadius: '14px', border: '1px solid #e2e8f0' }}>
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#10b981', color: '#ffffff', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.5rem auto', fontSize: '0.85rem' }}>
+                  {w.step}
+                </div>
+                <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#0f172a' }}>{w.title}</div>
+                <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px' }}>{w.desc}</div>
+              </div>
+            ))}
           </div>
+        </div>
+      </section>
 
-          {/* Card 2 */}
-          <div className="feature-card-premium">
-            <div className="feature-icon-wrapper">
-              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m11 17 2 2 4-4" />
-                <path d="M18 10a6 6 0 0 0-12 0c0 4.97 6 11 6 11s6-6.03 6-11Z" />
-                <circle cx="12" cy="10" r="2" />
-              </svg>
+      {/* 3. FEATURE SECTION */}
+      <section style={{ maxWidth: '1200px', margin: '0 auto 5rem auto', padding: '0 1.5rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>
+            Comprehensive Agriculture Intelligence
+          </h2>
+          <p style={{ fontSize: '1rem', color: '#64748b', maxWidth: '600px', margin: '0 auto' }}>
+            Everything you need to trade produce, track mandi rates, calculate logistics, and maximize net profits.
+          </p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
+          {features.map((f, idx) => (
+            <div key={idx} style={{
+              backgroundColor: '#ffffff',
+              border: '1px solid #e2e8f0',
+              borderRadius: '20px',
+              padding: '1.75rem',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+              transition: 'transform 0.2s, border-color 0.2s'
+            }}>
+              <div style={{ width: '50px', height: '50px', borderRadius: '14px', backgroundColor: '#e6f4ea', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.6rem', marginBottom: '1.25rem' }}>
+                {f.icon}
+              </div>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>{f.title}</h3>
+              <p style={{ fontSize: '0.88rem', color: '#64748b', lineHeight: 1.5 }}>{f.description}</p>
             </div>
-            
-            <h3>{t('home.feature2Title')}</h3>
-            <p>{t('home.feature2Desc')}</p>
-
-            <div className="card-divider"></div>
-          </div>
-
-          {/* Card 3 */}
-          <div className="feature-card-premium">
-            <div className="feature-icon-wrapper">
-              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-                <polyline points="3.29 7 12 12 20.71 7" />
-                <line x1="12" y1="22" x2="12" y2="12" />
-              </svg>
-            </div>
-            
-            <h3>{t('home.feature3Title')}</h3>
-            <p>{t('home.feature3Desc')}</p>
-
-            <div className="card-divider"></div>
-          </div>
+          ))}
         </div>
       </section>
     </div>
