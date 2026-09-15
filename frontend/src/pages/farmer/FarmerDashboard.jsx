@@ -273,487 +273,685 @@ const FarmerDashboard = () => {
   const pendingOrdersCount = orders.filter((o) => o.status === 'pending').length
 
   return (
-    <div className="farmer-dashboard max-w-6xl mx-auto px-4 py-8">
-      {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-800 to-teal-900 text-white rounded-2xl p-6 shadow-md mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div style={{ color: '#f3f4f6' }}>
+      {/* 1. Welcome Banner Header */}
+      <div style={{
+        background: 'linear-gradient(135deg, #0d2217 0%, #162a1e 50%, #0c1810 100%)',
+        border: '1px solid rgba(16, 185, 129, 0.25)',
+        borderRadius: '20px',
+        padding: '1.75rem',
+        marginBottom: '1.75rem',
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: '1.25rem',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+      }}>
         <div>
-          <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-3xl font-extrabold">{t('farmer.welcomeBack')}, {user?.name}</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
+            <h1 style={{ fontSize: '1.85rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em' }}>
+              {t('farmer.welcomeBack')}, {user?.name} 👋
+            </h1>
             <TrustBadge status={user?.verification_status} role="farmer" size="md" />
           </div>
-          <p className="text-emerald-100 text-sm mt-1">
-            📍 {user?.location || 'Location Not Specified'} • {user?.farm_size ? `Farm Size: ${user.farm_size}` : 'Farmer Account'}
+          <p style={{ color: '#9ca3af', fontSize: '0.9rem', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <span>📍 Location: <strong style={{ color: '#f3f4f6' }}>{user?.location || 'Location Not Specified'}</strong></span>
+            <span>•</span>
+            <span>🌱 Farm Size: <strong style={{ color: '#10b981' }}>{user?.farm_size || 'Standard'}</strong></span>
           </p>
         </div>
-        <div className="flex items-center gap-2">
+
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
           <a
             href="/profile"
-            className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl text-sm font-semibold transition-colors"
+            style={{
+              padding: '0.6rem 1.25rem',
+              borderRadius: '12px',
+              backgroundColor: 'rgba(16, 185, 129, 0.15)',
+              border: '1px solid rgba(16, 185, 129, 0.4)',
+              color: '#10b981',
+              fontWeight: 700,
+              fontSize: '0.88rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}
           >
-            👤 View Profile
+            <span>👤</span> Profile & Verification
           </a>
         </div>
       </div>
 
-      {/* Global Alerts */}
-      {error && <div className="alert-message alert-error mb-6 p-4 rounded-xl bg-red-50 text-red-800 border border-red-200">{error}</div>}
-      {success && <div className="alert-message alert-success mb-6 p-4 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200">{success}</div>}
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white p-5 rounded-2xl shadow-xs border border-gray-200 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl font-bold">🌾</div>
-          <div>
-            <span className="text-xs text-gray-500 block font-medium">My Listings</span>
-            <span className="text-2xl font-bold text-gray-900">{totalListings}</span>
-          </div>
+      {/* Alerts */}
+      {error && (
+        <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.4)', color: '#fca5a5', padding: '1rem', borderRadius: '14px', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+          ⚠️ {error}
         </div>
-
-        <div className="bg-white p-5 rounded-2xl shadow-xs border border-gray-200 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-2xl font-bold">✅</div>
-          <div>
-            <span className="text-xs text-gray-500 block font-medium">Active Harvests</span>
-            <span className="text-2xl font-bold text-emerald-600">{activeListings}</span>
-          </div>
+      )}
+      {success && (
+        <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.4)', color: '#6ee7b7', padding: '1rem', borderRadius: '14px', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+          ✅ {success}
         </div>
+      )}
 
-        <div className="bg-white p-5 rounded-2xl shadow-xs border border-gray-200 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl font-bold">🛍️</div>
-          <div>
-            <span className="text-xs text-gray-500 block font-medium">Pending Orders</span>
-            <span className="text-2xl font-bold text-amber-600">{pendingOrdersCount}</span>
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-2xl shadow-xs border border-gray-200 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl font-bold">🛡️</div>
-          <div>
-            <span className="text-xs text-gray-500 block font-medium">Trust Verification</span>
-            <div className="mt-0.5">
-              <TrustBadge status={user?.verification_status} role="farmer" size="sm" />
+      {/* 2. Stat Metrics Grid (4 Columns) matching screenshot */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', marginBottom: '1.75rem' }}>
+        {/* Metric 1 */}
+        <div className="stat-metric-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Active Harvests</span>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(16, 185, 129, 0.15)', color: '#10b981', display: 'flex', alignItems: 'center', justifyCenter: 'center', fontSize: '1.2rem' }}>
+              🌾
             </div>
           </div>
+          <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#ffffff', lineHeight: 1.1 }}>{activeListings}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.6rem', fontSize: '0.78rem', color: '#10b981', fontWeight: 600 }}>
+            <span>↑ {totalListings} Total Listed</span>
+            <span style={{ color: '#6b7280' }}>• Available Now</span>
+          </div>
+        </div>
+
+        {/* Metric 2 */}
+        <div className="stat-metric-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Pending Orders</span>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', display: 'flex', alignItems: 'center', justifyCenter: 'center', fontSize: '1.2rem' }}>
+              🛍️
+            </div>
+          </div>
+          <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#f59e0b', lineHeight: 1.1 }}>{pendingOrdersCount}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.6rem', fontSize: '0.78rem', color: '#f59e0b', fontWeight: 600 }}>
+            <span>{orders.length} Total Orders Received</span>
+          </div>
+        </div>
+
+        {/* Metric 3 */}
+        <div className="stat-metric-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Connected Buyers</span>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyCenter: 'center', fontSize: '1.2rem' }}>
+              🤝
+            </div>
+          </div>
+          <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#ffffff', lineHeight: 1.1 }}>{potentialBuyers.length}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.6rem', fontSize: '0.78rem', color: '#3b82f6', fontWeight: 600 }}>
+            <span>Verified Trade Partners</span>
+          </div>
+        </div>
+
+        {/* Metric 4 */}
+        <div className="stat-metric-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Trust Verification</span>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(168, 85, 247, 0.15)', color: '#a855f7', display: 'flex', alignItems: 'center', justifyCenter: 'center', fontSize: '1.2rem' }}>
+              🛡️
+            </div>
+          </div>
+          <div style={{ marginTop: '0.2rem' }}>
+            <TrustBadge status={user?.verification_status} role="farmer" size="sm" />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.6rem', fontSize: '0.78rem', color: '#a855f7', fontWeight: 600 }}>
+            <span>{user?.verification_status === 'verified' ? 'Verified Account' : 'Action Required'}</span>
+          </div>
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="flex border-b border-gray-200 mb-8 overflow-x-auto">
-        <button
-          onClick={() => setActiveTab('harvests')}
-          className={`py-3 px-5 font-semibold text-sm border-b-2 whitespace-nowrap transition-colors ${
-            activeTab === 'harvests'
-              ? 'border-emerald-600 text-emerald-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          📋 My Harvests ({harvests.length})
-        </button>
-
-        <button
-          onClick={() => setActiveTab('orders')}
-          className={`py-3 px-5 font-semibold text-sm border-b-2 whitespace-nowrap transition-colors flex items-center gap-1.5 ${
-            activeTab === 'orders'
-              ? 'border-emerald-600 text-emerald-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <span>🛍️ Received Orders</span>
-          {pendingOrdersCount > 0 && (
-            <span className="px-2 py-0.5 text-xs bg-amber-500 text-white font-bold rounded-full">{pendingOrdersCount}</span>
-          )}
-        </button>
-
-        <button
-          onClick={() => setActiveTab('opportunities')}
-          className={`py-3 px-5 font-semibold text-sm border-b-2 whitespace-nowrap transition-colors ${
-            activeTab === 'opportunities'
-              ? 'border-emerald-600 text-emerald-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          💡 Best Mandi Opportunities
-        </button>
-
-        <button
-          onClick={() => setActiveTab('buyers')}
-          className={`py-3 px-5 font-semibold text-sm border-b-2 whitespace-nowrap transition-colors ${
-            activeTab === 'buyers'
-              ? 'border-emerald-600 text-emerald-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          🤝 Potential Buyers ({potentialBuyers.length})
-        </button>
-
-        <button
-          onClick={() => setActiveTab('weather')}
-          className={`py-3 px-5 font-semibold text-sm border-b-2 whitespace-nowrap transition-colors ${
-            activeTab === 'weather'
-              ? 'border-emerald-600 text-emerald-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          🌤️ Weather Forecast
-        </button>
-      </div>
-
-      {/* TAB 1: MY HARVESTS */}
-      {activeTab === 'harvests' && (
-        <div className="space-y-8">
-          {/* Post Harvest Form Card */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">{t('farmer.postNewHarvest')}</h2>
-            <form onSubmit={handleAddSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">{t('farmer.cropName')} *</label>
-                  <input
-                    type="text"
-                    name="crop_name"
-                    placeholder="e.g. Organic Wheat, Basmati Rice"
-                    value={formData.crop_name}
-                    onChange={handleInputChange}
-                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                    required
-                  />
+      {/* 3. Core 2-Column Main Layout matching screenshot */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 360px', gap: '1.5rem', marginBottom: '2rem' }} className="farmer-dashboard-split">
+        {/* Left Column: Quick Actions & Main Workflows */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {/* 2x2 Quick Actions Card Grid */}
+          <div style={{
+            backgroundColor: '#111b15',
+            border: '1px solid rgba(31, 56, 42, 0.8)',
+            borderRadius: '18px',
+            padding: '1.5rem'
+          }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              ⚡ Quick Actions
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+              <button onClick={() => setActiveTab('harvests')} className="quick-action-btn">
+                <div style={{ width: '42px', height: '42px', borderRadius: '12px', backgroundColor: 'rgba(16, 185, 129, 0.15)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', flexShrink: 0 }}>
+                  🌾
                 </div>
-
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">{t('common.quantity')} *</label>
-                  <input
-                    type="number"
-                    name="quantity"
-                    placeholder="e.g. 500"
-                    step="0.01"
-                    min="0.1"
-                    value={formData.quantity}
-                    onChange={handleInputChange}
-                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                    required
-                  />
+                  <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>Post Harvest</div>
+                  <div style={{ fontSize: '0.75rem', color: '#9ca3af', fontWeight: 400 }}>List new crop stock</div>
                 </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">{t('farmer.unit')} *</label>
-                  <select
-                    name="unit"
-                    value={formData.unit}
-                    onChange={handleInputChange}
-                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                    required
-                  >
-                    <option value="kg">kg (Kilogram)</option>
-                    <option value="quintal">quintal (100 kg)</option>
-                    <option value="ton">ton (1000 kg)</option>
-                    <option value="crate">crate</option>
-                    <option value="bag">bag</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">{t('farmer.pricePerUnit')} (₹) *</label>
-                  <input
-                    type="number"
-                    name="price"
-                    placeholder="e.g. 35"
-                    step="0.01"
-                    min="0.1"
-                    value={formData.price}
-                    onChange={handleInputChange}
-                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">{t('farmer.farmLocation')} *</label>
-                  <input
-                    type="text"
-                    name="location"
-                    placeholder="e.g. Bardhaman, West Bengal"
-                    value={formData.location}
-                    onChange={handleInputChange}
-                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">{t('farmer.harvestDesc')}</label>
-                  <input
-                    type="text"
-                    name="description"
-                    placeholder="Specify grade, moisture, variety..."
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                  />
-                </div>
-              </div>
-
-              <div className="pt-2 flex justify-end">
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm transition-colors shadow-xs"
-                >
-                  {submitting ? t('farmer.posting') : t('farmer.postHarvestBtn')}
-                </button>
-              </div>
-            </form>
-          </div>
-
-          {/* Harvests List Grid */}
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold text-gray-900">📋 {t('farmer.myHarvests')} ({harvests.length})</h3>
-              <button onClick={fetchHarvests} className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-medium">
-                🔄 Refresh
               </button>
-            </div>
 
-            {loading ? (
-              <div className="text-center py-12 text-gray-500">{t('common.loading')}</div>
-            ) : harvests.length === 0 ? (
-              <div className="bg-white p-12 text-center rounded-2xl border border-gray-200 text-gray-500">
-                <div className="text-4xl mb-2">🌾</div>
-                <h4 className="text-base font-bold text-gray-800">{t('farmer.noHarvests')}</h4>
-                <p className="text-sm mt-1">{t('farmer.noHarvestsDesc')}</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {harvests.map((harvest) => (
-                  <div key={harvest.id} className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs flex flex-col justify-between">
+              <button onClick={() => setActiveTab('opportunities')} className="quick-action-btn">
+                <div style={{ width: '42px', height: '42px', borderRadius: '12px', backgroundColor: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', flexShrink: 0 }}>
+                  💡
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>Best Mandi Prices</div>
+                  <div style={{ fontSize: '0.75rem', color: '#9ca3af', fontWeight: 400 }}>Net return calculation</div>
+                </div>
+              </button>
+
+              <button onClick={() => setActiveTab('buyers')} className="quick-action-btn">
+                <div style={{ width: '42px', height: '42px', borderRadius: '12px', backgroundColor: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', flexShrink: 0 }}>
+                  🤝
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>Find Direct Buyers</div>
+                  <div style={{ fontSize: '0.75rem', color: '#9ca3af', fontWeight: 400 }}>Verified trader list</div>
+                </div>
+              </button>
+
+              <a href="/assistant" className="quick-action-btn">
+                <div style={{ width: '42px', height: '42px', borderRadius: '12px', backgroundColor: 'rgba(168, 85, 247, 0.15)', color: '#a855f7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', flexShrink: 0 }}>
+                  🤖
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>Ask AI Assistant</div>
+                  <div style={{ fontSize: '0.75rem', color: '#9ca3af', fontWeight: 400 }}>Crop & price advice</div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          {/* Navigation Tabs Header */}
+          <div style={{
+            display: 'flex',
+            gap: '0.5rem',
+            backgroundColor: '#111b15',
+            padding: '0.4rem',
+            borderRadius: '14px',
+            border: '1px solid rgba(31, 56, 42, 0.8)',
+            overflowX: 'auto'
+          }}>
+            <button
+              onClick={() => setActiveTab('harvests')}
+              style={{
+                padding: '0.6rem 1.1rem',
+                borderRadius: '10px',
+                fontSize: '0.85rem',
+                fontWeight: activeTab === 'harvests' ? 700 : 500,
+                color: activeTab === 'harvests' ? '#080e0a' : '#9ca3af',
+                backgroundColor: activeTab === 'harvests' ? '#10b981' : 'transparent',
+                transition: 'all 0.2s',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              📋 My Harvests ({harvests.length})
+            </button>
+
+            <button
+              onClick={() => setActiveTab('orders')}
+              style={{
+                padding: '0.6rem 1.1rem',
+                borderRadius: '10px',
+                fontSize: '0.85rem',
+                fontWeight: activeTab === 'orders' ? 700 : 500,
+                color: activeTab === 'orders' ? '#080e0a' : '#9ca3af',
+                backgroundColor: activeTab === 'orders' ? '#10b981' : 'transparent',
+                transition: 'all 0.2s',
+                whiteSpace: 'nowrap',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem'
+              }}
+            >
+              <span>🛍️ Orders</span>
+              {pendingOrdersCount > 0 && (
+                <span style={{ backgroundColor: '#f59e0b', color: '#080e0a', borderRadius: '10px', padding: '0.1rem 0.4rem', fontSize: '0.75rem', fontWeight: 800 }}>
+                  {pendingOrdersCount}
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={() => setActiveTab('opportunities')}
+              style={{
+                padding: '0.6rem 1.1rem',
+                borderRadius: '10px',
+                fontSize: '0.85rem',
+                fontWeight: activeTab === 'opportunities' ? 700 : 500,
+                color: activeTab === 'opportunities' ? '#080e0a' : '#9ca3af',
+                backgroundColor: activeTab === 'opportunities' ? '#10b981' : 'transparent',
+                transition: 'all 0.2s',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              💡 Opportunities
+            </button>
+
+            <button
+              onClick={() => setActiveTab('buyers')}
+              style={{
+                padding: '0.6rem 1.1rem',
+                borderRadius: '10px',
+                fontSize: '0.85rem',
+                fontWeight: activeTab === 'buyers' ? 700 : 500,
+                color: activeTab === 'buyers' ? '#080e0a' : '#9ca3af',
+                backgroundColor: activeTab === 'buyers' ? '#10b981' : 'transparent',
+                transition: 'all 0.2s',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              🤝 Buyers ({potentialBuyers.length})
+            </button>
+
+            <button
+              onClick={() => setActiveTab('weather')}
+              style={{
+                padding: '0.6rem 1.1rem',
+                borderRadius: '10px',
+                fontSize: '0.85rem',
+                fontWeight: activeTab === 'weather' ? 700 : 500,
+                color: activeTab === 'weather' ? '#080e0a' : '#9ca3af',
+                backgroundColor: activeTab === 'weather' ? '#10b981' : 'transparent',
+                transition: 'all 0.2s',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              🌤️ Weather
+            </button>
+          </div>
+
+          {/* TAB 1: MY HARVESTS */}
+          {activeTab === 'harvests' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              {/* Add Harvest Form */}
+              <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '1rem' }}>{t('farmer.postNewHarvest')}</h3>
+                <form onSubmit={handleAddSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                     <div>
-                      <div className="flex justify-between items-start gap-2 mb-2">
-                        <h4 className="font-bold text-gray-900 text-lg">{harvest.crop_name}</h4>
-                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                          harvest.status === 'available' ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-600'
-                        }`}>
-                          {harvest.status}
-                        </span>
-                      </div>
-                      <div className="space-y-1 text-sm text-gray-600 mb-3">
-                        <div>Quantity: <strong className="text-gray-900">{harvest.quantity} {harvest.unit}</strong></div>
-                        <div>Price: <strong className="text-emerald-700">₹{harvest.price} / {harvest.unit}</strong></div>
-                        <div>Location: 📍 {harvest.location}</div>
-                      </div>
-                      {harvest.description && <p className="text-xs text-gray-500 bg-gray-50 p-2.5 rounded-lg mb-4">{harvest.description}</p>}
+                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#9ca3af', marginBottom: '0.4rem' }}>{t('farmer.cropName')} *</label>
+                      <input
+                        type="text"
+                        name="crop_name"
+                        placeholder="e.g. Organic Wheat, Basmati Rice"
+                        value={formData.crop_name}
+                        onChange={handleInputChange}
+                        style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '10px', padding: '0.6rem 0.85rem', color: '#f3f4f6', fontSize: '0.85rem' }}
+                        required
+                      />
                     </div>
 
-                    <div className="flex gap-2 pt-3 border-t border-gray-100">
-                      <button
-                        onClick={() => openEditModal(harvest)}
-                        className="flex-1 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg text-xs"
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#9ca3af', marginBottom: '0.4rem' }}>{t('common.quantity')} *</label>
+                      <input
+                        type="number"
+                        name="quantity"
+                        placeholder="e.g. 500"
+                        step="0.01"
+                        min="0.1"
+                        value={formData.quantity}
+                        onChange={handleInputChange}
+                        style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '10px', padding: '0.6rem 0.85rem', color: '#f3f4f6', fontSize: '0.85rem' }}
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#9ca3af', marginBottom: '0.4rem' }}>{t('farmer.unit')} *</label>
+                      <select
+                        name="unit"
+                        value={formData.unit}
+                        onChange={handleInputChange}
+                        style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '10px', padding: '0.6rem 0.85rem', color: '#f3f4f6', fontSize: '0.85rem' }}
+                        required
                       >
-                        ✏️ Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(harvest.id, harvest.crop_name)}
-                        className="flex-1 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 font-medium rounded-lg text-xs"
-                      >
-                        🗑️ Delete
-                      </button>
+                        <option value="kg">kg (Kilogram)</option>
+                        <option value="quintal">quintal (100 kg)</option>
+                        <option value="ton">ton (1000 kg)</option>
+                        <option value="crate">crate</option>
+                        <option value="bag">bag</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#9ca3af', marginBottom: '0.4rem' }}>{t('farmer.pricePerUnit')} (₹) *</label>
+                      <input
+                        type="number"
+                        name="price"
+                        placeholder="e.g. 35"
+                        step="0.01"
+                        min="0.1"
+                        value={formData.price}
+                        onChange={handleInputChange}
+                        style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '10px', padding: '0.6rem 0.85rem', color: '#f3f4f6', fontSize: '0.85rem' }}
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#9ca3af', marginBottom: '0.4rem' }}>{t('farmer.farmLocation')} *</label>
+                      <input
+                        type="text"
+                        name="location"
+                        placeholder="e.g. Bardhaman, West Bengal"
+                        value={formData.location}
+                        onChange={handleInputChange}
+                        style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '10px', padding: '0.6rem 0.85rem', color: '#f3f4f6', fontSize: '0.85rem' }}
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#9ca3af', marginBottom: '0.4rem' }}>{t('farmer.harvestDesc')}</label>
+                      <input
+                        type="text"
+                        name="description"
+                        placeholder="Grade, moisture, variety..."
+                        value={formData.description}
+                        onChange={handleInputChange}
+                        style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '10px', padding: '0.6rem 0.85rem', color: '#f3f4f6', fontSize: '0.85rem' }}
+                      />
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
-      {/* TAB 2: RECEIVED ORDERS */}
-      {activeTab === 'orders' && (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">🛍️ Incoming Buyer Purchase Orders</h2>
-          {ordersLoading ? (
-            <div className="text-center py-12 text-gray-500">{t('common.loading')}</div>
-          ) : orders.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
-              <div className="text-4xl mb-2">📦</div>
-              <p>No purchase orders received yet.</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-gray-50 text-gray-700 uppercase text-xs">
-                  <tr>
-                    <th className="p-3">Order ID</th>
-                    <th className="p-3">Crop Name</th>
-                    <th className="p-3">Quantity</th>
-                    <th className="p-3">Total Value</th>
-                    <th className="p-3">Buyer Name</th>
-                    <th className="p-3">Buyer Phone</th>
-                    <th className="p-3">Status</th>
-                    <th className="p-3">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {orders.map((o) => (
-                    <tr key={o.id} className="hover:bg-gray-50">
-                      <td className="p-3 font-mono font-bold">#{o.id}</td>
-                      <td className="p-3 font-semibold text-gray-900">{o.crop_name}</td>
-                      <td className="p-3">{o.quantity} {o.unit}</td>
-                      <td className="p-3 font-bold text-emerald-700">₹{o.total_price}</td>
-                      <td className="p-3">{o.buyer_name}</td>
-                      <td className="p-3">{o.buyer_phone || 'Protected'}</td>
-                      <td className="p-3">
-                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                          o.status === 'accepted' ? 'bg-emerald-100 text-emerald-800' :
-                          o.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'
-                        }`}>
-                          {o.status}
-                        </span>
-                      </td>
-                      <td className="p-3">
-                        {o.status === 'pending' ? (
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => handleUpdateOrderStatus(o.id, 'accepted')}
-                              className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold"
-                            >
-                              Accept
-                            </button>
-                            <button
-                              onClick={() => handleUpdateOrderStatus(o.id, 'rejected')}
-                              className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold"
-                            >
-                              Reject
-                            </button>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      style={{
+                        padding: '0.65rem 1.5rem',
+                        backgroundColor: '#10b981',
+                        color: '#080e0a',
+                        fontWeight: 700,
+                        borderRadius: '12px',
+                        fontSize: '0.88rem',
+                        boxShadow: '0 4px 14px rgba(16, 185, 129, 0.25)'
+                      }}
+                    >
+                      {submitting ? t('farmer.posting') : t('farmer.postHarvestBtn')}
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {/* Harvest Cards List */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6' }}>📋 {t('farmer.myHarvests')} ({harvests.length})</h3>
+                  <button onClick={fetchHarvests} style={{ padding: '0.35rem 0.75rem', backgroundColor: '#16261d', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#9ca3af', borderRadius: '8px', fontSize: '0.78rem', cursor: 'pointer' }}>
+                    🔄 Refresh
+                  </button>
+                </div>
+
+                {loading ? (
+                  <div style={{ textAlign: 'center', padding: '3rem', color: '#9ca3af' }}>{t('common.loading')}</div>
+                ) : harvests.length === 0 ? (
+                  <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '3rem', textAlign: 'center', color: '#9ca3af' }}>
+                    <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🌾</div>
+                    <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6' }}>{t('farmer.noHarvests')}</h4>
+                    <p style={{ fontSize: '0.85rem', marginTop: '0.25rem' }}>{t('farmer.noHarvestsDesc')}</p>
+                  </div>
+                ) : (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.25rem' }}>
+                    {harvests.map((harvest) => (
+                      <div key={harvest.id} className="farm-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                            <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6' }}>{harvest.crop_name}</h4>
+                            <span style={{
+                              padding: '0.2rem 0.6rem',
+                              borderRadius: '20px',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              backgroundColor: harvest.status === 'available' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(107, 114, 128, 0.2)',
+                              color: harvest.status === 'available' ? '#10b981' : '#9ca3af',
+                              border: harvest.status === 'available' ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(107, 114, 128, 0.3)'
+                            }}>
+                              {harvest.status}
+                            </span>
                           </div>
-                        ) : (
-                          <span className="text-xs text-gray-400">Processed</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                          <div style={{ fontSize: '0.85rem', color: '#9ca3af', display: 'flex', flexDirection: 'column', gap: '0.35rem', marginBottom: '0.75rem' }}>
+                            <div>Quantity: <strong style={{ color: '#f3f4f6' }}>{harvest.quantity} {harvest.unit}</strong></div>
+                            <div>Price: <strong style={{ color: '#10b981' }}>₹{harvest.price} / {harvest.unit}</strong></div>
+                            <div>Location: 📍 {harvest.location}</div>
+                          </div>
+                          {harvest.description && (
+                            <p style={{ fontSize: '0.78rem', color: '#9ca3af', backgroundColor: '#0c140e', padding: '0.5rem 0.75rem', borderRadius: '8px', marginBottom: '0.75rem' }}>
+                              {harvest.description}
+                            </p>
+                          )}
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '0.5rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(31, 56, 42, 0.8)' }}>
+                          <button
+                            onClick={() => openEditModal(harvest)}
+                            style={{ flex: 1, padding: '0.45rem', backgroundColor: '#16261d', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#f3f4f6', borderRadius: '8px', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer' }}
+                          >
+                            ✏️ Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(harvest.id, harvest.crop_name)}
+                            style={{ flex: 1, padding: '0.45rem', backgroundColor: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#ef4444', borderRadius: '8px', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer' }}
+                          >
+                            🗑️ Delete
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           )}
-        </div>
-      )}
 
-      {/* TAB 3: BEST OPPORTUNITIES */}
-      {activeTab === 'opportunities' && (
-        <div className="space-y-6">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">💡 FarmOS Mandi Opportunity Engine</h2>
-            <p className="text-sm text-gray-600 mb-4">Calculate net returns after freight logistics across major regional mandis.</p>
-
-            <form onSubmit={handleCalculateOpportunity} className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Crop</label>
-                <input
-                  type="text"
-                  value={oppCrop}
-                  onChange={(e) => setOppCrop(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Quantity</label>
-                <input
-                  type="number"
-                  value={oppQuantity}
-                  onChange={(e) => setOppQuantity(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Farm Location</label>
-                <input
-                  type="text"
-                  value={oppLocation}
-                  onChange={(e) => setOppLocation(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                  required
-                />
-              </div>
-              <div className="flex items-end">
-                <button
-                  type="submit"
-                  disabled={oppLoading}
-                  className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg text-sm"
-                >
-                  {oppLoading ? 'Calculating...' : 'Find Best Opportunity'}
-                </button>
-              </div>
-            </form>
-
-            {oppResult && <MarketComparison data={oppResult} />}
-          </div>
-        </div>
-      )}
-
-      {/* TAB 4: POTENTIAL BUYERS */}
-      {activeTab === 'buyers' && (
-        <div>
-          {buyersLoading ? (
-            <div className="text-center py-12 text-gray-500">{t('common.loading')}</div>
-          ) : (
-            <PotentialBuyersCard buyers={potentialBuyers} />
-          )}
-        </div>
-      )}
-
-      {/* TAB 5: WEATHER */}
-      {activeTab === 'weather' && (
-        <div>
-          {weatherLoading ? (
-            <div className="text-center py-12 text-gray-500">{t('common.loading')}</div>
-          ) : (
-            <WeatherCard weatherData={weatherData} />
-          )}
-        </div>
-      )}
-
-      {/* Modal: Edit Harvest */}
-      {editingHarvest && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-xl relative max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center pb-4 border-b">
-              <h3 className="text-xl font-bold text-gray-900">✏️ Edit Harvest: {editingHarvest.crop_name}</h3>
-              <button onClick={() => setEditingHarvest(null)} className="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+          {/* TAB 2: ORDERS */}
+          {activeTab === 'orders' && (
+            <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '1rem' }}>🛍️ Incoming Purchase Orders</h3>
+              {ordersLoading ? (
+                <div style={{ textAlign: 'center', padding: '3rem', color: '#9ca3af' }}>{t('common.loading')}</div>
+              ) : orders.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '3rem', color: '#9ca3af' }}>
+                  <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>📦</div>
+                  <p>No purchase orders received yet.</p>
+                </div>
+              ) : (
+                <div className="table-responsive">
+                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '1px solid rgba(31, 56, 42, 0.8)', color: '#9ca3af', fontSize: '0.75rem', textTransform: 'uppercase' }}>
+                        <th style={{ padding: '0.75rem' }}>Order ID</th>
+                        <th style={{ padding: '0.75rem' }}>Crop</th>
+                        <th style={{ padding: '0.75rem' }}>Quantity</th>
+                        <th style={{ padding: '0.75rem' }}>Total Value</th>
+                        <th style={{ padding: '0.75rem' }}>Buyer</th>
+                        <th style={{ padding: '0.75rem' }}>Status</th>
+                        <th style={{ padding: '0.75rem' }}>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {orders.map((o) => (
+                        <tr key={o.id} style={{ borderBottom: '1px solid rgba(31, 56, 42, 0.4)', color: '#f3f4f6' }}>
+                          <td style={{ padding: '0.75rem', fontWeight: 700, fontFamily: 'monospace' }}>#{o.id}</td>
+                          <td style={{ padding: '0.75rem', fontWeight: 600 }}>{o.crop_name}</td>
+                          <td style={{ padding: '0.75rem' }}>{o.quantity} {o.unit}</td>
+                          <td style={{ padding: '0.75rem', color: '#10b981', fontWeight: 700 }}>₹{o.total_price}</td>
+                          <td style={{ padding: '0.75rem' }}>{o.buyer_name}</td>
+                          <td style={{ padding: '0.75rem' }}>
+                            <span style={{
+                              padding: '0.2rem 0.6rem',
+                              borderRadius: '20px',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              backgroundColor: o.status === 'accepted' ? 'rgba(16, 185, 129, 0.15)' : o.status === 'rejected' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                              color: o.status === 'accepted' ? '#10b981' : o.status === 'rejected' ? '#ef4444' : '#f59e0b'
+                            }}>
+                              {o.status}
+                            </span>
+                          </td>
+                          <td style={{ padding: '0.75rem' }}>
+                            {o.status === 'pending' ? (
+                              <div style={{ display: 'flex', gap: '0.4rem' }}>
+                                <button onClick={() => handleUpdateOrderStatus(o.id, 'accepted')} style={{ padding: '0.3rem 0.65rem', backgroundColor: '#10b981', color: '#080e0a', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 700 }}>Accept</button>
+                                <button onClick={() => handleUpdateOrderStatus(o.id, 'rejected')} style={{ padding: '0.3rem 0.65rem', backgroundColor: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 700 }}>Reject</button>
+                              </div>
+                            ) : (
+                              <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>Processed</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
+          )}
 
-            <form onSubmit={handleEditSubmit} className="space-y-4 pt-4">
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Crop Name</label>
-                <input
-                  type="text"
-                  name="crop_name"
-                  value={editFormData.crop_name}
-                  onChange={handleEditChange}
-                  className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                  required
-                />
-              </div>
+          {/* TAB 3: OPPORTUNITIES */}
+          {activeTab === 'opportunities' && (
+            <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '0.5rem' }}>💡 Mandi Net-Return Engine</h3>
+              <p style={{ fontSize: '0.85rem', color: '#9ca3af', marginBottom: '1.25rem' }}>Calculate expected profits after deducting transport & freight charges across regional markets.</p>
 
-              <div className="grid grid-cols-2 gap-4">
+              <form onSubmit={handleCalculateOpportunity} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Quantity</label>
-                  <input
-                    type="number"
-                    name="quantity"
-                    step="0.01"
-                    value={editFormData.quantity}
-                    onChange={handleEditChange}
-                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                    required
-                  />
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>Crop</label>
+                  <input type="text" value={oppCrop} onChange={(e) => setOppCrop(e.target.value)} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.55rem', color: '#f3f4f6', fontSize: '0.85rem' }} required />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Unit</label>
-                  <select
-                    name="unit"
-                    value={editFormData.unit}
-                    onChange={handleEditChange}
-                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                  >
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>Quantity (kg)</label>
+                  <input type="number" value={oppQuantity} onChange={(e) => setOppQuantity(e.target.value)} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.55rem', color: '#f3f4f6', fontSize: '0.85rem' }} required />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>Farm Location</label>
+                  <input type="text" value={oppLocation} onChange={(e) => setOppLocation(e.target.value)} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.55rem', color: '#f3f4f6', fontSize: '0.85rem' }} required />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+                  <button type="submit" disabled={oppLoading} style={{ width: '100%', padding: '0.6rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '8px', fontSize: '0.85rem' }}>
+                    {oppLoading ? 'Calculating...' : 'Find Mandis'}
+                  </button>
+                </div>
+              </form>
+
+              {oppResult && <MarketComparison data={oppResult} />}
+            </div>
+          )}
+
+          {/* TAB 4: POTENTIAL BUYERS */}
+          {activeTab === 'buyers' && (
+            <div>
+              {buyersLoading ? <div style={{ textAlign: 'center', padding: '3rem', color: '#9ca3af' }}>{t('common.loading')}</div> : <PotentialBuyersCard buyers={potentialBuyers} />}
+            </div>
+          )}
+
+          {/* TAB 5: WEATHER */}
+          {activeTab === 'weather' && (
+            <div>
+              {weatherLoading ? <div style={{ textAlign: 'center', padding: '3rem', color: '#9ca3af' }}>{t('common.loading')}</div> : <WeatherCard weatherData={weatherData} />}
+            </div>
+          )}
+        </div>
+
+        {/* Right Column: Profile Summary & Trust Callout Card matching screenshot */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {/* Farm Business Overview Card */}
+          <div style={{
+            backgroundColor: '#111b15',
+            border: '1px solid rgba(31, 56, 42, 0.8)',
+            borderRadius: '18px',
+            padding: '1.5rem'
+          }}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              🌾 Farm Profile
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', fontSize: '0.85rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.6rem', borderBottom: '1px solid rgba(31, 56, 42, 0.6)' }}>
+                <span style={{ color: '#9ca3af' }}>Farmer Name</span>
+                <span style={{ color: '#f3f4f6', fontWeight: 700 }}>{user?.name}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.6rem', borderBottom: '1px solid rgba(31, 56, 42, 0.6)' }}>
+                <span style={{ color: '#9ca3af' }}>Email</span>
+                <span style={{ color: '#f3f4f6', fontWeight: 600 }}>{user?.email}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.6rem', borderBottom: '1px solid rgba(31, 56, 42, 0.6)' }}>
+                <span style={{ color: '#9ca3af' }}>Location</span>
+                <span style={{ color: '#10b981', fontWeight: 700 }}>📍 {user?.location || 'Not Set'}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.6rem', borderBottom: '1px solid rgba(31, 56, 42, 0.6)' }}>
+                <span style={{ color: '#9ca3af' }}>Account Role</span>
+                <span style={{ color: '#10b981', fontWeight: 700, textTransform: 'uppercase', fontSize: '0.75rem' }}>{user?.role}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pt: '0.2rem' }}>
+                <span style={{ color: '#9ca3af' }}>Verification</span>
+                <TrustBadge status={user?.verification_status} role="farmer" size="sm" />
+              </div>
+            </div>
+          </div>
+
+          {/* "Why Verification Matters" Card matching screenshot */}
+          <div style={{
+            background: 'linear-gradient(180deg, rgba(16, 185, 129, 0.12) 0%, rgba(17, 27, 21, 0.95) 100%)',
+            border: '1px solid rgba(16, 185, 129, 0.3)',
+            borderRadius: '18px',
+            padding: '1.5rem'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.85rem' }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '10px', backgroundColor: '#10b981', color: '#080e0a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>
+                ✓
+              </div>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#ffffff' }}>Why Verification Matters</h3>
+            </div>
+            <p style={{ fontSize: '0.82rem', color: '#9ca3af', lineHeight: 1.5, marginBottom: '1rem' }}>
+              Verified farmers earn 24% higher prices on average through direct trade and instant trust badges.
+            </p>
+
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.65rem', fontSize: '0.8rem', color: '#f3f4f6', marginBottom: '1.25rem' }}>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ color: '#10b981' }}>✓</span> "FarmOS Verified" green badge on all crop listings
+              </li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ color: '#10b981' }}>✓</span> Priority placement in Mandi & Buyer search results
+              </li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ color: '#10b981' }}>✓</span> Direct purchase order requests from verified traders
+              </li>
+            </ul>
+
+            <a
+              href="/profile"
+              style={{
+                display: 'block',
+                textAlign: 'center',
+                padding: '0.65rem',
+                borderRadius: '10px',
+                backgroundColor: '#10b981',
+                color: '#080e0a',
+                fontWeight: 800,
+                fontSize: '0.85rem'
+              }}
+            >
+              Upload Verification Docs
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Edit Harvest Modal */}
+      {editingHarvest && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '20px', maxWidth: '500px', width: '100%', padding: '1.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid rgba(31, 56, 42, 0.8)', paddingBottom: '0.75rem' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6' }}>✏️ Edit Harvest: {editingHarvest.crop_name}</h3>
+              <button onClick={() => setEditingHarvest(null)} style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '1.2rem', cursor: 'pointer' }}>✕</button>
+            </div>
+
+            <form onSubmit={handleEditSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>Crop Name</label>
+                <input type="text" name="crop_name" value={editFormData.crop_name} onChange={handleEditChange} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.55rem', color: '#f3f4f6' }} required />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>Quantity</label>
+                  <input type="number" name="quantity" step="0.01" value={editFormData.quantity} onChange={handleEditChange} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.55rem', color: '#f3f4f6' }} required />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>Unit</label>
+                  <select name="unit" value={editFormData.unit} onChange={handleEditChange} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.55rem', color: '#f3f4f6' }}>
                     <option value="kg">kg</option>
                     <option value="quintal">quintal</option>
                     <option value="ton">ton</option>
@@ -762,77 +960,39 @@ const FarmerDashboard = () => {
                   </select>
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Price per Unit (₹)</label>
-                  <input
-                    type="number"
-                    name="price"
-                    step="0.01"
-                    value={editFormData.price}
-                    onChange={handleEditChange}
-                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                    required
-                  />
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>Price (₹)</label>
+                  <input type="number" name="price" step="0.01" value={editFormData.price} onChange={handleEditChange} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.55rem', color: '#f3f4f6' }} required />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Status</label>
-                  <select
-                    name="status"
-                    value={editFormData.status}
-                    onChange={handleEditChange}
-                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                  >
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>Status</label>
+                  <select name="status" value={editFormData.status} onChange={handleEditChange} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.55rem', color: '#f3f4f6' }}>
                     <option value="available">Available</option>
                     <option value="unavailable">Unavailable</option>
                   </select>
                 </div>
               </div>
-
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Location</label>
-                <input
-                  type="text"
-                  name="location"
-                  value={editFormData.location}
-                  onChange={handleEditChange}
-                  className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                  required
-                />
+                <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>Location</label>
+                <input type="text" name="location" value={editFormData.location} onChange={handleEditChange} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.55rem', color: '#f3f4f6' }} />
               </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Description</label>
-                <textarea
-                  name="description"
-                  rows="2"
-                  value={editFormData.description}
-                  onChange={handleEditChange}
-                  className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                ></textarea>
-              </div>
-
-              <div className="pt-4 border-t flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setEditingHarvest(null)}
-                  className="px-4 py-2 border rounded-lg text-sm text-gray-700 hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="px-5 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors"
-                >
-                  {submitting ? 'Saving...' : 'Save Changes'}
-                </button>
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                <button type="button" onClick={() => setEditingHarvest(null)} style={{ padding: '0.55rem 1.1rem', backgroundColor: '#16261d', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#9ca3af', borderRadius: '8px', fontSize: '0.85rem' }}>Cancel</button>
+                <button type="submit" disabled={submitting} style={{ padding: '0.55rem 1.25rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '8px', fontSize: '0.85rem' }}>Save Changes</button>
               </div>
             </form>
           </div>
         </div>
       )}
+
+      <style>{`
+        @media (max-width: 960px) {
+          .farmer-dashboard-split {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }

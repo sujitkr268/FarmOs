@@ -128,60 +128,82 @@ const ProfilePage = () => {
 
   if (!user && loading) {
     return (
-      <div className="flex justify-center items-center py-20">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600"></div>
+      <div style={{ textAlign: 'center', padding: '5rem 0', color: '#9ca3af' }}>
+        Loading profile...
       </div>
     )
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">{t('profile.title', 'User Profile')}</h1>
-        <p className="text-gray-600 mt-1">{t('profile.subtitle', 'Manage your account, role details, and trust verification status.')}</p>
-      </div>
-
+    <div style={{ color: '#f3f4f6' }}>
       {/* Alert Messages */}
       {message.text && (
-        <div className={`mb-6 p-4 rounded-lg flex items-center justify-between ${
-          message.type === 'success' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-red-50 text-red-800 border border-red-200'
-        }`}>
+        <div style={{
+          backgroundColor: message.type === 'success' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+          border: '1px solid ' + (message.type === 'success' ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.4)'),
+          color: message.type === 'success' ? '#6ee7b7' : '#fca5a5',
+          padding: '1rem',
+          borderRadius: '14px',
+          marginBottom: '1.5rem',
+          fontSize: '0.9rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
           <span>{message.text}</span>
-          <button onClick={() => setMessage({ type: '', text: '' })} className="font-bold text-lg leading-none">&times;</button>
+          <button onClick={() => setMessage({ type: '', text: '' })} style={{ background: 'none', border: 'none', color: 'inherit', fontWeight: 'bold', fontSize: '1.2rem', cursor: 'pointer' }}>✕</button>
         </div>
       )}
 
       {/* User Header Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-8">
-        <div className="bg-gradient-to-r from-emerald-700 to-teal-800 h-28 relative"></div>
-        <div className="px-6 pb-6 pt-0 relative">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between -mt-12 mb-4 gap-4">
-            <div className="flex items-end gap-4">
-              <div className="w-24 h-24 rounded-2xl bg-white p-1 shadow-md border border-gray-100 flex items-center justify-center text-emerald-800 font-bold text-4xl uppercase">
-                {user?.name ? user.name.charAt(0) : 'U'}
+      <div style={{
+        backgroundColor: '#111b15',
+        border: '1px solid rgba(31, 56, 42, 0.8)',
+        borderRadius: '20px',
+        overflow: 'hidden',
+        marginBottom: '1.75rem'
+      }}>
+        <div style={{ background: 'linear-gradient(135deg, #0d2217 0%, #16261d 100%)', height: '110px', position: 'relative' }}></div>
+        <div style={{ padding: '0 1.5rem 1.5rem 1.5rem', position: 'relative' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: '-3rem', marginBottom: '1rem', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '1rem' }}>
+              <div style={{
+                width: '84px',
+                height: '84px',
+                borderRadius: '18px',
+                backgroundColor: '#10b981',
+                color: '#080e0a',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 800,
+                fontSize: '2.5rem',
+                border: '4px solid #111b15',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)'
+              }}>
+                {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">{user?.name}</h2>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="capitalize font-semibold text-gray-600 text-sm">{user?.role}</span>
-                  <span className="text-gray-400">•</span>
+                <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', margin: 0 }}>{user?.name}</h2>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '0.25rem' }}>
+                  <span style={{ textTransform: 'capitalize', fontWeight: 600, color: '#10b981', fontSize: '0.85rem' }}>{user?.role}</span>
+                  <span style={{ color: '#6b7280' }}>•</span>
                   <TrustBadge status={user?.verification_status} role={user?.role} size="sm" />
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
               <button
                 onClick={() => setShowEditModal(true)}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg text-sm transition-colors shadow-xs"
+                style={{ padding: '0.6rem 1.25rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem', cursor: 'pointer' }}
               >
                 ✏️ Edit Profile
               </button>
               {(user?.role === 'farmer' || user?.role === 'buyer') && user?.verification_status !== 'verified' && (
                 <button
                   onClick={() => setShowVerifyModal(true)}
-                  className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg text-sm transition-colors shadow-xs"
+                  style={{ padding: '0.6rem 1.25rem', backgroundColor: '#f59e0b', color: '#080e0a', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem', cursor: 'pointer' }}
                 >
                   🛡️ Submit Verification
                 </button>
@@ -189,450 +211,183 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Key Quick Info */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-gray-100 text-sm">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', pt: '1rem', borderTop: '1px solid rgba(31, 56, 42, 0.6)', fontSize: '0.85rem' }}>
             <div>
-              <span className="text-gray-500 block text-xs">Email</span>
-              <span className="font-medium text-gray-800">{user?.email}</span>
+              <span style={{ color: '#9ca3af', display: 'block', fontSize: '0.75rem' }}>Email Address</span>
+              <span style={{ color: '#f3f4f6', fontWeight: 600 }}>{user?.email}</span>
             </div>
             <div>
-              <span className="text-gray-500 block text-xs">Phone</span>
-              <span className="font-medium text-gray-800">{user?.phone || 'Not provided'}</span>
+              <span style={{ color: '#9ca3af', display: 'block', fontSize: '0.75rem' }}>Phone Number</span>
+              <span style={{ color: '#f3f4f6', fontWeight: 600 }}>{user?.phone || 'Not provided'}</span>
             </div>
             <div>
-              <span className="text-gray-500 block text-xs">Location</span>
-              <span className="font-medium text-gray-800">{user?.location || 'Not provided'}</span>
+              <span style={{ color: '#9ca3af', display: 'block', fontSize: '0.75rem' }}>Location / State</span>
+              <span style={{ color: '#10b981', fontWeight: 600 }}>📍 {user?.location || 'Not provided'}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Grid: Details + Verification Status */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Left Column (2 cols): Role Details */}
-        <div className="lg:col-span-2 space-y-6">
-          
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 340px', gap: '1.5rem' }} className="profile-split">
+        {/* Left Column: Role Details */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {/* Public Contact Consent Banner */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-            <div className="flex items-start justify-between gap-4">
+          <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
               <div>
-                <h3 className="font-semibold text-gray-900 text-base">Public Contact Information</h3>
-                <p className="text-sm text-gray-600 mt-1">
-                  Control whether your phone number and email are displayed on the public market and buyer directory.
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f3f4f6' }}>Public Contact Information</h3>
+                <p style={{ fontSize: '0.82rem', color: '#9ca3af', marginTop: '0.2rem' }}>
+                  Display phone number and email publicly on trade directory listings.
                 </p>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
+              <label style={{ position: 'relative', display: 'inline-block', width: '48px', height: '26px', flexShrink: 0 }}>
                 <input
                   type="checkbox"
                   checked={Boolean(user?.show_contact_publicly)}
                   onChange={handleToggleConsent}
-                  className="sr-only peer"
+                  style={{ opacity: 0, width: 0, height: 0 }}
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                <span style={{
+                  position: 'absolute',
+                  cursor: 'pointer',
+                  inset: 0,
+                  backgroundColor: user?.show_contact_publicly ? '#10b981' : '#1f382a',
+                  transition: '0.2s',
+                  borderRadius: '34px'
+                }}>
+                  <span style={{
+                    position: 'absolute',
+                    content: '""',
+                    height: '20px',
+                    width: '20px',
+                    left: user?.show_contact_publicly ? '24px' : '3px',
+                    bottom: '3px',
+                    backgroundColor: '#ffffff',
+                    transition: '0.2s',
+                    borderRadius: '50%'
+                  }}></span>
+                </span>
               </label>
             </div>
-            <div className="mt-3 text-xs text-gray-500 font-medium">
-              Current state: {user?.show_contact_publicly ? '🟢 Visible to Public' : '🔒 Hidden (Only verified deals will connect)'}
+            <div style={{ marginTop: '0.75rem', fontSize: '0.78rem', color: '#9ca3af', fontWeight: 500 }}>
+              State: {user?.show_contact_publicly ? '🟢 Publicly Visible' : '🔒 Hidden from directory search'}
             </div>
           </div>
 
-          {/* Farmer Role Profile Card */}
+          {/* Farmer Role Details */}
           {user?.role === 'farmer' && (
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                🌾 Farmer Profile & Agriculture Information
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <span className="text-xs text-gray-500 block">Farm Size</span>
-                  <span className="font-semibold text-gray-800">{user?.farm_size || 'Not specified'}</span>
+            <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '1rem' }}>🌾 Agriculture Details</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', fontSize: '0.85rem' }}>
+                <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>Farm Size</span>
+                  <span style={{ fontWeight: 700, color: '#f3f4f6' }}>{user?.farm_size || 'Not specified'}</span>
                 </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <span className="text-xs text-gray-500 block">Crops Grown</span>
-                  <span className="font-semibold text-gray-800">{user?.crops_grown || 'Not specified'}</span>
+                <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>Crops Grown</span>
+                  <span style={{ fontWeight: 700, color: '#10b981' }}>{user?.crops_grown || 'Not specified'}</span>
                 </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <span className="text-xs text-gray-500 block">Village / Panchayat</span>
-                  <span className="font-semibold text-gray-800">{user?.village || user?.location || 'Not specified'}</span>
+                <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>Village / Panchayat</span>
+                  <span style={{ fontWeight: 700, color: '#f3f4f6' }}>{user?.village || user?.location || 'Not specified'}</span>
                 </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <span className="text-xs text-gray-500 block">FPO / Cooperative Info</span>
-                  <span className="font-semibold text-gray-800">{user?.fpo_info || 'Independent Farmer'}</span>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-xl md:col-span-2">
-                  <span className="text-xs text-gray-500 block">Govt Farmer Ref / KCC / PM-KISAN ID</span>
-                  <span className="font-semibold text-gray-800 font-mono">{user?.farmer_reference || 'Not provided'}</span>
+                <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>FPO / Cooperative</span>
+                  <span style={{ fontWeight: 700, color: '#f3f4f6' }}>{user?.fpo_info || 'Independent Farmer'}</span>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Buyer Role Profile Card */}
+          {/* Buyer Role Details */}
           {user?.role === 'buyer' && (
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                🏢 Business & Buyer Information
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <span className="text-xs text-gray-500 block">Business / Firm Name</span>
-                  <span className="font-semibold text-gray-800">{user?.business_name || 'Not specified'}</span>
+            <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '1rem' }}>🏢 Business Information</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', fontSize: '0.85rem' }}>
+                <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>Firm Name</span>
+                  <span style={{ fontWeight: 700, color: '#f3f4f6' }}>{user?.business_name || 'Not specified'}</span>
                 </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <span className="text-xs text-gray-500 block">Contact Person</span>
-                  <span className="font-semibold text-gray-800">{user?.contact_person || user?.name}</span>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <span className="text-xs text-gray-500 block">State & District</span>
-                  <span className="font-semibold text-gray-800">{user?.state ? `${user.state}, ${user.district || ''}` : user?.location}</span>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <span className="text-xs text-gray-500 block">Primary Mandi</span>
-                  <span className="font-semibold text-gray-800">{user?.mandi || 'Not specified'}</span>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <span className="text-xs text-gray-500 block">Commodities Dealt</span>
-                  <span className="font-semibold text-gray-800">{user?.commodities || 'All agricultural produce'}</span>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <span className="text-xs text-gray-500 block">Buying Capacity</span>
-                  <span className="font-semibold text-gray-800">{user?.buying_capacity || 'Not specified'}</span>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <span className="text-xs text-gray-500 block">e-NAM Trader Ref</span>
-                  <span className="font-semibold text-gray-800 font-mono">{user?.enam_reference || 'None'}</span>
-                </div>
-                <div className="p-3 bg-gray-50 rounded-xl">
-                  <span className="text-xs text-gray-500 block">Udyam Registration Ref</span>
-                  <span className="font-semibold text-gray-800 font-mono">{user?.udyam_reference || 'None'}</span>
+                <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>Primary Mandi</span>
+                  <span style={{ fontWeight: 700, color: '#10b981' }}>{user?.mandi || 'Not specified'}</span>
                 </div>
               </div>
             </div>
           )}
-
         </div>
 
-        {/* Right Column (1 col): Verification Status Card */}
-        <div className="space-y-6">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-            <h3 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
-              🛡️ Verification Status
-            </h3>
-            
-            <div className="mb-4">
+        {/* Right Column: Verification Status Card */}
+        <div>
+          <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '0.85rem' }}>🛡️ Trust Verification</h3>
+            <div style={{ marginBottom: '1rem' }}>
               <TrustBadge status={user?.verification_status} role={user?.role} size="lg" />
             </div>
-
-            <p className="text-sm text-gray-600 mb-4 leading-relaxed">
-              {user?.verification_status === 'verified' ? (
-                'Your account is fully verified by FarmOS Admin. Verified badge builds trust with farmers and buyers.'
-              ) : user?.verification_status === 'pending' ? (
-                'Your verification application is currently under review by the FarmOS admin team.'
-              ) : (
-                'Submit your government ID or official registration references to earn the FarmOS Verified badge.'
-              )}
+            <p style={{ fontSize: '0.82rem', color: '#9ca3af', lineHeight: 1.5, marginBottom: '1.25rem' }}>
+              Earn the FarmOS Verified badge to build instant trust with farmers and buyers.
             </p>
-
-            {user?.verification_notes && (
-              <div className="p-3 bg-amber-50 text-amber-900 rounded-xl text-xs border border-amber-200 mb-4">
-                <strong>Admin Note:</strong> {user.verification_notes}
-              </div>
-            )}
-
             {user?.verification_status !== 'verified' && (
               <button
                 onClick={() => setShowVerifyModal(true)}
-                className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm transition-colors shadow-xs"
+                style={{ width: '100%', padding: '0.65rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 800, borderRadius: '10px', fontSize: '0.85rem', cursor: 'pointer' }}
               >
-                Update Verification Documents
+                Submit Verification Docs
               </button>
             )}
           </div>
         </div>
-
       </div>
 
-      {/* Modal: Edit Profile */}
+      {/* Edit Profile Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-xl relative max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center pb-4 border-b">
-              <h3 className="text-xl font-bold text-gray-900">Edit Profile</h3>
-              <button onClick={() => setShowEditModal(false)} className="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
-            </div>
-
-            <form onSubmit={handleSaveProfile} className="space-y-4 pt-4">
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '20px', maxWidth: '500px', width: '100%', padding: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '1rem' }}>Edit Profile</h3>
+            <form onSubmit={handleSaveProfile} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Full Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                  required
-                />
+                <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>Full Name</label>
+                <input type="text" name="name" value={formData.name} onChange={handleInputChange} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.55rem', color: '#f3f4f6' }} required />
               </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Phone Number</label>
-                  <input
-                    type="text"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">Location / State</label>
-                  <input
-                    type="text"
-                    name="location"
-                    value={formData.location}
-                    onChange={handleInputChange}
-                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                    required
-                  />
-                </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>Phone Number</label>
+                <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.55rem', color: '#f3f4f6' }} required />
               </div>
-
-              {user?.role === 'farmer' && (
-                <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t">
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">Farm Size (e.g. 5 Acres)</label>
-                      <input
-                        type="text"
-                        name="farm_size"
-                        value={formData.farm_size}
-                        onChange={handleInputChange}
-                        className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">Village / Panchayat</label>
-                      <input
-                        type="text"
-                        name="village"
-                        value={formData.village}
-                        onChange={handleInputChange}
-                        className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">Primary Crops Grown</label>
-                    <input
-                      type="text"
-                      name="crops_grown"
-                      value={formData.crops_grown}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Rice, Wheat, Mustard"
-                      className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">FPO / Cooperative Info</label>
-                    <input
-                      type="text"
-                      name="fpo_info"
-                      value={formData.fpo_info}
-                      onChange={handleInputChange}
-                      placeholder="e.g. Krishi Farmer Producer Co."
-                      className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                    />
-                  </div>
-                </>
-              )}
-
-              {user?.role === 'buyer' && (
-                <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t">
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">Business Name</label>
-                      <input
-                        type="text"
-                        name="business_name"
-                        value={formData.business_name}
-                        onChange={handleInputChange}
-                        className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">Contact Person</label>
-                      <input
-                        type="text"
-                        name="contact_person"
-                        value={formData.contact_person}
-                        onChange={handleInputChange}
-                        className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">State</label>
-                      <input
-                        type="text"
-                        name="state"
-                        value={formData.state}
-                        onChange={handleInputChange}
-                        className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">District</label>
-                      <input
-                        type="text"
-                        name="district"
-                        value={formData.district}
-                        onChange={handleInputChange}
-                        className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">Mandi</label>
-                      <input
-                        type="text"
-                        name="mandi"
-                        value={formData.mandi}
-                        onChange={handleInputChange}
-                        className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                      />
-                    </div>
-                  </div>
-                </>
-              )}
-
-              <div className="pt-4 border-t flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowEditModal(false)}
-                  className="px-4 py-2 border rounded-lg text-sm text-gray-700 hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="px-5 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors"
-                >
-                  {saving ? 'Saving...' : 'Save Profile'}
-                </button>
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                <button type="button" onClick={() => setShowEditModal(false)} style={{ padding: '0.55rem 1.1rem', backgroundColor: '#16261d', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#9ca3af', borderRadius: '8px', fontSize: '0.85rem' }}>Cancel</button>
+                <button type="submit" disabled={saving} style={{ padding: '0.55rem 1.25rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '8px', fontSize: '0.85rem' }}>{saving ? 'Saving...' : 'Save Changes'}</button>
               </div>
             </form>
           </div>
         </div>
       )}
 
-      {/* Modal: Submit Verification */}
+      {/* Verification Modal */}
       {showVerifyModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-xl relative max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center pb-4 border-b">
-              <h3 className="text-xl font-bold text-gray-900">
-                🛡️ Submit Verification Evidence ({user?.role === 'farmer' ? 'Farmer Verification' : 'Buyer Verification'})
-              </h3>
-              <button onClick={() => setShowVerifyModal(false)} className="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
-            </div>
-
-            <form onSubmit={handleSaveProfile} className="space-y-4 pt-4">
-              <p className="text-xs text-gray-600">
-                Providing government or official credentials speeds up verification by FarmOS Admins.
-              </p>
-
-              {user?.role === 'farmer' ? (
-                <>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">
-                      PM-KISAN ID / Kisaan Credit Card / Govt Farmer Reference
-                    </label>
-                    <input
-                      type="text"
-                      name="farmer_reference"
-                      value={formData.farmer_reference}
-                      onChange={handleInputChange}
-                      placeholder="e.g. PMK-987654321"
-                      className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden font-mono"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">
-                      Verification Evidence & Additional Notes
-                    </label>
-                    <textarea
-                      name="verification_evidence"
-                      rows="3"
-                      value={formData.verification_evidence}
-                      onChange={handleInputChange}
-                      placeholder="Provide land record registration details, FPO registration number, or verification links."
-                      className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                    ></textarea>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">e-NAM Trader Reference ID</label>
-                    <input
-                      type="text"
-                      name="enam_reference"
-                      value={formData.enam_reference}
-                      onChange={handleInputChange}
-                      placeholder="e.g. ENAM-TR-102938"
-                      className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden font-mono"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">Udyam Registration Number</label>
-                    <input
-                      type="text"
-                      name="udyam_reference"
-                      value={formData.udyam_reference}
-                      onChange={handleInputChange}
-                      placeholder="e.g. UDYAM-KR-00-1234567"
-                      className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden font-mono"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">Official Website</label>
-                    <input
-                      type="url"
-                      name="official_website"
-                      value={formData.official_website}
-                      onChange={handleInputChange}
-                      placeholder="https://www.agribusiness.com"
-                      className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-hidden"
-                    />
-                  </div>
-                </>
-              )}
-
-              <div className="pt-4 border-t flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowVerifyModal(false)}
-                  className="px-4 py-2 border rounded-lg text-sm text-gray-700 hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="px-5 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors"
-                >
-                  {saving ? 'Submitting...' : 'Submit Verification Request'}
-                </button>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '20px', maxWidth: '500px', width: '100%', padding: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '0.5rem' }}>🛡️ Verification Details</h3>
+            <p style={{ fontSize: '0.82rem', color: '#9ca3af', marginBottom: '1rem' }}>Enter government credentials or references for admin review.</p>
+            <form onSubmit={handleSaveProfile} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>Govt Reference ID</label>
+                <input type="text" name={user?.role === 'farmer' ? 'farmer_reference' : 'enam_reference'} value={user?.role === 'farmer' ? formData.farmer_reference : formData.enam_reference} onChange={handleInputChange} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.55rem', color: '#f3f4f6' }} />
+              </div>
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                <button type="button" onClick={() => setShowVerifyModal(false)} style={{ padding: '0.55rem 1.1rem', backgroundColor: '#16261d', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#9ca3af', borderRadius: '8px', fontSize: '0.85rem' }}>Cancel</button>
+                <button type="submit" disabled={saving} style={{ padding: '0.55rem 1.25rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '8px', fontSize: '0.85rem' }}>Submit</button>
               </div>
             </form>
           </div>
         </div>
       )}
 
+      <style>{`
+        @media (max-width: 900px) {
+          .profile-split { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </div>
   )
 }

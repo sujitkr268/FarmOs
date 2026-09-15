@@ -9,6 +9,7 @@ export const Navbar = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -20,36 +21,43 @@ export const Navbar = () => {
     navigate('/login')
   }
 
-  // Build role-specific nav items for authenticated users
+  const handleSearchSubmit = (e) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      navigate(`/market-prices?search=${encodeURIComponent(searchQuery.trim())}`)
+    }
+  }
+
+  // Build role-specific nav items for desktop (if needed on top header when sidebar is collapsed or on smaller screens)
   let navItems = []
 
   if (isAuthenticated && user) {
     if (user.role === 'farmer') {
       navItems = [
-        { label: t('nav.farmerDashboard'), path: '/farmer/dashboard' },
-        { label: t('nav.mandiPrices'), path: '/market-prices' },
-        { label: t('nav.marketplace'), path: '/marketplace' },
-        { label: t('nav.weather'), path: '/weather' },
-        { label: t('nav.traderDirectory'), path: '/traders' },
-        { label: t('nav.assistant'), path: '/assistant' },
+        { label: t('nav.farmerDashboard') || 'Dashboard', path: '/farmer/dashboard' },
+        { label: t('nav.mandiPrices') || 'Market Prices', path: '/market-prices' },
+        { label: t('nav.marketplace') || 'Marketplace', path: '/marketplace' },
+        { label: t('nav.weather') || 'Weather', path: '/weather' },
+        { label: t('nav.traderDirectory') || 'Traders', path: '/traders' },
+        { label: t('nav.assistant') || 'AI Assistant', path: '/assistant' },
         { label: 'Profile', path: '/profile' }
       ]
     } else if (user.role === 'buyer') {
       navItems = [
-        { label: t('nav.buyerDashboard'), path: '/buyer/dashboard' },
-        { label: t('nav.mandiPrices'), path: '/market-prices' },
-        { label: t('nav.marketplace'), path: '/marketplace' },
-        { label: t('nav.weather'), path: '/weather' },
-        { label: t('nav.traderDirectory'), path: '/traders' },
-        { label: t('nav.assistant'), path: '/assistant' },
+        { label: t('nav.buyerDashboard') || 'Dashboard', path: '/buyer/dashboard' },
+        { label: t('nav.mandiPrices') || 'Market Prices', path: '/market-prices' },
+        { label: t('nav.marketplace') || 'Marketplace', path: '/marketplace' },
+        { label: t('nav.weather') || 'Weather', path: '/weather' },
+        { label: t('nav.traderDirectory') || 'Traders', path: '/traders' },
+        { label: t('nav.assistant') || 'AI Assistant', path: '/assistant' },
         { label: 'Profile', path: '/profile' }
       ]
     } else if (user.role === 'admin') {
       navItems = [
-        { label: t('nav.adminDashboard'), path: '/admin/dashboard' },
-        { label: t('nav.traderDirectory'), path: '/traders' },
-        { label: t('nav.mandiPrices'), path: '/market-prices' },
-        { label: t('nav.marketplace'), path: '/marketplace' },
+        { label: t('nav.adminDashboard') || 'Admin Dashboard', path: '/admin/dashboard' },
+        { label: t('nav.traderDirectory') || 'Traders', path: '/traders' },
+        { label: t('nav.mandiPrices') || 'Market Prices', path: '/market-prices' },
+        { label: t('nav.marketplace') || 'Marketplace', path: '/marketplace' },
         { label: 'Profile', path: '/profile' }
       ]
     }
@@ -59,73 +67,98 @@ export const Navbar = () => {
     <header style={{
       position: 'sticky',
       top: 0,
-      zIndex: 1000,
-      backgroundColor: 'rgba(8, 10, 14, 0.92)',
+      zIndex: 90,
+      backgroundColor: 'rgba(12, 20, 14, 0.92)',
       backdropFilter: 'blur(16px)',
       WebkitBackdropFilter: 'blur(16px)',
-      borderBottom: '1px solid var(--border-color)',
+      borderBottom: '1px solid rgba(31, 56, 42, 0.6)',
       width: '100%'
     }}>
       <div style={{
-        maxWidth: '1280px',
+        maxWidth: '1440px',
         margin: '0 auto',
-        padding: '0.85rem 1.25rem',
+        padding: '0.75rem 1.5rem',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
+        gap: '1.5rem',
         width: '100%'
       }}>
-        {/* Left: Brand Logo */}
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', flexShrink: 0 }}>
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11Z" />
-            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-          </svg>
-          <span style={{ color: '#ffffff' }}>Farm<span style={{ color: 'var(--accent-gold)' }}>OS</span></span>
-        </Link>
+        {/* Left: Mobile Brand Logo / Title if sidebar is hidden */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '1.3rem', fontWeight: 800, color: '#f3f4f6', letterSpacing: '-0.02em', flexShrink: 0 }}>
+            <div style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '8px',
+              backgroundColor: '#10b981',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#080e0a'
+            }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11Z" />
+                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+              </svg>
+            </div>
+            <span style={{ color: '#ffffff' }}>Farm<span style={{ color: '#10b981' }}>OS</span></span>
+          </Link>
+        </div>
 
-        {/* Center: Desktop Navigation Links (Only for logged-in users) */}
+        {/* Center: Topbar Search Input (Desktop) */}
         {isAuthenticated && (
-          <nav style={{ display: 'none', alignItems: 'center', gap: '1.5rem' }} className="desktop-nav">
-            {navItems.map((item, idx) => {
-              const isActive = location.pathname === item.path
-
-              return (
-                <Link
-                  key={idx}
-                  to={item.path}
-                  style={{
-                    color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
-                    fontWeight: isActive ? 600 : 500,
-                    fontSize: '0.9rem',
-                    transition: 'color 0.2s'
-                  }}
-                >
-                  {item.label}
-                </Link>
-              )
-            })}
-          </nav>
+          <form onSubmit={handleSearchSubmit} className="topbar-search" style={{ flex: 1, maxWidth: '440px' }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              backgroundColor: '#111b15',
+              border: '1px solid rgba(31, 56, 42, 0.8)',
+              borderRadius: '12px',
+              padding: '0.4rem 0.85rem',
+              gap: '0.6rem',
+              transition: 'all 0.2s'
+            }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search crops, mandis, buyers, traders..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  color: '#f3f4f6',
+                  fontSize: '0.85rem',
+                  width: '100%'
+                }}
+              />
+            </div>
+          </form>
         )}
 
-        {/* Right: Language Switcher & Desktop Auth Actions */}
-        <div style={{ display: 'none', alignItems: 'center', gap: '1rem' }} className="desktop-auth">
+        {/* Right Action Tools: Language Switcher, Gemini Launcher, Notifications, Profile Avatar */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
           {/* Language Switcher Pill */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            backgroundColor: 'rgba(255, 255, 255, 0.08)',
-            border: '1px solid rgba(255, 255, 255, 0.15)',
+            backgroundColor: '#111b15',
+            border: '1px solid rgba(31, 56, 42, 0.8)',
             borderRadius: '20px',
             padding: '2px',
-            fontSize: '0.8rem',
+            fontSize: '0.78rem',
             fontWeight: 600
           }}>
             <button
               onClick={() => setLanguage('en')}
               style={{
-                background: language === 'en' ? 'linear-gradient(135deg, var(--accent-gold), var(--accent-gold-muted))' : 'transparent',
-                color: language === 'en' ? '#080a0e' : '#8b949e',
+                background: language === 'en' ? '#10b981' : 'transparent',
+                color: language === 'en' ? '#080e0a' : '#9ca3af',
                 border: 'none',
                 borderRadius: '16px',
                 padding: '0.25rem 0.65rem',
@@ -134,13 +167,13 @@ export const Navbar = () => {
                 transition: 'all 0.2s'
               }}
             >
-              English
+              EN
             </button>
             <button
               onClick={() => setLanguage('hi')}
               style={{
-                background: language === 'hi' ? 'linear-gradient(135deg, var(--accent-gold), var(--accent-gold-muted))' : 'transparent',
-                color: language === 'hi' ? '#080a0e' : '#8b949e',
+                background: language === 'hi' ? '#10b981' : 'transparent',
+                color: language === 'hi' ? '#080e0a' : '#9ca3af',
                 border: 'none',
                 borderRadius: '16px',
                 padding: '0.25rem 0.65rem',
@@ -153,40 +186,81 @@ export const Navbar = () => {
             </button>
           </div>
 
-          {isAuthenticated && user ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <div style={{
+          {/* AI Quick Launcher Button */}
+          {isAuthenticated && (
+            <button
+              onClick={() => navigate('/assistant')}
+              title="Launch Gemini AI Assistant"
+              style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.5rem',
-                backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                padding: '0.4rem 0.85rem',
-                borderRadius: '50px',
+                gap: '0.4rem',
+                padding: '0.45rem 0.75rem',
+                borderRadius: '10px',
+                backgroundColor: 'rgba(16, 185, 129, 0.12)',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                color: '#10b981',
                 fontSize: '0.82rem',
-                color: 'var(--text-primary)'
-              }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold)" strokeWidth="2">
-                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-                <span style={{ fontWeight: 600 }}>{user.name}</span>
-                <span style={{ color: 'var(--text-muted)' }}>|</span>
-                <span style={{ color: 'var(--accent-gold-light)', textTransform: 'capitalize', fontWeight: 500 }}>
-                  {user.role}
-                </span>
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
+                <rect x="4" y="8" width="16" height="12" rx="2" />
+                <circle cx="9" cy="13" r="1" />
+                <circle cx="15" cy="13" r="1" />
+              </svg>
+              <span className="hidden-mobile">AI Assistant</span>
+            </button>
+          )}
+
+          {/* Authenticated User Badge & Logout */}
+          {isAuthenticated && user ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+              <div
+                onClick={() => navigate('/profile')}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.6rem',
+                  backgroundColor: '#111b15',
+                  border: '1px solid rgba(31, 56, 42, 0.8)',
+                  padding: '0.35rem 0.75rem',
+                  borderRadius: '30px',
+                  cursor: 'pointer'
+                }}
+              >
+                <div style={{
+                  width: '26px',
+                  height: '26px',
+                  borderRadius: '50%',
+                  backgroundColor: '#10b981',
+                  color: '#080e0a',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 800,
+                  fontSize: '0.78rem'
+                }}>
+                  {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }} className="hidden-mobile">
+                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#f3f4f6', lineHeight: 1.1 }}>{user.name}</span>
+                  <span style={{ fontSize: '0.7rem', color: '#10b981', textTransform: 'capitalize', fontWeight: 600 }}>{user.role}</span>
+                </div>
               </div>
 
               <button
                 onClick={handleLogout}
                 style={{
-                  padding: '0.45rem 1.1rem',
+                  padding: '0.45rem 0.85rem',
                   borderRadius: '10px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                  border: '1px solid rgba(255, 255, 255, 0.12)',
-                  color: 'var(--text-primary)',
+                  backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                  border: '1px solid rgba(239, 68, 68, 0.25)',
+                  color: '#ef4444',
                   fontWeight: 600,
-                  fontSize: '0.85rem',
+                  fontSize: '0.82rem',
                   cursor: 'pointer'
                 }}
               >
@@ -194,231 +268,92 @@ export const Navbar = () => {
               </button>
             </div>
           ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
               <Link to="/login" style={{
-                padding: '0.45rem 1.15rem',
+                padding: '0.45rem 0.95rem',
                 borderRadius: '10px',
-                color: 'var(--text-primary)',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                fontWeight: 500,
-                fontSize: '0.85rem'
+                color: '#f3f4f6',
+                border: '1px solid rgba(31, 56, 42, 0.8)',
+                backgroundColor: '#111b15',
+                fontWeight: 600,
+                fontSize: '0.82rem'
               }}>
                 {t('nav.login')}
               </Link>
               <Link to="/register" style={{
-                padding: '0.45rem 1.15rem',
+                padding: '0.45rem 0.95rem',
                 borderRadius: '10px',
-                background: 'linear-gradient(135deg, var(--accent-gold), var(--accent-gold-muted))',
-                color: '#080a0e',
+                backgroundColor: '#10b981',
+                color: '#080e0a',
                 fontWeight: 700,
-                fontSize: '0.85rem',
-                boxShadow: '0 4px 14px var(--accent-gold-glow)'
+                fontSize: '0.82rem',
+                boxShadow: '0 4px 14px rgba(16, 185, 129, 0.3)'
               }}>
                 {t('nav.getStarted')}
               </Link>
             </div>
           )}
-        </div>
 
-        {/* Mobile Hamburger Toggle Button */}
-        <button
-          className="mobile-hamburger"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle navigation menu"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '40px',
-            height: '40px',
-            borderRadius: '10px',
-            backgroundColor: 'rgba(255, 255, 255, 0.08)',
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            color: 'var(--accent-gold)',
-            fontSize: '1.4rem',
-            cursor: 'pointer'
-          }}
-        >
-          {mobileMenuOpen ? '✕' : '☰'}
-        </button>
+          {/* Mobile Hamburger Toggle */}
+          <button
+            className="mobile-hamburger"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle navigation menu"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '36px',
+              height: '36px',
+              borderRadius: '8px',
+              backgroundColor: '#111b15',
+              border: '1px solid rgba(31, 56, 42, 0.8)',
+              color: '#10b981',
+              fontSize: '1.2rem',
+              cursor: 'pointer'
+            }}
+          >
+            {mobileMenuOpen ? '✕' : '☰'}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Drawer Navigation */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div style={{
-          backgroundColor: '#0d1017',
-          borderBottom: '1px solid var(--border-gold)',
+          backgroundColor: '#0c140e',
+          borderBottom: '1px solid rgba(16, 185, 129, 0.3)',
           padding: '1.25rem 1.5rem',
           display: 'flex',
           flexDirection: 'column',
           gap: '1rem',
           animation: 'fadeIn 0.2s ease-out'
         }} className="mobile-drawer">
-
-          {/* Mobile Language Switcher */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: 'rgba(255, 255, 255, 0.04)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            padding: '0.5rem 1rem',
-            borderRadius: '12px'
-          }}>
-            <span style={{ fontSize: '0.85rem', color: '#8b949e', fontWeight: 600 }}>🌐 Language / भाषा:</span>
-            <div style={{ display: 'flex', gap: '0.25rem' }}>
-              <button
-                onClick={() => setLanguage('en')}
-                style={{
-                  background: language === 'en' ? 'linear-gradient(135deg, var(--accent-gold), var(--accent-gold-muted))' : 'transparent',
-                  color: language === 'en' ? '#080a0e' : '#8b949e',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '0.25rem 0.6rem',
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
-                  cursor: 'pointer'
-                }}
-              >
-                English
-              </button>
-              <button
-                onClick={() => setLanguage('hi')}
-                style={{
-                  background: language === 'hi' ? 'linear-gradient(135deg, var(--accent-gold), var(--accent-gold-muted))' : 'transparent',
-                  color: language === 'hi' ? '#080a0e' : '#8b949e',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '0.25rem 0.6rem',
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
-                  cursor: 'pointer'
-                }}
-              >
-                हिन्दी
-              </button>
-            </div>
-          </div>
-
-          {isAuthenticated && user && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              backgroundColor: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid var(--border-color)',
-              padding: '0.6rem 1rem',
-              borderRadius: '12px',
-              fontSize: '0.88rem',
-              marginBottom: '0.5rem'
-            }}>
-              <span>🧑‍🌾</span>
-              <div>
-                <strong style={{ color: 'var(--text-primary)', display: 'block' }}>{user.name}</strong>
-                <span style={{ color: 'var(--accent-gold-light)', fontSize: '0.78rem', textTransform: 'capitalize' }}>
-                  {user.role} {t('nav.portal')}
-                </span>
-              </div>
-            </div>
-          )}
-
-          {navItems.map((item, idx) => {
-            const isActive = item.path === '/' 
-              ? location.pathname === '/' 
-              : item.path.includes('/dashboard') 
-                ? location.pathname.includes('/dashboard')
-                : location.pathname === item.path
-
-            return (
-              <Link
-                key={idx}
-                to={item.path}
-                onClick={() => setMobileMenuOpen(false)}
-                style={{
-                  color: isActive ? 'var(--accent-gold)' : 'var(--text-primary)',
-                  fontWeight: isActive ? 700 : 500,
-                  fontSize: '1rem',
-                  padding: '0.5rem 0',
-                  borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
-                }}
-              >
-                <span>{item.label}</span>
-                {isActive && <span style={{ color: 'var(--accent-gold)' }}>●</span>}
-              </Link>
-            )
-          })}
-
-          <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {isAuthenticated ? (
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false)
-                  handleLogout()
-                }}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  borderRadius: '10px',
-                  backgroundColor: 'rgba(248, 81, 73, 0.15)',
-                  border: '1px solid rgba(248, 81, 73, 0.3)',
-                  color: '#f85149',
-                  fontWeight: 700,
-                  fontSize: '0.92rem',
-                  cursor: 'pointer'
-                }}
-              >
-                {t('nav.logout')}
-              </button>
-            ) : (
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
-                <Link
-                  to="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    flex: 1,
-                    textAlign: 'center',
-                    padding: '0.7rem',
-                    borderRadius: '10px',
-                    color: 'var(--text-primary)',
-                    border: '1px solid rgba(255, 255, 255, 0.15)',
-                    backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                    fontWeight: 600,
-                    fontSize: '0.9rem'
-                  }}
-                >
-                  {t('nav.login')}
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    flex: 1,
-                    textAlign: 'center',
-                    padding: '0.7rem',
-                    borderRadius: '10px',
-                    background: 'linear-gradient(135deg, var(--accent-gold), var(--accent-gold-muted))',
-                    color: '#080a0e',
-                    fontWeight: 700,
-                    fontSize: '0.9rem'
-                  }}
-                >
-                  {t('nav.getStarted')}
-                </Link>
-              </div>
-            )}
-          </div>
+          {navItems.map((item, idx) => (
+            <Link
+              key={idx}
+              to={item.path}
+              onClick={() => setMobileMenuOpen(false)}
+              style={{
+                color: location.pathname === item.path ? '#10b981' : '#f3f4f6',
+                fontWeight: location.pathname === item.path ? 700 : 500,
+                fontSize: '0.95rem',
+                padding: '0.5rem 0',
+                borderBottom: '1px solid rgba(31, 56, 42, 0.5)'
+              }}
+            >
+              {item.label}
+            </Link>
+          ))}
         </div>
       )}
 
-      {/* Embedded CSS for Navbar Breakpoints */}
       <style>{`
-        @media (min-width: 768px) {
-          .desktop-nav { display: flex !important; }
-          .desktop-auth { display: flex !important; }
+        @media (max-width: 768px) {
+          .topbar-search { display: none !important; }
+          .hidden-mobile { display: none !important; }
+        }
+        @media (min-width: 769px) {
           .mobile-hamburger { display: none !important; }
           .mobile-drawer { display: none !important; }
         }

@@ -120,116 +120,183 @@ const BuyerDashboard = () => {
   const acceptedOrdersCount = orders.filter(o => o.status === 'accepted').length
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Header Banner */}
-      <div className="bg-gradient-to-r from-sky-900 to-indigo-900 text-white rounded-2xl p-6 shadow-md mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div style={{ color: '#f3f4f6' }}>
+      {/* 1. Header Banner */}
+      <div style={{
+        background: 'linear-gradient(135deg, #0d1a22 0%, #142834 50%, #0a141b 100%)',
+        border: '1px solid rgba(56, 189, 248, 0.25)',
+        borderRadius: '20px',
+        padding: '1.75rem',
+        marginBottom: '1.75rem',
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: '1.25rem',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+      }}>
         <div>
-          <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-3xl font-extrabold">{user?.business_name || user?.name}</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
+            <h1 style={{ fontSize: '1.85rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em' }}>
+              {user?.business_name || user?.name} 🏢
+            </h1>
             <TrustBadge status={user?.verification_status} role="buyer" size="md" />
           </div>
-          <p className="text-sky-200 text-sm mt-1">
-            📍 {user?.state ? `${user.state}, ${user.district || ''}` : user?.location || 'Location Not Specified'}
-            {user?.mandi && ` • Primary Mandi: ${user.mandi}`}
+          <p style={{ color: '#9ca3af', fontSize: '0.9rem', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <span>📍 <strong style={{ color: '#f3f4f6' }}>{user?.state ? `${user.state}, ${user.district || ''}` : user?.location || 'Location Not Specified'}</strong></span>
+            {user?.mandi && <span>• Mandi: <strong style={{ color: '#38bdf8' }}>{user.mandi}</strong></span>}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
           <a
             href="/profile"
-            className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl text-sm font-semibold transition-colors"
+            style={{
+              padding: '0.6rem 1.25rem',
+              borderRadius: '12px',
+              backgroundColor: 'rgba(56, 189, 248, 0.15)',
+              border: '1px solid rgba(56, 189, 248, 0.4)',
+              color: '#38bdf8',
+              fontWeight: 700,
+              fontSize: '0.88rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}
           >
-            🏢 View Business Profile
+            <span>🏢</span> Business Profile
           </a>
         </div>
       </div>
 
       {/* Global Alerts */}
       {orderSuccess && (
-        <div className="mb-6 p-4 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex justify-between items-center">
+        <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.4)', color: '#6ee7b7', padding: '1rem', borderRadius: '14px', marginBottom: '1.5rem', fontSize: '0.9rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span>{orderSuccess}</span>
-          <button onClick={() => setOrderSuccess('')} className="font-bold text-lg leading-none">&times;</button>
+          <button onClick={() => setOrderSuccess('')} style={{ background: 'none', border: 'none', color: '#6ee7b7', fontWeight: 'bold', fontSize: '1.2rem', cursor: 'pointer' }}>✕</button>
         </div>
       )}
 
-      {/* Summary Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white p-5 rounded-2xl shadow-xs border border-gray-200 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-2xl font-bold">📦</div>
-          <div>
-            <span className="text-xs text-gray-500 block font-medium">Total Orders Placed</span>
-            <span className="text-2xl font-bold text-gray-900">{totalOrdersCount}</span>
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-2xl shadow-xs border border-gray-200 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl font-bold">⏳</div>
-          <div>
-            <span className="text-xs text-gray-500 block font-medium">Pending Approval</span>
-            <span className="text-2xl font-bold text-amber-600">{pendingOrdersCount}</span>
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-2xl shadow-xs border border-gray-200 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl font-bold">✅</div>
-          <div>
-            <span className="text-xs text-gray-500 block font-medium">Accepted Orders</span>
-            <span className="text-2xl font-bold text-emerald-600">{acceptedOrdersCount}</span>
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-2xl shadow-xs border border-gray-200 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl font-bold">🛡️</div>
-          <div>
-            <span className="text-xs text-gray-500 block font-medium">Verification Status</span>
-            <div className="mt-0.5">
-              <TrustBadge status={user?.verification_status} role="buyer" size="sm" />
+      {/* 2. Stat Metrics Grid (4 Columns) */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', marginBottom: '1.75rem' }}>
+        <div className="stat-metric-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Orders Placed</span>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
+              📦
             </div>
           </div>
+          <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#ffffff', lineHeight: 1.1 }}>{totalOrdersCount}</div>
+          <div style={{ fontSize: '0.78rem', color: '#38bdf8', fontWeight: 600, marginTop: '0.6rem' }}>Total Direct Procurement</div>
+        </div>
+
+        <div className="stat-metric-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Pending Approval</span>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
+              ⏳
+            </div>
+          </div>
+          <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#f59e0b', lineHeight: 1.1 }}>{pendingOrdersCount}</div>
+          <div style={{ fontSize: '0.78rem', color: '#f59e0b', fontWeight: 600, marginTop: '0.6rem' }}>Awaiting Farmer Confirmation</div>
+        </div>
+
+        <div className="stat-metric-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Accepted Orders</span>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(16, 185, 129, 0.15)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
+              ✅
+            </div>
+          </div>
+          <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#10b981', lineHeight: 1.1 }}>{acceptedOrdersCount}</div>
+          <div style={{ fontSize: '0.78rem', color: '#10b981', fontWeight: 600, marginTop: '0.6rem' }}>Ready for Fulfillment</div>
+        </div>
+
+        <div className="stat-metric-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Verification Status</span>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(168, 85, 247, 0.15)', color: '#a855f7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
+              🛡️
+            </div>
+          </div>
+          <div style={{ marginTop: '0.2rem' }}>
+            <TrustBadge status={user?.verification_status} role="buyer" size="sm" />
+          </div>
+          <div style={{ fontSize: '0.78rem', color: '#a855f7', fontWeight: 600, marginTop: '0.6rem' }}>Buyer Account Trust Level</div>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex border-b border-gray-200 mb-8 overflow-x-auto">
+      {/* 3. Navigation Tabs */}
+      <div style={{
+        display: 'flex',
+        gap: '0.5rem',
+        backgroundColor: '#111b15',
+        padding: '0.4rem',
+        borderRadius: '14px',
+        border: '1px solid rgba(31, 56, 42, 0.8)',
+        marginBottom: '1.75rem',
+        overflowX: 'auto'
+      }}>
         <button
           onClick={() => setActiveTab('orders')}
-          className={`py-3 px-5 font-semibold text-sm border-b-2 whitespace-nowrap transition-colors ${
-            activeTab === 'orders'
-              ? 'border-sky-600 text-sky-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
+          style={{
+            padding: '0.6rem 1.1rem',
+            borderRadius: '10px',
+            fontSize: '0.85rem',
+            fontWeight: activeTab === 'orders' ? 700 : 500,
+            color: activeTab === 'orders' ? '#080e0a' : '#9ca3af',
+            backgroundColor: activeTab === 'orders' ? '#10b981' : 'transparent',
+            transition: 'all 0.2s',
+            whiteSpace: 'nowrap'
+          }}
         >
           📦 My Orders ({orders.length})
         </button>
 
         <button
           onClick={() => setActiveTab('marketplace')}
-          className={`py-3 px-5 font-semibold text-sm border-b-2 whitespace-nowrap transition-colors ${
-            activeTab === 'marketplace'
-              ? 'border-sky-600 text-sky-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
+          style={{
+            padding: '0.6rem 1.1rem',
+            borderRadius: '10px',
+            fontSize: '0.85rem',
+            fontWeight: activeTab === 'marketplace' ? 700 : 500,
+            color: activeTab === 'marketplace' ? '#080e0a' : '#9ca3af',
+            backgroundColor: activeTab === 'marketplace' ? '#10b981' : 'transparent',
+            transition: 'all 0.2s',
+            whiteSpace: 'nowrap'
+          }}
         >
-          🌾 Browse Farmer Produce
+          🌾 Browse Produce
         </button>
 
         <button
           onClick={() => setActiveTab('prices')}
-          className={`py-3 px-5 font-semibold text-sm border-b-2 whitespace-nowrap transition-colors ${
-            activeTab === 'prices'
-              ? 'border-sky-600 text-sky-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
+          style={{
+            padding: '0.6rem 1.1rem',
+            borderRadius: '10px',
+            fontSize: '0.85rem',
+            fontWeight: activeTab === 'prices' ? 700 : 500,
+            color: activeTab === 'prices' ? '#080e0a' : '#9ca3af',
+            backgroundColor: activeTab === 'prices' ? '#10b981' : 'transparent',
+            transition: 'all 0.2s',
+            whiteSpace: 'nowrap'
+          }}
         >
           📈 Mandi Price Directory
         </button>
 
         <button
           onClick={() => setActiveTab('verification')}
-          className={`py-3 px-5 font-semibold text-sm border-b-2 whitespace-nowrap transition-colors ${
-            activeTab === 'verification'
-              ? 'border-sky-600 text-sky-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
+          style={{
+            padding: '0.6rem 1.1rem',
+            borderRadius: '10px',
+            fontSize: '0.85rem',
+            fontWeight: activeTab === 'verification' ? 700 : 500,
+            color: activeTab === 'verification' ? '#080e0a' : '#9ca3af',
+            backgroundColor: activeTab === 'verification' ? '#10b981' : 'transparent',
+            transition: 'all 0.2s',
+            whiteSpace: 'nowrap'
+          }}
         >
           🛡️ Verification Credentials
         </button>
@@ -237,57 +304,59 @@ const BuyerDashboard = () => {
 
       {/* TAB 1: MY ORDERS */}
       {activeTab === 'orders' && (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-gray-900">📦 Purchase Orders Placed</h2>
-            <button onClick={fetchOrders} className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-medium">
+        <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6' }}>📦 Purchase Orders Placed</h2>
+            <button onClick={fetchOrders} style={{ padding: '0.35rem 0.75rem', backgroundColor: '#16261d', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#9ca3af', borderRadius: '8px', fontSize: '0.78rem', cursor: 'pointer' }}>
               🔄 Refresh
             </button>
           </div>
 
           {ordersLoading ? (
-            <div className="text-center py-12 text-gray-500">{t('common.loading')}</div>
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#9ca3af' }}>{t('common.loading')}</div>
           ) : orders.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
-              <div className="text-4xl mb-2">🛒</div>
-              <p className="font-semibold text-gray-700">No purchase orders placed yet.</p>
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#9ca3af' }}>
+              <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🛒</div>
+              <p style={{ fontWeight: 600, color: '#f3f4f6' }}>No purchase orders placed yet.</p>
               <button
                 onClick={() => setActiveTab('marketplace')}
-                className="mt-3 px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white text-sm font-semibold rounded-xl"
+                style={{ marginTop: '0.75rem', padding: '0.65rem 1.25rem', backgroundColor: '#10b981', color: '#080e0a', fontSize: '0.85rem', fontWeight: 700, borderRadius: '10px' }}
               >
                 Browse Produce Marketplace
               </button>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-gray-50 text-gray-700 uppercase text-xs">
-                  <tr>
-                    <th className="p-3">Order ID</th>
-                    <th className="p-3">Crop Name</th>
-                    <th className="p-3">Quantity</th>
-                    <th className="p-3">Total Cost</th>
-                    <th className="p-3">Farmer Name</th>
-                    <th className="p-3">Farmer Contact</th>
-                    <th className="p-3">Location</th>
-                    <th className="p-3">Status</th>
+            <div className="table-responsive">
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid rgba(31, 56, 42, 0.8)', color: '#9ca3af', fontSize: '0.75rem', textTransform: 'uppercase' }}>
+                    <th style={{ padding: '0.75rem' }}>Order ID</th>
+                    <th style={{ padding: '0.75rem' }}>Crop</th>
+                    <th style={{ padding: '0.75rem' }}>Quantity</th>
+                    <th style={{ padding: '0.75rem' }}>Total Cost</th>
+                    <th style={{ padding: '0.75rem' }}>Farmer</th>
+                    <th style={{ padding: '0.75rem' }}>Location</th>
+                    <th style={{ padding: '0.75rem' }}>Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody>
                   {orders.map((o) => (
-                    <tr key={o.id} className="hover:bg-gray-50">
-                      <td className="p-3 font-mono font-bold">#{o.id}</td>
-                      <td className="p-3 font-semibold text-gray-900">{o.crop_name}</td>
-                      <td className="p-3">{o.quantity} {o.unit}</td>
-                      <td className="p-3 font-bold text-emerald-700">₹{o.total_price}</td>
-                      <td className="p-3">{o.farmer_name}</td>
-                      <td className="p-3">{o.farmer_phone || 'Protected'}</td>
-                      <td className="p-3">📍 {o.location}</td>
-                      <td className="p-3">
-                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                          o.status === 'accepted' ? 'bg-emerald-100 text-emerald-800' :
-                          o.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'
-                        }`}>
+                    <tr key={o.id} style={{ borderBottom: '1px solid rgba(31, 56, 42, 0.4)', color: '#f3f4f6' }}>
+                      <td style={{ padding: '0.75rem', fontWeight: 700, fontFamily: 'monospace' }}>#{o.id}</td>
+                      <td style={{ padding: '0.75rem', fontWeight: 600 }}>{o.crop_name}</td>
+                      <td style={{ padding: '0.75rem' }}>{o.quantity} {o.unit}</td>
+                      <td style={{ padding: '0.75rem', color: '#10b981', fontWeight: 700 }}>₹{o.total_price}</td>
+                      <td style={{ padding: '0.75rem' }}>{o.farmer_name}</td>
+                      <td style={{ padding: '0.75rem' }}>📍 {o.location}</td>
+                      <td style={{ padding: '0.75rem' }}>
+                        <span style={{
+                          padding: '0.2rem 0.6rem',
+                          borderRadius: '20px',
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          backgroundColor: o.status === 'accepted' ? 'rgba(16, 185, 129, 0.15)' : o.status === 'rejected' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                          color: o.status === 'accepted' ? '#10b981' : o.status === 'rejected' ? '#ef4444' : '#f59e0b'
+                        }}>
                           {o.status}
                         </span>
                       </td>
@@ -302,56 +371,55 @@ const BuyerDashboard = () => {
 
       {/* TAB 2: BROWSE MARKETPLACE */}
       {activeTab === 'marketplace' && (
-        <div className="space-y-6">
-          {/* Search Bar */}
-          <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex flex-col sm:flex-row gap-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div style={{ backgroundColor: '#111b15', padding: '1rem', borderRadius: '14px', border: '1px solid rgba(31, 56, 42, 0.8)', display: 'flex', gap: '1rem' }}>
             <input
               type="text"
               placeholder="Search produce by crop name, location..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 border rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-hidden"
+              style={{ flex: 1, backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '10px', padding: '0.6rem 0.85rem', color: '#f3f4f6', fontSize: '0.85rem' }}
             />
             <button
               onClick={fetchMarketplace}
-              className="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-xl text-sm"
+              style={{ padding: '0.6rem 1.25rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem' }}
             >
               Search
             </button>
           </div>
 
           {harvestsLoading ? (
-            <div className="text-center py-12 text-gray-500">{t('common.loading')}</div>
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#9ca3af' }}>{t('common.loading')}</div>
           ) : filteredHarvests.length === 0 ? (
-            <div className="bg-white p-12 text-center rounded-2xl border border-gray-200 text-gray-500">
-              <div className="text-4xl mb-2">🌾</div>
+            <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '3rem', textAlign: 'center', color: '#9ca3af' }}>
+              <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🌾</div>
               <p>No available produce listings found matching your search.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.25rem' }}>
               {filteredHarvests.map((h) => (
-                <div key={h.id} className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs flex flex-col justify-between">
+                <div key={h.id} className="farm-card" style={{ display: 'flex', flexDirection: 'column', justifyBetween: 'space-between' }}>
                   <div>
-                    <div className="flex justify-between items-start gap-2 mb-2">
-                      <h4 className="font-bold text-gray-900 text-lg">{h.crop_name}</h4>
-                      <span className="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full text-xs font-semibold">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                      <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6' }}>{h.crop_name}</h4>
+                      <span style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', color: '#10b981', padding: '0.2rem 0.6rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700 }}>
                         Available
                       </span>
                     </div>
 
-                    <div className="space-y-1 text-sm text-gray-600 mb-3">
-                      <div>Stock: <strong className="text-gray-900">{h.quantity} {h.unit}</strong></div>
-                      <div>Price: <strong className="text-emerald-700 text-base">₹{h.price} / {h.unit}</strong></div>
-                      <div>Farmer: <span className="font-medium text-gray-800">{h.farmer_name || 'Verified Farmer'}</span></div>
+                    <div style={{ fontSize: '0.85rem', color: '#9ca3af', display: 'flex', flexDirection: 'column', gap: '0.35rem', marginBottom: '0.75rem' }}>
+                      <div>Stock: <strong style={{ color: '#f3f4f6' }}>{h.quantity} {h.unit}</strong></div>
+                      <div>Price: <strong style={{ color: '#10b981', fontSize: '1.05rem' }}>₹{h.price} / {h.unit}</strong></div>
+                      <div>Farmer: <span style={{ color: '#f3f4f6', fontWeight: 600 }}>{h.farmer_name || 'Verified Farmer'}</span></div>
                       <div>Location: 📍 {h.location}</div>
                     </div>
 
-                    {h.description && <p className="text-xs text-gray-500 bg-gray-50 p-2.5 rounded-lg mb-4">{h.description}</p>}
+                    {h.description && <p style={{ fontSize: '0.78rem', color: '#9ca3af', backgroundColor: '#0c140e', padding: '0.5rem 0.75rem', borderRadius: '8px', marginBottom: '0.75rem' }}>{h.description}</p>}
                   </div>
 
                   <button
                     onClick={() => handleOpenOrderModal(h)}
-                    className="w-full py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-xl text-sm transition-colors shadow-xs"
+                    style={{ width: '100%', padding: '0.6rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem' }}
                   >
                     🛒 Place Order
                   </button>
@@ -364,60 +432,40 @@ const BuyerDashboard = () => {
 
       {/* TAB 3: MANDI PRICES */}
       {activeTab === 'prices' && (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+        <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
           <MandiPrices />
         </div>
       )}
 
       {/* TAB 4: VERIFICATION CREDENTIALS */}
       {activeTab === 'verification' && (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 max-w-3xl">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">🛡️ Buyer Verification Credentials</h2>
-          <p className="text-sm text-gray-600 mb-6">
+        <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem', maxWidth: '700px' }}>
+          <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '0.5rem' }}>🛡️ Buyer Verification Credentials</h2>
+          <p style={{ fontSize: '0.85rem', color: '#9ca3af', marginBottom: '1.25rem' }}>
             FarmOS verified buyers receive lower platform fees, direct contact access with farmers, and trusted buyer badges.
           </p>
 
-          <div className="mb-6">
+          <div style={{ marginBottom: '1.25rem' }}>
             <TrustBadge status={user?.verification_status} role="buyer" size="lg" />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mb-6">
-            <div className="p-3.5 bg-gray-50 rounded-xl">
-              <span className="text-xs text-gray-500 block font-medium">e-NAM Reference ID</span>
-              <span className="font-semibold text-gray-900 font-mono">{user?.enam_reference || 'Not provided'}</span>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
+            <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
+              <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>e-NAM Reference ID</span>
+              <span style={{ fontWeight: 700, color: '#f3f4f6', fontFamily: 'monospace' }}>{user?.enam_reference || 'Not provided'}</span>
             </div>
-            <div className="p-3.5 bg-gray-50 rounded-xl">
-              <span className="text-xs text-gray-500 block font-medium">Udyam Registration Reference</span>
-              <span className="font-semibold text-gray-900 font-mono">{user?.udyam_reference || 'Not provided'}</span>
-            </div>
-            <div className="p-3.5 bg-gray-50 rounded-xl">
-              <span className="text-xs text-gray-500 block font-medium">Official Website</span>
-              <span className="font-semibold text-gray-900">
-                {user?.official_website ? (
-                  <a href={user.official_website} target="_blank" rel="noreferrer" className="text-sky-600 hover:underline">
-                    {user.official_website}
-                  </a>
-                ) : 'Not provided'}
-              </span>
-            </div>
-            <div className="p-3.5 bg-gray-50 rounded-xl">
-              <span className="text-xs text-gray-500 block font-medium">Buying Capacity</span>
-              <span className="font-semibold text-gray-900">{user?.buying_capacity || 'Not specified'}</span>
+            <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
+              <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>Udyam Registration</span>
+              <span style={{ fontWeight: 700, color: '#f3f4f6', fontFamily: 'monospace' }}>{user?.udyam_reference || 'Not provided'}</span>
             </div>
           </div>
 
-          {user?.verification_notes && (
-            <div className="p-3.5 bg-amber-50 text-amber-900 rounded-xl text-xs border border-amber-200 mb-6">
-              <strong>Admin Review Note:</strong> {user.verification_notes}
-            </div>
-          )}
-
-          <div className="pt-4 border-t">
+          <div style={{ pt: '1rem', borderTop: '1px solid rgba(31, 56, 42, 0.8)' }}>
             <button
               onClick={() => navigate('/profile')}
-              className="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-xl text-sm"
+              style={{ padding: '0.65rem 1.25rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem' }}
             >
-              ✏️ Update Verification Credentials in Profile
+              ✏️ Update Verification Credentials
             </button>
           </div>
         </div>
@@ -425,27 +473,27 @@ const BuyerDashboard = () => {
 
       {/* Modal: Place Order */}
       {selectedHarvest && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl relative">
-            <div className="flex justify-between items-center pb-4 border-b">
-              <h3 className="text-xl font-bold text-gray-900">🛒 Order Produce: {selectedHarvest.crop_name}</h3>
-              <button onClick={() => setSelectedHarvest(null)} className="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '20px', maxWidth: '480px', width: '100%', padding: '1.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid rgba(31, 56, 42, 0.8)', paddingBottom: '0.75rem' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6' }}>🛒 Order Produce: {selectedHarvest.crop_name}</h3>
+              <button onClick={() => setSelectedHarvest(null)} style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '1.2rem', cursor: 'pointer' }}>✕</button>
             </div>
 
             {orderError && (
-              <div className="mt-4 p-3 bg-red-50 text-red-800 rounded-lg text-xs border border-red-200">{orderError}</div>
+              <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#ef4444', padding: '0.75rem', borderRadius: '10px', fontSize: '0.8rem', marginBottom: '1rem' }}>{orderError}</div>
             )}
 
-            <form onSubmit={handlePlaceOrderSubmit} className="space-y-4 pt-4">
-              <div className="bg-gray-50 p-3 rounded-xl text-xs space-y-1">
-                <div>Farmer: <strong>{selectedHarvest.farmer_name || 'Verified Farmer'}</strong></div>
+            <form onSubmit={handlePlaceOrderSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ backgroundColor: '#0c140e', padding: '0.85rem', borderRadius: '10px', fontSize: '0.82rem', color: '#9ca3af', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                <div>Farmer: <strong style={{ color: '#f3f4f6' }}>{selectedHarvest.farmer_name || 'Verified Farmer'}</strong></div>
                 <div>Location: 📍 {selectedHarvest.location}</div>
-                <div>Price: <strong>₹{selectedHarvest.price} / {selectedHarvest.unit}</strong></div>
-                <div>Stock Available: <strong>{selectedHarvest.quantity} {selectedHarvest.unit}</strong></div>
+                <div>Price: <strong style={{ color: '#10b981' }}>₹{selectedHarvest.price} / {selectedHarvest.unit}</strong></div>
+                <div>Available: <strong style={{ color: '#f3f4f6' }}>{selectedHarvest.quantity} {selectedHarvest.unit}</strong></div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>
                   Order Quantity ({selectedHarvest.unit}) *
                 </label>
                 <input
@@ -455,30 +503,20 @@ const BuyerDashboard = () => {
                   max={selectedHarvest.quantity}
                   value={orderQuantity}
                   onChange={(e) => setOrderQuantity(e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500 outline-hidden"
+                  style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.6rem 0.85rem', color: '#f3f4f6' }}
                   required
                 />
               </div>
 
-              <div className="bg-emerald-50 p-3 rounded-xl text-sm flex justify-between font-bold text-emerald-900">
-                <span>Estimated Total Price:</span>
+              <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.25)', padding: '0.85rem', borderRadius: '10px', fontSize: '0.9rem', display: 'flex', justifyContent: 'space-between', fontWeight: 700, color: '#10b981' }}>
+                <span>Estimated Total:</span>
                 <span>₹{(Number(orderQuantity || 0) * Number(selectedHarvest.price || 0)).toLocaleString()}</span>
               </div>
 
-              <div className="pt-4 border-t flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setSelectedHarvest(null)}
-                  className="px-4 py-2 border rounded-lg text-sm text-gray-700 hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={orderSubmitting}
-                  className="px-5 py-2 bg-sky-600 text-white rounded-lg text-sm font-medium hover:bg-sky-700 transition-colors"
-                >
-                  {orderSubmitting ? 'Placing Order...' : 'Confirm Purchase Order'}
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                <button type="button" onClick={() => setSelectedHarvest(null)} style={{ padding: '0.55rem 1.1rem', backgroundColor: '#16261d', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#9ca3af', borderRadius: '8px', fontSize: '0.85rem' }}>Cancel</button>
+                <button type="submit" disabled={orderSubmitting} style={{ padding: '0.55rem 1.25rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '8px', fontSize: '0.85rem' }}>
+                  {orderSubmitting ? 'Placing Order...' : 'Confirm Order'}
                 </button>
               </div>
             </form>
