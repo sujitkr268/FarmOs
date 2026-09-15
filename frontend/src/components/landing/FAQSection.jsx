@@ -1,28 +1,30 @@
 import React, { useState } from 'react'
+import { useLanguage } from '../../context/LanguageContext'
 
 export const FAQSection = () => {
+  const { t } = useLanguage()
   const [openIndex, setOpenIndex] = useState(null)
 
   const faqs = [
     {
-      q: 'How does FarmOS calculate the Best Opportunity and Net Returns?',
-      a: 'FarmOS fetches live Agmarknet mandi rates for your crop in nearby regional hubs, computes exact road distance via OpenRouteService, deducts estimated freight costs based on payload size, and ranks markets by net profit in your hand.'
+      q: t('landing.faq1Q', 'How does FarmOS calculate the Best Opportunity and Net Returns?'),
+      a: t('landing.faq1A', 'FarmOS fetches live Agmarknet mandi rates for your crop in nearby regional hubs, computes exact road distance via OpenRouteService, deducts estimated freight costs based on payload size, and ranks markets by net profit in your hand.')
     },
     {
-      q: 'Is FarmOS free for farmers to use?',
-      a: 'Yes, searching mandi prices, viewing weather forecasts, computing freight costs, and asking FarmOS AI is 100% free for registered farmers.'
+      q: t('landing.faq2Q', 'Is FarmOS free for farmers to use?'),
+      a: t('landing.faq2A', 'Yes, searching mandi prices, viewing weather forecasts, computing freight costs, and asking FarmOS AI is 100% free for registered farmers.')
     },
     {
-      q: 'How are Buyers and Traders verified on FarmOS?',
-      a: 'FarmOS matches accounts against official government evidence (APEDA AgriExchange, WBSAMB APMC licenses, Udyam MSME certificates, and company portals) to grant Verified Business badges.'
+      q: t('landing.faq3Q', 'How are Buyers and Traders verified on FarmOS?'),
+      a: t('landing.faq3A', 'FarmOS matches accounts against official government evidence (APEDA AgriExchange, WBSAMB APMC licenses, Udyam MSME certificates, and company portals) to grant Verified Business badges.')
     },
     {
-      q: 'Is my phone number kept private from public search?',
-      a: 'Yes! FarmOS strictly enforces contact privacy rules. Your phone number and email are never shown publicly unless you explicitly enable the "Show Contact Publicly" setting.'
+      q: t('landing.faq4Q', 'Is my phone number kept private from public search?'),
+      a: t('landing.faq4A', 'Yes! FarmOS strictly enforces contact privacy rules. Your phone number and email are never shown publicly unless you explicitly enable the "Show Contact Publicly" setting.')
     },
     {
-      q: 'Does FarmOS support Hindi and regional language display?',
-      a: 'Yes, FarmOS offers full English and Hindi (हिंदी) language toggling across the entire application shell, navigation, and AI assistant.'
+      q: t('landing.faq5Q', 'Does FarmOS support Hindi and regional language display?'),
+      a: t('landing.faq5A', 'Yes, FarmOS offers full English and Hindi (हिंदी) language toggling across the entire application shell, navigation, and AI assistant.')
     }
   ]
 
@@ -48,7 +50,7 @@ export const FAQSection = () => {
             display: 'block',
             marginBottom: '0.5rem'
           }}>
-            Got Questions?
+            {t('landing.faqBadge', 'Got Questions?')}
           </span>
           <h2 style={{
             fontSize: '2.5rem',
@@ -57,10 +59,10 @@ export const FAQSection = () => {
             letterSpacing: '-0.02em',
             margin: 0
           }}>
-            Frequently Asked Questions
+            {t('landing.faqTitle', 'Frequently Asked Questions')}
           </h2>
           <p style={{ fontSize: '1.05rem', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
-            Everything you need to know about FarmOS market comparisons and trust verification.
+            {t('landing.faqSub', 'Everything you need to know about FarmOS market comparisons and trust verification.')}
           </p>
         </div>
 

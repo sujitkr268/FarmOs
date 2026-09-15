@@ -3,8 +3,10 @@ import { getRegisteredBuyers } from '../../api/buyerApi'
 import { getPublicTraders } from '../../api/traderApi'
 import TrustBadge from '../TrustBadge'
 import { Link } from 'react-router-dom'
+import { useLanguage } from '../../context/LanguageContext'
 
 export const BuyerSection = () => {
+  const { t } = useLanguage()
   const [buyersList, setBuyersList] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -68,7 +70,7 @@ export const BuyerSection = () => {
             display: 'block',
             marginBottom: '0.5rem'
           }}>
-            Verified Agricultural Network
+            {t('landing.networkBadge', 'Verified Agricultural Network')}
           </span>
           <h2 style={{
             fontSize: '2.5rem',
@@ -77,10 +79,10 @@ export const BuyerSection = () => {
             letterSpacing: '-0.02em',
             margin: 0
           }}>
-            Connect With Potential Buyers
+            {t('landing.networkTitle', 'Connect With Potential Buyers')}
           </h2>
           <p style={{ fontSize: '1.05rem', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
-            Discover legitimate wholesalers, rice millers, and verified FarmOS buyers in your region.
+            {t('landing.networkSub', 'Discover legitimate wholesalers, rice millers, and verified FarmOS buyers in your region.')}
           </p>
         </div>
 
@@ -92,7 +94,9 @@ export const BuyerSection = () => {
           marginBottom: '2.5rem'
         }}>
           {loading ? (
-            <div style={{ textAlignment: 'center', padding: '2rem', color: '#64748b' }}>Loading buyers...</div>
+            <div style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>
+              {t('common.loading', 'Loading buyers...')}
+            </div>
           ) : (
             buyersList.map((b) => (
               <div key={b.id} style={{
@@ -117,9 +121,9 @@ export const BuyerSection = () => {
                   </div>
 
                   <div style={{ fontSize: '0.88rem', color: '#475569', display: 'flex', flexDirection: 'column', gap: '0.4rem', marginBottom: '1.25rem' }}>
-                    <div>📍 <strong>Location:</strong> {b.location}</div>
-                    <div>🌾 <strong>Commodities:</strong> <span style={{ color: '#059669', fontWeight: 600 }}>{b.commodities}</span></div>
-                    <div>📦 <strong>Capacity:</strong> {b.capacity}</div>
+                    <div>📍 <strong>{t('landing.lblLocation', 'Location:')}</strong> {b.location}</div>
+                    <div>🌾 <strong>{t('landing.lblCommodities', 'Commodities:')}</strong> <span style={{ color: '#059669', fontWeight: 600 }}>{b.commodities}</span></div>
+                    <div>📦 <strong>{t('landing.lblCapacity', 'Capacity:')}</strong> {b.capacity}</div>
                   </div>
                 </div>
 
@@ -139,7 +143,7 @@ export const BuyerSection = () => {
                         textDecoration: 'none'
                       }}
                     >
-                      📞 Contact Buyer ({b.phone})
+                      {t('landing.btnContactBuyer', '📞 Contact Buyer')} ({b.phone})
                     </a>
                   ) : (
                     <Link
@@ -157,7 +161,7 @@ export const BuyerSection = () => {
                         textDecoration: 'none'
                       }}
                     >
-                      🔒 Directory Listing (View Profile)
+                      {t('landing.btnDirectoryListing', '🔒 Directory Listing (View Profile)')}
                     </Link>
                   )}
                 </div>
@@ -184,7 +188,7 @@ export const BuyerSection = () => {
               boxShadow: '0 4px 15px rgba(2, 44, 34, 0.2)'
             }}
           >
-            <span>Explore Full Business Directory</span>
+            <span>{t('landing.btnExploreDirectory', 'Explore Full Business Directory')}</span>
             <span>➔</span>
           </Link>
         </div>

@@ -1,7 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useLanguage } from '../../context/LanguageContext'
 
 export const FinalCTA = () => {
+  const { t } = useLanguage()
+
   return (
     <section style={{
       position: 'relative',
@@ -21,8 +24,8 @@ export const FinalCTA = () => {
           letterSpacing: '-0.025em',
           marginBottom: '1.25rem'
         }} className="cta-heading">
-          Your Harvest Deserves the{' '}
-          <span style={{ color: '#10b981' }}>Best Opportunity</span>.
+          {t('landing.finalCtaTitlePrefix', 'Your Harvest Deserves the')}{' '}
+          <span style={{ color: '#10b981' }}>{t('landing.finalCtaTitleHighlight', 'Best Opportunity')}</span>.
         </h2>
 
         <p style={{
@@ -32,7 +35,7 @@ export const FinalCTA = () => {
           maxWidth: '650px',
           margin: '0 auto 2.5rem'
         }}>
-          Make smarter market decisions with FarmOS. Compare mandi prices, calculate logistics freight, and connect directly with buyers.
+          {t('landing.finalCtaSub', 'Make smarter market decisions with FarmOS. Compare mandi prices, calculate logistics freight, and connect directly with buyers.')}
         </p>
 
         <div style={{ display: 'flex', gap: '1.25rem', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -52,7 +55,7 @@ export const FinalCTA = () => {
               gap: '0.5rem'
             }}
           >
-            <span>Get Started Free</span>
+            <span>{t('landing.finalCtaBtnPrimary', 'Get Started Free')}</span>
             <span>➔</span>
           </Link>
 
@@ -70,7 +73,7 @@ export const FinalCTA = () => {
               backdropFilter: 'blur(8px)'
             }}
           >
-            Explore FarmOS
+            {t('landing.finalCtaBtnSecondary', 'Explore FarmOS')}
           </Link>
         </div>
       </div>

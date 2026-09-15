@@ -1,6 +1,9 @@
 import React from 'react'
+import { useLanguage } from '../../context/LanguageContext'
 
 export const FarmerSection = () => {
+  const { t } = useLanguage()
+
   return (
     <section style={{
       position: 'relative',
@@ -22,7 +25,7 @@ export const FarmerSection = () => {
           display: 'block',
           marginBottom: '0.75rem'
         }}>
-          Empowering Indian Agriculture
+          {t('landing.farmerShowcaseBadge', 'Empowering Indian Agriculture')}
         </span>
 
         <h2 style={{
@@ -33,7 +36,7 @@ export const FarmerSection = () => {
           letterSpacing: '-0.025em',
           marginBottom: '1.25rem'
         }}>
-          Better Decisions. Better Markets. Better Opportunities.
+          {t('landing.farmerShowcaseTitle', 'Better Decisions. Better Markets. Better Opportunities.')}
         </h2>
 
         <p style={{
@@ -43,7 +46,7 @@ export const FarmerSection = () => {
           maxWidth: '700px',
           margin: '0 auto 3rem'
         }}>
-          Transforming agricultural trade for farmers, aggregators, and wholesalers across West Bengal and India.
+          {t('landing.farmerShowcaseSub', 'Transforming agricultural trade for farmers, aggregators, and wholesalers across West Bengal and India.')}
         </p>
 
         {/* Stats Row */}
@@ -59,17 +62,23 @@ export const FarmerSection = () => {
         }}>
           <div>
             <h3 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#34d399', margin: 0 }}>500+</h3>
-            <span style={{ fontSize: '0.85rem', color: '#cbd5e1', textTransform: 'uppercase', fontWeight: 600 }}>APMC Mandis Tracked</span>
+            <span style={{ fontSize: '0.85rem', color: '#cbd5e1', textTransform: 'uppercase', fontWeight: 600 }}>
+              {t('landing.stat1Label', 'APMC Mandis Tracked')}
+            </span>
           </div>
 
           <div>
             <h3 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#34d399', margin: 0 }}>₹0</h3>
-            <span style={{ fontSize: '0.85rem', color: '#cbd5e1', textTransform: 'uppercase', fontWeight: 600 }}>Middleman Fees</span>
+            <span style={{ fontSize: '0.85rem', color: '#cbd5e1', textTransform: 'uppercase', fontWeight: 600 }}>
+              {t('landing.stat2Label', 'Middleman Fees')}
+            </span>
           </div>
 
           <div>
             <h3 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#34d399', margin: 0 }}>100%</h3>
-            <span style={{ fontSize: '0.85rem', color: '#cbd5e1', textTransform: 'uppercase', fontWeight: 600 }}>Transparent Logistics</span>
+            <span style={{ fontSize: '0.85rem', color: '#cbd5e1', textTransform: 'uppercase', fontWeight: 600 }}>
+              {t('landing.stat3Label', 'Transparent Logistics')}
+            </span>
           </div>
         </div>
       </div>

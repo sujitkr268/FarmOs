@@ -1,42 +1,45 @@
 import React from 'react'
+import { useLanguage } from '../../context/LanguageContext'
 
 export const SmartAgSection = () => {
+  const { t } = useLanguage()
+
   const cards = [
     {
-      title: 'Market Intelligence',
-      desc: 'Real-time Mandi market rates across APMCs to compare commodity prices state-wide.',
+      title: t('landing.featMarketIntel', 'Market Intelligence'),
+      desc: t('landing.featMarketIntelDesc', 'Real-time Mandi market rates across APMCs to compare commodity prices state-wide.'),
       icon: '📊',
-      badge: 'APMC Live Rates'
+      badge: t('landing.featMarketIntelBadge', 'APMC Live Rates')
     },
     {
-      title: 'Smart Logistics',
-      desc: 'Accurate transport cost calculation based on distance, quantity, and vehicle type.',
+      title: t('landing.featLogistics', 'Smart Logistics'),
+      desc: t('landing.featLogisticsDesc', 'Accurate transport cost calculation based on distance, quantity, and vehicle type.'),
       icon: '🚚',
-      badge: 'Freight Calculator'
+      badge: t('landing.featLogisticsBadge', 'Freight Calculator')
     },
     {
-      title: 'Best Opportunities',
-      desc: 'Automated ranking engine calculating actual net earnings after all transport costs.',
+      title: t('landing.featOpp', 'Best Opportunities'),
+      desc: t('landing.featOppDesc', 'Automated ranking engine calculating actual net earnings after all transport costs.'),
       icon: '🏆',
-      badge: 'Profit Engine'
+      badge: t('landing.featOppBadge', 'Profit Engine')
     },
     {
-      title: 'Potential Buyers',
-      desc: 'Direct access to verified agricultural wholesalers, rice millers, and APMC traders.',
+      title: t('landing.featBuyers', 'Potential Buyers'),
+      desc: t('landing.featBuyersDesc', 'Direct access to verified agricultural wholesalers, rice millers, and APMC traders.'),
       icon: '🤝',
-      badge: 'Verified Buyers'
+      badge: t('landing.featBuyersBadge', 'Verified Buyers')
     },
     {
-      title: 'Weather Intelligence',
-      desc: '7-day localized agricultural weather forecasts to optimize harvesting and shipping.',
+      title: t('landing.featWeather', 'Weather Intelligence'),
+      desc: t('landing.featWeatherDesc', '7-day localized agricultural weather forecasts to optimize harvesting and shipping.'),
       icon: '🌤️',
-      badge: 'Open-Meteo API'
+      badge: t('landing.featWeatherBadge', 'Open-Meteo API')
     },
     {
-      title: 'FarmOS AI',
-      desc: 'Gemini AI assistant offering instant guidance on market prices, crops, and agronomy.',
+      title: t('landing.featAI', 'FarmOS AI'),
+      desc: t('landing.featAIDesc', 'Gemini AI assistant offering instant guidance on market prices, crops, and agronomy.'),
       icon: '🤖',
-      badge: 'Gemini AI'
+      badge: t('landing.featAIBadge', 'Gemini AI')
     }
   ]
 
@@ -58,7 +61,7 @@ export const SmartAgSection = () => {
             display: 'block',
             marginBottom: '0.5rem'
           }}>
-            Core Features
+            {t('landing.coreFeaturesBadge', 'Core Features')}
           </span>
           <h2 style={{
             fontSize: '2.5rem',
@@ -67,10 +70,10 @@ export const SmartAgSection = () => {
             letterSpacing: '-0.02em',
             margin: 0
           }}>
-            Smart Agriculture. Better Decisions.
+            {t('landing.smartAgTitle', 'Smart Agriculture. Better Decisions.')}
           </h2>
           <p style={{ fontSize: '1.05rem', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
-            Empowering Indian farmers with data-driven market insights and smart logistics tools.
+            {t('landing.smartAgSub', 'Empowering Indian farmers with data-driven market insights and smart logistics tools.')}
           </p>
         </div>
 

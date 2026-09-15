@@ -1,7 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useLanguage } from '../../context/LanguageContext'
 
 export const AISection = () => {
+  const { t } = useLanguage()
+
   return (
     <section style={{
       backgroundColor: '#064e3b',
@@ -28,7 +31,7 @@ export const AISection = () => {
               display: 'block',
               marginBottom: '0.5rem'
             }}>
-              Gemini AI Powered
+              {t('landing.aiBadge', 'Gemini AI Powered')}
             </span>
             <h2 style={{
               fontSize: '2.5rem',
@@ -37,21 +40,21 @@ export const AISection = () => {
               letterSpacing: '-0.02em',
               marginBottom: '1rem'
             }}>
-              Meet Your FarmOS AI Assistant
+              {t('landing.aiTitle', 'Meet Your FarmOS AI Assistant')}
             </h2>
             <p style={{ fontSize: '1.1rem', color: '#cbd5e1', lineHeight: 1.6, marginBottom: '2rem' }}>
-              Ask about market prices, weather forecasts, crop advisory, transport logistics, verified buyers, and optimal selling opportunities in plain English or Hindi.
+              {t('landing.aiSub', 'Ask about market prices, weather forecasts, crop advisory, transport logistics, verified buyers, and optimal selling opportunities in plain English or Hindi.')}
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '2.25rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.95rem', color: '#e2e8f0' }}>
-                <span style={{ color: '#10b981', fontWeight: 800 }}>✓</span> Real-Time Mandi Price Data Injection
+                <span style={{ color: '#10b981', fontWeight: 800 }}>✓</span> {t('landing.aiCheck1', 'Real-Time Mandi Price Data Injection')}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.95rem', color: '#e2e8f0' }}>
-                <span style={{ color: '#10b981', fontWeight: 800 }}>✓</span> Multilingual Voice & Text Support (English / हिंदी)
+                <span style={{ color: '#10b981', fontWeight: 800 }}>✓</span> {t('landing.aiCheck2', 'Multilingual Voice & Text Support (English / हिंदी)')}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.95rem', color: '#e2e8f0' }}>
-                <span style={{ color: '#10b981', fontWeight: 800 }}>✓</span> Automated Freight & Profit Comparisons
+                <span style={{ color: '#10b981', fontWeight: 800 }}>✓</span> {t('landing.aiCheck3', 'Automated Freight & Profit Comparisons')}
               </div>
             </div>
 
@@ -71,7 +74,7 @@ export const AISection = () => {
                 boxShadow: '0 4px 20px rgba(16, 185, 129, 0.4)'
               }}
             >
-              <span>Ask FarmOS AI</span>
+              <span>{t('landing.aiAskBtn', 'Ask FarmOS AI')}</span>
               <span>➔</span>
             </Link>
           </div>
@@ -108,8 +111,12 @@ export const AISection = () => {
                   🤖
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>FarmOS AI Assistant</h4>
-                  <span style={{ fontSize: '0.75rem', color: '#34d399' }}>● Online & Ready</span>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>
+                    {t('landing.aiHeaderTitle', 'FarmOS AI Assistant')}
+                  </h4>
+                  <span style={{ fontSize: '0.75rem', color: '#34d399' }}>
+                    {t('landing.aiHeaderStatus', '● Online & Ready')}
+                  </span>
                 </div>
               </div>
 
@@ -126,7 +133,7 @@ export const AISection = () => {
                   borderRadius: '16px 16px 4px 16px',
                   maxWidth: '85%'
                 }}>
-                  Where should I sell my potato harvest today?
+                  {t('landing.aiDemoQ', 'Where should I sell my potato harvest today?')}
                 </div>
 
                 {/* AI Response */}
@@ -141,7 +148,7 @@ export const AISection = () => {
                   lineHeight: 1.5,
                   maxWidth: '92%'
                 }}>
-                  Based on current Mandi rates and logistics calculations, <strong>Birbhum APMC</strong> provides your highest net return (<strong>₹8,042 net margin</strong>) after deducting transport costs.
+                  {t('landing.aiDemoA', 'Based on current Mandi rates and logistics calculations, Birbhum APMC provides your highest net return (₹8,042 net margin) after deducting transport costs.')}
                 </div>
               </div>
             </div>

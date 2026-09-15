@@ -42,35 +42,41 @@ export const LandingFooter = () => {
               </span>
             </Link>
             <p style={{ fontSize: '0.88rem', color: '#94a3b8', lineHeight: 1.6, margin: 0 }}>
-              Connecting Every Harvest to Its Best Opportunity. Empowering Indian farmers with data-driven market insights and smart freight calculations.
+              {t('landing.footerDesc', 'Connecting Every Harvest to Its Best Opportunity. Empowering Indian farmers with data-driven market insights and smart freight calculations.')}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 style={{ color: '#ffffff', fontSize: '1rem', fontWeight: 800, marginBottom: '1rem' }}>Platform Features</h4>
+            <h4 style={{ color: '#ffffff', fontSize: '1rem', fontWeight: 800, marginBottom: '1rem' }}>
+              {t('landing.footerPlatformHeaders', 'Platform Features')}
+            </h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.88rem' }}>
-              <li><Link to="/" style={{ color: '#cbd5e1', textDecoration: 'none' }}>Home</Link></li>
-              <li><Link to="/market-prices" style={{ color: '#cbd5e1', textDecoration: 'none' }}>Market Prices</Link></li>
-              <li><Link to="/marketplace" style={{ color: '#cbd5e1', textDecoration: 'none' }}>Marketplace</Link></li>
-              <li><Link to="/weather" style={{ color: '#cbd5e1', textDecoration: 'none' }}>Weather Intelligence</Link></li>
+              <li><Link to="/" style={{ color: '#cbd5e1', textDecoration: 'none' }}>{t('nav.home', 'Home')}</Link></li>
+              <li><Link to="/market-prices" style={{ color: '#cbd5e1', textDecoration: 'none' }}>{t('nav.marketPrices', 'Market Prices')}</Link></li>
+              <li><Link to="/marketplace" style={{ color: '#cbd5e1', textDecoration: 'none' }}>{t('nav.marketplace', 'Marketplace')}</Link></li>
+              <li><Link to="/weather" style={{ color: '#cbd5e1', textDecoration: 'none' }}>{t('nav.weather', 'Weather Intelligence')}</Link></li>
             </ul>
           </div>
 
           {/* Business & Support */}
           <div>
-            <h4 style={{ color: '#ffffff', fontSize: '1rem', fontWeight: 800, marginBottom: '1rem' }}>Network & Support</h4>
+            <h4 style={{ color: '#ffffff', fontSize: '1rem', fontWeight: 800, marginBottom: '1rem' }}>
+              {t('landing.footerNetworkHeaders', 'Network & Support')}
+            </h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.88rem' }}>
-              <li><Link to="/traders" style={{ color: '#cbd5e1', textDecoration: 'none' }}>Trader Directory</Link></li>
-              <li><Link to="/assistant" style={{ color: '#cbd5e1', textDecoration: 'none' }}>FarmOS AI Assistant</Link></li>
-              <li><a href="#about" style={{ color: '#cbd5e1', textDecoration: 'none' }}>About FarmOS</a></li>
-              <li><a href="mailto:support@farmos.org" style={{ color: '#cbd5e1', textDecoration: 'none' }}>Contact & Help</a></li>
+              <li><Link to="/traders" style={{ color: '#cbd5e1', textDecoration: 'none' }}>{t('nav.traders', 'Trader Directory')}</Link></li>
+              <li><Link to="/assistant" style={{ color: '#cbd5e1', textDecoration: 'none' }}>{t('nav.assistant', 'FarmOS AI Assistant')}</Link></li>
+              <li><a href="#about" style={{ color: '#cbd5e1', textDecoration: 'none' }}>{t('landing.footerAbout', 'About FarmOS')}</a></li>
+              <li><a href="mailto:support@farmos.org" style={{ color: '#cbd5e1', textDecoration: 'none' }}>{t('landing.footerContact', 'Contact & Help')}</a></li>
             </ul>
           </div>
 
           {/* Language Options */}
           <div>
-            <h4 style={{ color: '#ffffff', fontSize: '1rem', fontWeight: 800, marginBottom: '1rem' }}>Language / भाषा</h4>
+            <h4 style={{ color: '#ffffff', fontSize: '1rem', fontWeight: 800, marginBottom: '1rem' }}>
+              {t('landing.footerLangHeader', 'Language / भाषा')}
+            </h4>
             <div style={{ display: 'flex', gap: '0.6rem', marginBottom: '1rem' }}>
               <button
                 onClick={() => setLanguage('en')}
@@ -104,7 +110,7 @@ export const LandingFooter = () => {
               </button>
             </div>
             <span style={{ fontSize: '0.8rem', color: '#64748b', display: 'block' }}>
-              Government Agmarknet & OpenRouteService Enabled
+              {t('landing.footerAgmarknetNotice', 'Government Agmarknet & OpenRouteService Enabled')}
             </span>
           </div>
         </div>
@@ -121,12 +127,12 @@ export const LandingFooter = () => {
           gap: '1rem'
         }}>
           <div>
-            © {new Date().getFullYear()} FarmOS AgTech Inc. All rights reserved.
+            © {new Date().getFullYear()} {t('landing.footerRights', 'FarmOS AgTech Inc. All rights reserved.')}
           </div>
           <div style={{ display: 'flex', gap: '1.25rem' }}>
-            <span>Privacy Policy</span>
-            <span>Terms of Service</span>
-            <span>APMC Data Compliance</span>
+            <span>{t('landing.footerPrivacy', 'Privacy Policy')}</span>
+            <span>{t('landing.footerTerms', 'Terms of Service')}</span>
+            <span>{t('landing.footerApmcCompliance', 'APMC Data Compliance')}</span>
           </div>
         </div>
       </div>

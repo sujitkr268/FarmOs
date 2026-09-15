@@ -50,7 +50,7 @@ export const HeroSection = () => {
             boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)'
           }}>
             <span>🌱</span>
-            <span>Smart Farming • Better Markets • Better Returns</span>
+            <span>{t('landing.heroBadge', 'Smart Farming • Better Markets • Better Returns')}</span>
           </div>
 
           {/* Main Headline */}
@@ -62,14 +62,14 @@ export const HeroSection = () => {
             marginBottom: '1.5rem',
             color: '#ffffff'
           }} className="hero-title">
-            Connecting Every Harvest to Its{' '}
+            {t('landing.heroTitlePrefix', 'Connecting Every Harvest to Its')}{' '}
             <span style={{
               color: '#10b981',
               background: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
-              Best Opportunity
+              {t('landing.heroTitleHighlight', 'Best Opportunity')}
             </span>
           </h1>
 
@@ -81,7 +81,7 @@ export const HeroSection = () => {
             maxWidth: '650px',
             marginBottom: '2.5rem'
           }}>
-            FarmOS helps farmers compare markets, calculate transport costs, discover potential buyers and make better selling decisions.
+            {t('landing.heroDesc', 'FarmOS helps farmers compare markets, calculate transport costs, discover potential buyers and make better selling decisions.')}
           </p>
 
           {/* CTA Buttons */}
@@ -104,7 +104,7 @@ export const HeroSection = () => {
               }}
               className="hero-primary-btn"
             >
-              <span>Get Started</span>
+              <span>{t('landing.getStarted', 'Get Started')}</span>
               <span>➔</span>
             </Link>
 
@@ -123,7 +123,7 @@ export const HeroSection = () => {
                 transition: 'all 0.2s ease'
               }}
             >
-              Explore FarmOS
+              {t('landing.explore', 'Explore FarmOS')}
             </Link>
           </div>
         </div>
@@ -155,8 +155,12 @@ export const HeroSection = () => {
                 ⚡
               </div>
               <div>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>Smarter Decisions</h3>
-                <span style={{ fontSize: '0.8rem', color: '#34d399' }}>Real-time Mandi & Freight Analytics</span>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>
+                  {t('landing.smarterDecisions', 'Smarter Decisions')}
+                </h3>
+                <span style={{ fontSize: '0.8rem', color: '#34d399' }}>
+                  {t('landing.mandiAnalyticsSub', 'Real-time Mandi & Freight Analytics')}
+                </span>
               </div>
             </div>
 
@@ -172,8 +176,12 @@ export const HeroSection = () => {
               }}>
                 <span style={{ fontSize: '1.5rem' }}>📊</span>
                 <div>
-                  <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#ffffff', margin: 0 }}>Compare Markets</h4>
-                  <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Live APMC price benchmarks</span>
+                  <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#ffffff', margin: 0 }}>
+                    {t('landing.compareMarkets', 'Compare Markets')}
+                  </h4>
+                  <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
+                    {t('landing.liveApmcBench', 'Live APMC price benchmarks')}
+                  </span>
                 </div>
               </div>
 
@@ -188,8 +196,12 @@ export const HeroSection = () => {
               }}>
                 <span style={{ fontSize: '1.5rem' }}>🚚</span>
                 <div>
-                  <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#ffffff', margin: 0 }}>Calculate Logistics</h4>
-                  <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Distance & freight cost deduction</span>
+                  <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#ffffff', margin: 0 }}>
+                    {t('landing.calcLogistics', 'Calculate Logistics')}
+                  </h4>
+                  <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
+                    {t('landing.distFreightDeduct', 'Distance & freight cost deduction')}
+                  </span>
                 </div>
               </div>
 
@@ -204,8 +216,12 @@ export const HeroSection = () => {
               }}>
                 <span style={{ fontSize: '1.5rem' }}>🤝</span>
                 <div>
-                  <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#ffffff', margin: 0 }}>Find Better Buyers</h4>
-                  <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Verified wholesalers & APMCs</span>
+                  <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#ffffff', margin: 0 }}>
+                    {t('landing.findBuyers', 'Find Better Buyers')}
+                  </h4>
+                  <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
+                    {t('landing.verifiedWholesalers', 'Verified wholesalers & APMCs')}
+                  </span>
                 </div>
               </div>
             </div>

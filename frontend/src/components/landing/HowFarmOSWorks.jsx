@@ -1,13 +1,16 @@
 import React from 'react'
+import { useLanguage } from '../../context/LanguageContext'
 
 export const HowFarmOSWorks = () => {
+  const { t } = useLanguage()
+
   const steps = [
-    { num: '01', title: 'Harvest', desc: 'Register crop stock details', icon: '🌾' },
-    { num: '02', title: 'Market Prices', desc: 'Fetch live Mandi prices', icon: '📈' },
-    { num: '03', title: 'Opportunity Analysis', desc: 'Evaluate net margins', icon: '🧠' },
-    { num: '04', title: 'Smart Logistics', desc: 'Calculate transport costs', icon: '🚚' },
-    { num: '05', title: 'Potential Buyers', desc: 'Connect with verified buyers', icon: '🤝' },
-    { num: '06', title: 'Better Decision', desc: 'Maximize harvest revenue', icon: '💰' }
+    { num: '01', title: t('landing.step1Title', 'Harvest'), desc: t('landing.step1Desc', 'Register crop stock details'), icon: '🌾' },
+    { num: '02', title: t('landing.step2Title', 'Market Prices'), desc: t('landing.step2Desc', 'Fetch live Mandi prices'), icon: '📈' },
+    { num: '03', title: t('landing.step3Title', 'Opportunity Analysis'), desc: t('landing.step3Desc', 'Evaluate net margins'), icon: '🧠' },
+    { num: '04', title: t('landing.step4Title', 'Smart Logistics'), desc: t('landing.step4Desc', 'Calculate transport costs'), icon: '🚚' },
+    { num: '05', title: t('landing.step5Title', 'Potential Buyers'), desc: t('landing.step5Desc', 'Connect with verified buyers'), icon: '🤝' },
+    { num: '06', title: t('landing.step6Title', 'Better Decision'), desc: t('landing.step6Desc', 'Maximize harvest revenue'), icon: '💰' }
   ]
 
   return (
@@ -28,7 +31,7 @@ export const HowFarmOSWorks = () => {
             display: 'block',
             marginBottom: '0.5rem'
           }}>
-            Simple 6-Step Workflow
+            {t('landing.workflowBadge', 'Simple 6-Step Workflow')}
           </span>
           <h2 style={{
             fontSize: '2.5rem',
@@ -37,10 +40,10 @@ export const HowFarmOSWorks = () => {
             letterSpacing: '-0.02em',
             margin: 0
           }}>
-            How FarmOS Works
+            {t('landing.workflowTitle', 'How FarmOS Works')}
           </h2>
           <p style={{ fontSize: '1.05rem', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
-            From field harvest to final deal — a streamlined process for maximum profit.
+            {t('landing.workflowSub', 'From field harvest to final deal — a streamlined process for maximum profit.')}
           </p>
         </div>
 

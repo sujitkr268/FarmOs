@@ -1,6 +1,9 @@
 import React from 'react'
+import { useLanguage } from '../../context/LanguageContext'
 
 export const MarketComparisonSection = () => {
+  const { t } = useLanguage()
+
   const markets = [
     {
       name: 'Birbhum APMC',
@@ -10,7 +13,7 @@ export const MarketComparisonSection = () => {
       gross: '₹12,000',
       net: '₹8,042',
       isBest: true,
-      badge: 'Best Option'
+      badge: t('landing.badgeBestOption', 'Best Option')
     },
     {
       name: 'Kolkata APMC',
@@ -20,7 +23,7 @@ export const MarketComparisonSection = () => {
       gross: '₹11,250',
       net: '₹7,200',
       isBest: false,
-      badge: 'Good'
+      badge: t('landing.badgeGood', 'Good')
     },
     {
       name: 'Hooghly APMC',
@@ -30,7 +33,7 @@ export const MarketComparisonSection = () => {
       gross: '₹10,500',
       net: '₹6,900',
       isBest: false,
-      badge: 'Moderate'
+      badge: t('landing.badgeModerate', 'Moderate')
     },
     {
       name: 'Burdwan APMC',
@@ -40,7 +43,7 @@ export const MarketComparisonSection = () => {
       gross: '₹10,250',
       net: '₹6,800',
       isBest: false,
-      badge: 'Standard'
+      badge: t('landing.badgeStandard', 'Standard')
     }
   ]
 
@@ -62,7 +65,7 @@ export const MarketComparisonSection = () => {
             display: 'block',
             marginBottom: '0.5rem'
           }}>
-            Multi-Mandi Analysis
+            {t('landing.compareBadge', 'Multi-Mandi Analysis')}
           </span>
           <h2 style={{
             fontSize: '2.5rem',
@@ -71,10 +74,10 @@ export const MarketComparisonSection = () => {
             letterSpacing: '-0.02em',
             margin: 0
           }}>
-            Compare Markets Before You Sell
+            {t('landing.compareTitle', 'Compare Markets Before You Sell')}
           </h2>
           <p style={{ fontSize: '1.05rem', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
-            A higher headline mandi rate doesn't always equal higher profit. FarmOS factor in freight transport costs.
+            {t('landing.compareSub', "A higher headline mandi rate doesn't always equal higher profit. FarmOS factors in freight transport costs.")}
           </p>
         </div>
 
@@ -115,15 +118,15 @@ export const MarketComparisonSection = () => {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.88rem', color: '#475569', marginBottom: '1.25rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span>Market Rate:</span>
+                    <span>{t('landing.lblMarketRate', 'Market Rate:')}</span>
                     <strong style={{ color: '#022c22' }}>{m.price} / qtl</strong>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span>Distance:</span>
+                    <span>{t('landing.lblDistance', 'Distance:')}</span>
                     <strong>{m.distance}</strong>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span>Freight Cost:</span>
+                    <span>{t('landing.lblFreightCost', 'Freight Cost:')}</span>
                     <strong style={{ color: '#ef4444' }}>{m.freight}</strong>
                   </div>
                 </div>
@@ -139,7 +142,9 @@ export const MarketComparisonSection = () => {
                 justifyContent: 'space-between',
                 alignItems: 'center'
               }}>
-                <span style={{ fontSize: '0.78rem', opacity: 0.8, textTransform: 'uppercase' }}>Net Return</span>
+                <span style={{ fontSize: '0.78rem', opacity: 0.8, textTransform: 'uppercase' }}>
+                  {t('landing.lblNetReturn', 'Net Return')}
+                </span>
                 <strong style={{ fontSize: '1.25rem', color: m.isBest ? '#34d399' : '#059669' }}>{m.net}</strong>
               </div>
             </div>

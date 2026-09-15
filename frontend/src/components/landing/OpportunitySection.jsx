@@ -1,7 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useLanguage } from '../../context/LanguageContext'
 
 export const OpportunitySection = () => {
+  const { t } = useLanguage()
+
   return (
     <section style={{
       backgroundColor: '#f7faf8',
@@ -20,7 +23,7 @@ export const OpportunitySection = () => {
             display: 'block',
             marginBottom: '0.5rem'
           }}>
-            Automated Profit Optimization
+            {t('landing.oppBadge', 'Automated Profit Optimization')}
           </span>
           <h2 style={{
             fontSize: '2.5rem',
@@ -29,10 +32,10 @@ export const OpportunitySection = () => {
             letterSpacing: '-0.02em',
             margin: 0
           }}>
-            Best Opportunity Engine
+            {t('landing.oppTitle', 'Best Opportunity Engine')}
           </h2>
           <p style={{ fontSize: '1.05rem', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
-            Calculates exact net earnings after deducting logistics freight from live mandi rates.
+            {t('landing.oppSub', 'Calculates exact net earnings after deducting logistics freight from live mandi rates.')}
           </p>
         </div>
 
@@ -61,7 +64,9 @@ export const OpportunitySection = () => {
                 <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#022c22', margin: 0 }}>
                   Potato
                 </h3>
-                <span style={{ fontSize: '0.9rem', color: '#64748b' }}>Stock Volume: 500 kg (5 Quintals)</span>
+                <span style={{ fontSize: '0.9rem', color: '#64748b' }}>
+                  {t('landing.oppStockLabel', 'Stock Volume: 500 kg (5 Quintals)')}
+                </span>
               </div>
             </div>
 
@@ -75,7 +80,7 @@ export const OpportunitySection = () => {
               letterSpacing: '0.05em',
               boxShadow: '0 4px 14px rgba(16, 185, 129, 0.3)'
             }}>
-              ★ BEST OPPORTUNITY
+              {t('landing.oppTag', '★ BEST OPPORTUNITY')}
             </span>
           </div>
 
@@ -91,19 +96,27 @@ export const OpportunitySection = () => {
             padding: '1.5rem'
           }}>
             <div>
-              <span style={{ fontSize: '0.78rem', color: '#64748b', display: 'block', textTransform: 'uppercase' }}>Best Market</span>
+              <span style={{ fontSize: '0.78rem', color: '#64748b', display: 'block', textTransform: 'uppercase' }}>
+                {t('landing.oppBestMarket', 'Best Market')}
+              </span>
               <strong style={{ fontSize: '1.15rem', color: '#022c22' }}>Birbhum APMC</strong>
             </div>
             <div>
-              <span style={{ fontSize: '0.78rem', color: '#64748b', display: 'block', textTransform: 'uppercase' }}>Market Price</span>
+              <span style={{ fontSize: '0.78rem', color: '#64748b', display: 'block', textTransform: 'uppercase' }}>
+                {t('landing.oppMarketPrice', 'Market Price')}
+              </span>
               <strong style={{ fontSize: '1.15rem', color: '#022c22' }}>₹2,400 <span style={{ fontSize: '0.8rem', fontWeight: 400 }}>/ qtl</span></strong>
             </div>
             <div>
-              <span style={{ fontSize: '0.78rem', color: '#64748b', display: 'block', textTransform: 'uppercase' }}>Distance</span>
+              <span style={{ fontSize: '0.78rem', color: '#64748b', display: 'block', textTransform: 'uppercase' }}>
+                {t('landing.oppDistance', 'Distance')}
+              </span>
               <strong style={{ fontSize: '1.15rem', color: '#022c22' }}>198 km</strong>
             </div>
             <div>
-              <span style={{ fontSize: '0.78rem', color: '#64748b', display: 'block', textTransform: 'uppercase' }}>Freight Cost</span>
+              <span style={{ fontSize: '0.78rem', color: '#64748b', display: 'block', textTransform: 'uppercase' }}>
+                {t('landing.oppFreightCost', 'Freight Cost')}
+              </span>
               <strong style={{ fontSize: '1.15rem', color: '#ef4444' }}>₹3,958</strong>
             </div>
           </div>
@@ -121,12 +134,16 @@ export const OpportunitySection = () => {
             gap: '1rem'
           }}>
             <div>
-              <span style={{ fontSize: '0.82rem', color: '#94a3b8', display: 'block', textTransform: 'uppercase' }}>Gross Revenue</span>
+              <span style={{ fontSize: '0.82rem', color: '#94a3b8', display: 'block', textTransform: 'uppercase' }}>
+                {t('landing.oppGrossRevenue', 'Gross Revenue')}
+              </span>
               <span style={{ fontSize: '1.3rem', fontWeight: 700, color: '#cbd5e1' }}>₹12,000</span>
             </div>
 
             <div style={{ textAlign: 'right' }}>
-              <span style={{ fontSize: '0.82rem', color: '#34d399', display: 'block', textTransform: 'uppercase', fontWeight: 800 }}>★ Estimated Net Return</span>
+              <span style={{ fontSize: '0.82rem', color: '#34d399', display: 'block', textTransform: 'uppercase', fontWeight: 800 }}>
+                {t('landing.oppEstNetReturn', '★ Estimated Net Return')}
+              </span>
               <span style={{ fontSize: '2rem', fontWeight: 800, color: '#34d399' }}>₹8,042</span>
             </div>
           </div>
@@ -149,7 +166,7 @@ export const OpportunitySection = () => {
                 boxShadow: '0 4px 15px rgba(16, 185, 129, 0.3)'
               }}
             >
-              <span>View Opportunity</span>
+              <span>{t('landing.oppViewBtn', 'View Opportunity')}</span>
               <span>➔</span>
             </Link>
           </div>

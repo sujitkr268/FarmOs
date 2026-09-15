@@ -1,6 +1,9 @@
 import React from 'react'
+import { useLanguage } from '../../context/LanguageContext'
 
 export const DataSection = () => {
+  const { t } = useLanguage()
+
   return (
     <section style={{
       backgroundColor: '#022c22',
@@ -21,7 +24,7 @@ export const DataSection = () => {
             display: 'block',
             marginBottom: '0.5rem'
           }}>
-            Real-Time Intelligence
+            {t('landing.dataSectionBadge', 'Real-Time Intelligence')}
           </span>
           <h2 style={{
             fontSize: '2.5rem',
@@ -30,10 +33,10 @@ export const DataSection = () => {
             letterSpacing: '-0.02em',
             margin: 0
           }}>
-            Data. AI. Better Opportunities.
+            {t('landing.dataSectionTitle', 'Data. AI. Better Opportunities.')}
           </h2>
           <p style={{ fontSize: '1.05rem', color: '#94a3b8', maxWidth: '650px', margin: '0.75rem auto 0' }}>
-            Live government APMC feeds, OpenRouteService freight calculations, and AI insights synthesized into one unified dashboard.
+            {t('landing.dataSectionSub', 'Live government APMC feeds, OpenRouteService freight calculations, and AI insights synthesized into one unified dashboard.')}
           </p>
         </div>
 
@@ -61,7 +64,7 @@ export const DataSection = () => {
               <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#f59e0b' }} />
               <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#10b981' }} />
               <span style={{ fontSize: '0.9rem', color: '#94a3b8', marginLeft: '0.5rem', fontWeight: 600 }}>
-                FarmOS Intelligence Engine • Real-Time Live Preview
+                {t('landing.dataPreviewHeader', 'FarmOS Intelligence Engine • Real-Time Live Preview')}
               </span>
             </div>
 
@@ -74,7 +77,7 @@ export const DataSection = () => {
               padding: '0.25rem 0.75rem',
               borderRadius: '20px'
             }}>
-              🟢 Connected to APMC Mandis & OpenRouteService
+              {t('landing.dataConnectedBadge', '🟢 Connected to APMC Mandis & OpenRouteService')}
             </span>
           </div>
 
@@ -92,13 +95,13 @@ export const DataSection = () => {
               padding: '1.25rem'
             }}>
               <span style={{ fontSize: '0.78rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                Crop & Stock Volume
+                {t('landing.dataCard1Label', 'Crop & Stock Volume')}
               </span>
               <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#ffffff', margin: '0.3rem 0' }}>
                 Potato (500 kg)
               </h3>
               <span style={{ fontSize: '0.8rem', color: '#34d399', fontWeight: 600 }}>
-                Category: Fresh Produce
+                {t('landing.dataCard1Cat', 'Category: Fresh Produce')}
               </span>
             </div>
 
@@ -110,7 +113,7 @@ export const DataSection = () => {
               padding: '1.25rem'
             }}>
               <span style={{ fontSize: '0.78rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                Best Ranked Market
+                {t('landing.dataCard2Label', 'Best Ranked Market')}
               </span>
               <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#10b981', margin: '0.3rem 0' }}>
                 Birbhum APMC
@@ -128,7 +131,7 @@ export const DataSection = () => {
               padding: '1.25rem'
             }}>
               <span style={{ fontSize: '0.78rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                Logistics & Freight
+                {t('landing.dataCard3Label', 'Logistics & Freight')}
               </span>
               <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#ffffff', margin: '0.3rem 0' }}>
                 198 km (₹3,958)
@@ -146,13 +149,13 @@ export const DataSection = () => {
               padding: '1.25rem'
             }}>
               <span style={{ fontSize: '0.78rem', color: '#34d399', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 700 }}>
-                ★ Estimated Net Return
+                {t('landing.dataCard4Label', '★ Estimated Net Return')}
               </span>
               <h3 style={{ fontSize: '1.65rem', fontWeight: 800, color: '#34d399', margin: '0.3rem 0' }}>
                 ₹8,042
               </h3>
               <span style={{ fontSize: '0.8rem', color: '#ffffff', fontWeight: 600 }}>
-                Highest Net Margin
+                {t('landing.dataCard4Sub', 'Highest Net Margin')}
               </span>
             </div>
           </div>
