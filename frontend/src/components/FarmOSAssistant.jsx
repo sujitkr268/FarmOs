@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { sendChatMessage } from '../api/chatApi'
 import { MarketComparison } from './MarketComparison'
+import { useLanguage } from '../context/LanguageContext'
 
 // Helper function to render simple markdown formatting (bold, headers, tables, bullet lists)
 const renderFormattedText = (text) => {
@@ -130,12 +131,14 @@ const formatInlineBold = (text) => {
 }
 
 export const FarmOSAssistant = ({ isCompact = false }) => {
+  const { t, language } = useLanguage()
+
   // Chat History State
   const [messages, setMessages] = useState([
     {
       id: 1,
       sender: 'assistant',
-      text: "Hi! I'm the FarmOS Assistant. I can help with market prices, weather, farming questions, and your FarmOS marketplace.",
+      text: t('assistant.subtitle'),
       context: null
     }
   ])
@@ -147,9 +150,9 @@ export const FarmOSAssistant = ({ isCompact = false }) => {
 
   // Example Prompt Chips
   const exampleQuestions = [
-    'Where should I sell 500 kg potato?',
-    'What is the potato price in West Bengal?',
-    'What is the weather in Kolkata today?'
+    t('assistant.prompt1'),
+    t('assistant.prompt2'),
+    t('assistant.prompt3')
   ]
 
   // Auto-scroll to bottom of chat
@@ -177,7 +180,7 @@ export const FarmOSAssistant = ({ isCompact = false }) => {
     setLoading(true)
 
     try {
-      const response = await sendChatMessage(queryText)
+      const response = await sendChatMessage(queryText, language)
 
       if (response && response.success) {
         const assistantMsg = {
@@ -258,7 +261,7 @@ export const FarmOSAssistant = ({ isCompact = false }) => {
           </div>
           <div>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-              FarmOS Assistant
+              {t('assistant.title')}
             </h2>
             <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
               AI Agri-Advisor • Live Mandi Rates & Weather Data Integrated
@@ -449,7 +452,7 @@ export const FarmOSAssistant = ({ isCompact = false }) => {
       >
         <input
           type="text"
-          placeholder="Ask about market prices, weather, or crop management advice..."
+          placeholder={t('assistant.inputPlaceholder')}
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           disabled={loading}
@@ -483,7 +486,7 @@ export const FarmOSAssistant = ({ isCompact = false }) => {
             transition: 'all 0.2s'
           }}
         >
-          <span>Send</span>
+          <span>{t('assistant.send')}</span>
           <span>➔</span>
         </button>
       </form>

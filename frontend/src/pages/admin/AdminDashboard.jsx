@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import API from '../../api/axios';
 import { getPublicTraders, createPublicTrader, updatePublicTrader, deletePublicTrader } from '../../api/traderApi';
 import { getPendingBuyers, verifyBuyer, rejectBuyer } from '../../api/buyerApi';
+import { useLanguage } from '../../context/LanguageContext';
 
 export const AdminDashboard = () => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('buyers'); // 'buyers', 'traders', 'stats'
 
   // Data states
@@ -100,53 +102,54 @@ export const AdminDashboard = () => {
     e.preventDefault();
     setError('');
     setSuccess('');
+
     try {
       if (editingTrader) {
         await updatePublicTrader(editingTrader.id, traderForm);
-        setSuccess(`Trader "${traderForm.business_name}" updated successfully!`);
+        setSuccess(`Trader "${traderForm.business_name}" updated successfully.`);
       } else {
         await createPublicTrader(traderForm);
-        setSuccess(`New public trader record "${traderForm.business_name}" added successfully!`);
+        setSuccess(`New public trader "${traderForm.business_name}" created.`);
       }
       setShowAddTraderModal(false);
       setEditingTrader(null);
       fetchData();
     } catch (err) {
-      console.error('Trader Submit Error:', err);
+      console.error('Save Trader Error:', err);
       setError(err.response?.data?.message || 'Failed to save trader record.');
     }
   };
 
   // Open Edit Trader Modal
-  const openEditTrader = (t) => {
-    setEditingTrader(t);
+  const openEditTrader = (trader) => {
+    setEditingTrader(trader);
     setTraderForm({
-      business_name: t.business_name || '',
-      business_type: t.business_type || 'Wholesaler',
-      state: t.state || 'West Bengal',
-      district: t.district || '',
-      city: t.city || '',
-      mandi: t.mandi || '',
-      address: t.address || '',
-      commodities: t.commodities || '',
-      buying_capacity: t.buying_capacity || '',
-      official_website: t.official_website || '',
-      official_contact_url: t.official_contact_url || '',
-      public_phone: t.public_phone || '',
-      public_email: t.public_email || '',
-      registration_type: t.registration_type || '',
-      registration_reference: t.registration_reference || '',
-      verification_source: t.verification_source || '',
-      source_url: t.source_url || '',
-      source_type: t.source_type || 'Government Portal',
-      verification_status: t.verification_status || 'source_verified'
+      business_name: trader.business_name || '',
+      business_type: trader.business_type || 'Wholesaler',
+      state: trader.state || 'West Bengal',
+      district: trader.district || '',
+      city: trader.city || '',
+      mandi: trader.mandi || '',
+      address: trader.address || '',
+      commodities: trader.commodities || '',
+      buying_capacity: trader.buying_capacity || '',
+      official_website: trader.official_website || '',
+      official_contact_url: trader.official_contact_url || '',
+      public_phone: trader.public_phone || '',
+      public_email: trader.public_email || '',
+      registration_type: trader.registration_type || '',
+      registration_reference: trader.registration_reference || '',
+      verification_source: trader.verification_source || '',
+      source_url: trader.source_url || '',
+      source_type: trader.source_type || 'Government Portal',
+      verification_status: trader.verification_status || 'source_verified'
     });
     setShowAddTraderModal(true);
   };
 
-  // Delete Trader Record
+  // Handle Delete Trader
   const handleDeleteTrader = async (id, name) => {
-    if (!window.confirm(`Are you sure you want to delete public record "${name}"?`)) return;
+    if (!window.confirm(`Are you sure you want to delete "${name}"?`)) return;
     try {
       await deletePublicTrader(id);
       setSuccess(`Record "${name}" deleted.`);
@@ -175,10 +178,10 @@ export const AdminDashboard = () => {
       }}>
         <div>
           <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#f59e0b', margin: 0 }}>
-            ⚙️ FarmOS Administration Portal
+            {t('admin.title')}
           </h1>
           <p style={{ color: '#8b949e', fontSize: '0.9rem', margin: '0.2rem 0 0 0' }}>
-            Review registered buyer applications & manage external public trader directory entries.
+            {t('admin.subtitle')}
           </p>
         </div>
       </div>
@@ -215,7 +218,7 @@ export const AdminDashboard = () => {
             cursor: 'pointer'
           }}
         >
-          ⏳ Pending Buyer Approvals ({pendingBuyers.length})
+          {t('admin.tabPendingBuyers')} ({pendingBuyers.length})
         </button>
 
         <button
@@ -230,7 +233,7 @@ export const AdminDashboard = () => {
             cursor: 'pointer'
           }}
         >
-          🏬 Public Trader Directory Management ({publicTraders.length})
+          {t('admin.tabTraderManagement')} ({publicTraders.length})
         </button>
 
         <button
@@ -245,7 +248,7 @@ export const AdminDashboard = () => {
             cursor: 'pointer'
           }}
         >
-          📊 System Overview Stats
+          {t('admin.tabSystemStats')}
         </button>
       </div>
 

@@ -2,9 +2,11 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import API from '../../api/axios'
 import { useAuth } from '../../context/AuthContext'
+import { useLanguage } from '../../context/LanguageContext'
 import './auth.css'
 
 export const LoginPage = () => {
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -61,14 +63,14 @@ export const LoginPage = () => {
   return (
     <div className="auth-wrapper">
       <div className="auth-card">
-        <h2 className="auth-title">Welcome Back</h2>
-        <p className="auth-subtitle">Login to access your FarmOS portal</p>
+        <h2 className="auth-title">{t('auth.signIn')}</h2>
+        <p className="auth-subtitle">{t('auth.signInSub')}</p>
 
         {error && <div className="alert-message alert-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form" style={{ marginTop: error ? '1rem' : '0' }}>
           <div className="form-group">
-            <label htmlFor="email">Email Address</label>
+            <label htmlFor="email">{t('auth.emailAddr')}</label>
             <input
               type="email"
               id="email"
@@ -82,7 +84,7 @@ export const LoginPage = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">{t('auth.password')}</label>
             <input
               type="password"
               id="password"
@@ -96,12 +98,12 @@ export const LoginPage = () => {
           </div>
 
           <button type="submit" className="auth-btn" disabled={loading}>
-            {loading ? 'Authenticating...' : 'Sign In'}
+            {loading ? t('common.loading') : t('nav.login')}
           </button>
         </form>
 
         <p className="auth-footer-text">
-          Don't have an account? <Link to="/register">Create Account</Link>
+          {t('auth.noAccount')} <Link to="/register">{t('nav.register')}</Link>
         </p>
       </div>
     </div>

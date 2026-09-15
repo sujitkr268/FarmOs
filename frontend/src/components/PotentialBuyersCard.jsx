@@ -1,6 +1,8 @@
 import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const PotentialBuyersCard = ({ buyers = [] }) => {
+  const { t } = useLanguage();
   if (!buyers || buyers.length === 0) {
     return (
       <div style={{
@@ -12,7 +14,7 @@ export const PotentialBuyersCard = ({ buyers = [] }) => {
         color: '#8b949e',
         fontSize: '0.85rem'
       }}>
-        ℹ️ No direct registered potential buyer matches found in our directory for this specific commodity yet. Check the full <a href="/traders" style={{ color: '#fbbf24' }}>Trader Directory</a> for regional wholesalers.
+        ℹ️ {t('opportunity.noPotentialBuyers')} <a href="/traders" style={{ color: '#fbbf24' }}>{t('opportunity.checkDirectory')}</a>
       </div>
     );
   }
@@ -32,11 +34,11 @@ export const PotentialBuyersCard = ({ buyers = [] }) => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span style={{ fontSize: '1.25rem' }}>🤝</span>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#60a5fa', margin: 0 }}>
-            Potential Buyers & Relevant Traders ({buyers.length})
+            {t('opportunity.potentialBuyersTitle')} ({buyers.length})
           </h3>
         </div>
         <span style={{ fontSize: '0.75rem', color: '#9ca3af', fontStyle: 'italic' }}>
-          Matched by commodity & location proximity. Not a transaction guarantee.
+          {t('opportunity.potentialBuyersSubtitle')}
         </span>
       </div>
 

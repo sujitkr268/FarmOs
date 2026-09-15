@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { PotentialBuyersCard } from './PotentialBuyersCard'
+import { useLanguage } from '../context/LanguageContext'
 
 const VEHICLES = {
   mini_truck: { id: 'mini_truck', name: 'Mini Truck (1T / Tata Ace / Pickup)', capacity: 1000, rate: 20, min: 500 },
@@ -9,6 +10,7 @@ const VEHICLES = {
 }
 
 export const MarketComparison = ({ data }) => {
+  const { t } = useLanguage()
   const [showDetails, setShowDetails] = useState(false)
   const [selectedVehicle, setSelectedVehicle] = useState('mini_truck')
 
@@ -79,7 +81,7 @@ export const MarketComparison = ({ data }) => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.3rem' }}>
             <span style={{ fontSize: '1.3rem' }}>🏆</span>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#f59e0b', margin: 0 }}>
-              Recommended Market: {rec.market}
+              {t('opportunity.recommendedMarket')}: {rec.market}
             </h3>
             <span style={{
               backgroundColor: 'rgba(212, 175, 55, 0.15)',
@@ -90,17 +92,17 @@ export const MarketComparison = ({ data }) => {
               padding: '0.15rem 0.55rem',
               borderRadius: '12px'
             }}>
-              Score: {rec.farmos_opportunity_score}/100
+              {t('opportunity.opportunityScore')}: {rec.farmos_opportunity_score}/100
             </span>
           </div>
           <span style={{ fontSize: '0.82rem', color: '#8b949e' }}>
-            📍 {rec.district}, {rec.state} • Commodity: <strong>{data.commodity}</strong> ({data.user_quantity || ''} {data.user_unit || ''})
+            📍 {rec.district}, {rec.state} • {t('common.commodity')}: <strong>{data.commodity}</strong> ({data.user_quantity || ''} {data.user_unit || ''})
           </span>
         </div>
 
         <div style={{ textAlign: 'right' }}>
           <span style={{ fontSize: '0.75rem', color: '#8b949e', display: 'block', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-            {hasFreight ? 'Est. Net Return' : 'Est. Gross Value'}
+            {hasFreight ? t('opportunity.estNetReturn') : t('opportunity.estGrossValue')}
           </span>
           <span style={{ fontSize: '1.35rem', fontWeight: 800, color: hasFreight ? '#34d399' : '#fbbf24' }}>
             ₹{Number(hasFreight ? rec.computed_net_return : rec.estimated_gross_value).toLocaleString()}
@@ -126,11 +128,11 @@ export const MarketComparison = ({ data }) => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span style={{ fontSize: '1.2rem' }}>🚚</span>
               <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#60a5fa', margin: 0 }}>
-                Smart Freight Logistics (FarmOS Rate Model)
+                {t('opportunity.logisticsTitle')}
               </h4>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <label htmlFor="vehicle-select" style={{ fontSize: '0.78rem', color: '#94a3b8' }}>Vehicle:</label>
+              <label htmlFor="vehicle-select" style={{ fontSize: '0.78rem', color: '#94a3b8' }}>{t('opportunity.vehicle')}:</label>
               <select
                 id="vehicle-select"
                 value={selectedVehicle}

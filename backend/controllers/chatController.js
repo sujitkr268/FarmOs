@@ -99,12 +99,13 @@ const extractOpportunityParams = (text) => {
 // ================= POST CHAT MESSAGE =================
 const processChatMessage = async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, language } = req.body;
+    const targetLang = (language === "hi") ? "hi" : "en";
 
     if (!message || typeof message !== "string" || !message.trim()) {
       return res.status(400).json({
         success: false,
-        message: 'User message is required. Example payload: { "message": "Where should I sell my 500 kg potato?" }'
+        message: 'User message is required. Example payload: { "message": "Where should I sell my 500 kg potato?", "language": "hi" }'
       });
     }
 
@@ -153,7 +154,7 @@ const processChatMessage = async (req, res) => {
     }
 
     // 4. Send message + context data to Gemini AI
-    const result = await generateAgricultureResponse(trimmedMsg, contextData, intentType);
+    const result = await generateAgricultureResponse(trimmedMsg, contextData, intentType, targetLang);
     return res.status(200).json(result);
   } catch (error) {
     console.error("Chat Controller Error:", error.message);

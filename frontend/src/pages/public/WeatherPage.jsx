@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { getWeatherForecast } from '../../api/weatherApi'
 import { WeatherCard } from '../../components/WeatherCard'
+import { useLanguage } from '../../context/LanguageContext'
 
 export const WeatherPage = () => {
+  const { t } = useLanguage()
   // Coordinates state (Default: Kolkata 22.5726, 88.3639)
   const [lat, setLat] = useState('22.5726')
   const [lon, setLon] = useState('88.3639')
@@ -78,10 +80,10 @@ export const WeatherPage = () => {
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent'
         }}>
-          🌤️ FarmOS Weather Intelligence
+          🌤️ {t('weather.title')}
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
-          Real-time hyper-local agricultural weather forecasts powered by Open-Meteo & FarmOS Backend.
+          {t('weather.subtitle')}
         </p>
       </div>
 
@@ -193,7 +195,7 @@ export const WeatherPage = () => {
               boxShadow: '0 4px 12px var(--accent-gold-glow)'
             }}
           >
-            🔍 Fetch Weather Forecast
+            🔍 {t('common.search')}
           </button>
         </form>
       </div>
@@ -213,7 +215,7 @@ export const WeatherPage = () => {
         }}>
           <span style={{ fontSize: '1.2rem' }}>⚠️</span>
           <div>
-            <strong style={{ display: 'block', fontSize: '0.95rem' }}>Weather Request Failed</strong>
+            <strong style={{ display: 'block', fontSize: '0.95rem' }}>{t('common.error')}</strong>
             <span style={{ fontSize: '0.88rem' }}>{error}</span>
           </div>
         </div>
@@ -231,11 +233,8 @@ export const WeatherPage = () => {
         }}>
           <div style={{ fontSize: '2rem', marginBottom: '1rem', animation: 'spin 1s infinite linear' }}>⏳</div>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.3rem' }}>
-            Fetching Live Weather Intelligence...
+            {t('common.loading')}
           </h3>
-          <p style={{ fontSize: '0.88rem' }}>
-            Querying Open-Meteo forecast metrics via FarmOS Backend for coordinates ({lat}, {lon}).
-          </p>
         </div>
       ) : !weatherData ? (
         /* Empty State */
@@ -250,9 +249,6 @@ export const WeatherPage = () => {
           <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
             No Weather Data Found
           </h3>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-            Please select a region preset or enter valid latitude and longitude coordinates above.
-          </p>
         </div>
       ) : (
         /* Render Weather Card */

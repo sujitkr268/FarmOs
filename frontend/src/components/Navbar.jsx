@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useLanguage } from '../context/LanguageContext'
 
 export const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth()
+  const { language, setLanguage, t } = useLanguage()
   const navigate = useNavigate()
   const location = useLocation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -28,19 +30,19 @@ export const Navbar = () => {
   }
 
   const getDashboardLabel = () => {
-    if (!user) return 'Dashboard'
-    if (user.role === 'farmer') return 'Farmer Dashboard'
-    if (user.role === 'buyer') return 'Buyer Dashboard'
-    if (user.role === 'admin') return 'Admin Dashboard'
-    return 'Dashboard'
+    if (!user) return t('nav.dashboard')
+    if (user.role === 'farmer') return t('nav.farmerDashboard')
+    if (user.role === 'buyer') return t('nav.buyerDashboard')
+    if (user.role === 'admin') return t('nav.adminDashboard')
+    return t('nav.dashboard')
   }
 
   const navItems = [
-    { label: 'Home', path: '/' },
-    { label: 'Marketplace', path: '/buyer/marketplace' },
-    { label: 'Trader Directory', path: '/traders' },
-    { label: 'Mandi Prices', path: '/market-prices' },
-    { label: 'Weather', path: '/weather' },
+    { label: t('nav.home'), path: '/' },
+    { label: t('nav.marketplace'), path: '/buyer/marketplace' },
+    { label: t('nav.traderDirectory'), path: '/traders' },
+    { label: t('nav.mandiPrices'), path: '/market-prices' },
+    { label: t('nav.weather'), path: '/weather' },
     { label: getDashboardLabel(), path: getDashboardPath() }
   ]
 
@@ -99,8 +101,51 @@ export const Navbar = () => {
           })}
         </nav>
 
-        {/* Right: Desktop User Profile / Auth Actions */}
+        {/* Right: Language Switcher & Desktop Auth Actions */}
         <div style={{ display: 'none', alignItems: 'center', gap: '1rem' }} className="desktop-auth">
+          {/* Language Switcher Pill */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            borderRadius: '20px',
+            padding: '2px',
+            fontSize: '0.8rem',
+            fontWeight: 600
+          }}>
+            <button
+              onClick={() => setLanguage('en')}
+              style={{
+                background: language === 'en' ? 'linear-gradient(135deg, var(--accent-gold), var(--accent-gold-muted))' : 'transparent',
+                color: language === 'en' ? '#080a0e' : '#8b949e',
+                border: 'none',
+                borderRadius: '16px',
+                padding: '0.25rem 0.65rem',
+                cursor: 'pointer',
+                fontWeight: language === 'en' ? 700 : 500,
+                transition: 'all 0.2s'
+              }}
+            >
+              English
+            </button>
+            <button
+              onClick={() => setLanguage('hi')}
+              style={{
+                background: language === 'hi' ? 'linear-gradient(135deg, var(--accent-gold), var(--accent-gold-muted))' : 'transparent',
+                color: language === 'hi' ? '#080a0e' : '#8b949e',
+                border: 'none',
+                borderRadius: '16px',
+                padding: '0.25rem 0.65rem',
+                cursor: 'pointer',
+                fontWeight: language === 'hi' ? 700 : 500,
+                transition: 'all 0.2s'
+              }}
+            >
+              हिन्दी
+            </button>
+          </div>
+
           {isAuthenticated && user ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <div style={{
@@ -134,10 +179,11 @@ export const Navbar = () => {
                   border: '1px solid rgba(255, 255, 255, 0.12)',
                   color: 'var(--text-primary)',
                   fontWeight: 600,
-                  fontSize: '0.85rem'
+                  fontSize: '0.85rem',
+                  cursor: 'pointer'
                 }}
               >
-                Logout
+                {t('nav.logout')}
               </button>
             </div>
           ) : (
@@ -151,7 +197,7 @@ export const Navbar = () => {
                 fontWeight: 500,
                 fontSize: '0.85rem'
               }}>
-                Login
+                {t('nav.login')}
               </Link>
               <Link to="/register" style={{
                 padding: '0.45rem 1.15rem',
@@ -162,7 +208,7 @@ export const Navbar = () => {
                 fontSize: '0.85rem',
                 boxShadow: '0 4px 14px var(--accent-gold-glow)'
               }}>
-                Get Started
+                {t('nav.getStarted')}
               </Link>
             </div>
           )}
@@ -183,7 +229,8 @@ export const Navbar = () => {
             backgroundColor: 'rgba(255, 255, 255, 0.08)',
             border: '1px solid rgba(255, 255, 255, 0.15)',
             color: 'var(--accent-gold)',
-            fontSize: '1.4rem'
+            fontSize: '1.4rem',
+            cursor: 'pointer'
           }}
         >
           {mobileMenuOpen ? '✕' : '☰'}
@@ -201,6 +248,52 @@ export const Navbar = () => {
           gap: '1rem',
           animation: 'fadeIn 0.2s ease-out'
         }} className="mobile-drawer">
+
+          {/* Mobile Language Switcher */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            padding: '0.5rem 1rem',
+            borderRadius: '12px'
+          }}>
+            <span style={{ fontSize: '0.85rem', color: '#8b949e', fontWeight: 600 }}>🌐 Language / भाषा:</span>
+            <div style={{ display: 'flex', gap: '0.25rem' }}>
+              <button
+                onClick={() => setLanguage('en')}
+                style={{
+                  background: language === 'en' ? 'linear-gradient(135deg, var(--accent-gold), var(--accent-gold-muted))' : 'transparent',
+                  color: language === 'en' ? '#080a0e' : '#8b949e',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '0.25rem 0.6rem',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                English
+              </button>
+              <button
+                onClick={() => setLanguage('hi')}
+                style={{
+                  background: language === 'hi' ? 'linear-gradient(135deg, var(--accent-gold), var(--accent-gold-muted))' : 'transparent',
+                  color: language === 'hi' ? '#080a0e' : '#8b949e',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '0.25rem 0.6rem',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                हिन्दी
+              </button>
+            </div>
+          </div>
+
           {isAuthenticated && user && (
             <div style={{
               display: 'flex',
@@ -217,7 +310,7 @@ export const Navbar = () => {
               <div>
                 <strong style={{ color: 'var(--text-primary)', display: 'block' }}>{user.name}</strong>
                 <span style={{ color: 'var(--accent-gold-light)', fontSize: '0.78rem', textTransform: 'capitalize' }}>
-                  {user.role} Portal
+                  {user.role} {t('nav.portal')}
                 </span>
               </div>
             </div>
@@ -267,10 +360,11 @@ export const Navbar = () => {
                   border: '1px solid rgba(248, 81, 73, 0.3)',
                   color: '#f85149',
                   fontWeight: 700,
-                  fontSize: '0.92rem'
+                  fontSize: '0.92rem',
+                  cursor: 'pointer'
                 }}
               >
-                Logout
+                {t('nav.logout')}
               </button>
             ) : (
               <div style={{ display: 'flex', gap: '0.75rem' }}>
@@ -289,7 +383,7 @@ export const Navbar = () => {
                     fontSize: '0.9rem'
                   }}
                 >
-                  Login
+                  {t('nav.login')}
                 </Link>
                 <Link
                   to="/register"
@@ -305,7 +399,7 @@ export const Navbar = () => {
                     fontSize: '0.9rem'
                   }}
                 >
-                  Get Started
+                  {t('nav.getStarted')}
                 </Link>
               </div>
             )}

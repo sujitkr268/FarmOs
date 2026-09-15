@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import API from '../../api/axios'
 import { useAuth } from '../../context/AuthContext'
+import { useLanguage } from '../../context/LanguageContext'
 import './farmer.css'
 
 export const FarmerDashboard = () => {
   const { user } = useAuth()
+  const { t } = useLanguage()
 
   // State management
   const [harvests, setHarvests] = useState([])
@@ -190,9 +192,9 @@ export const FarmerDashboard = () => {
       {/* Header */}
       <div className="dashboard-header">
         <div>
-          <h1 className="dashboard-title">🧑‍🌾 Farmer Dashboard</h1>
+          <h1 className="dashboard-title">{t('farmer.title')}</h1>
           <p className="dashboard-subtitle">
-            Welcome back, <strong>{user?.name}</strong> ({user?.location || 'Location Not Specified'})
+            {t('farmer.welcomeBack')}, <strong>{user?.name}</strong> ({user?.location || 'Location Not Specified'})
           </p>
         </div>
       </div>
@@ -206,7 +208,7 @@ export const FarmerDashboard = () => {
         <div className="stat-card">
           <div className="stat-icon">🌾</div>
           <div className="stat-info">
-            <h4>Total Listings</h4>
+            <h4>{t('farmer.totalListings')}</h4>
             <div className="stat-value">{totalListings}</div>
           </div>
         </div>
@@ -214,7 +216,7 @@ export const FarmerDashboard = () => {
         <div className="stat-card">
           <div className="stat-icon">✅</div>
           <div className="stat-info">
-            <h4>Active Harvests</h4>
+            <h4>{t('farmer.activeHarvests')}</h4>
             <div className="stat-value" style={{ color: 'var(--accent-green-bright)' }}>{activeListings}</div>
           </div>
         </div>
@@ -222,7 +224,7 @@ export const FarmerDashboard = () => {
         <div className="stat-card">
           <div className="stat-icon">📦</div>
           <div className="stat-info">
-            <h4>Total Quantity Listed</h4>
+            <h4>{t('farmer.totalQuantity')}</h4>
             <div className="stat-value">{totalQuantity.toLocaleString()} Units</div>
           </div>
         </div>
@@ -230,11 +232,11 @@ export const FarmerDashboard = () => {
 
       {/* Add Harvest Form */}
       <div className="form-card">
-        <h2 className="form-title">➕ Post New Harvest</h2>
+        <h2 className="form-title">{t('farmer.postNewHarvest')}</h2>
         <form onSubmit={handleAddSubmit} className="auth-form">
           <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="crop_name">Crop Name *</label>
+              <label htmlFor="crop_name">{t('farmer.cropName')}</label>
               <input
                 type="text"
                 id="crop_name"
@@ -248,7 +250,7 @@ export const FarmerDashboard = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="quantity">Quantity *</label>
+              <label htmlFor="quantity">{t('common.quantity')} *</label>
               <input
                 type="number"
                 id="quantity"
@@ -264,7 +266,7 @@ export const FarmerDashboard = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="unit">Unit *</label>
+              <label htmlFor="unit">{t('farmer.unit')}</label>
               <select
                 id="unit"
                 name="unit"
@@ -282,7 +284,7 @@ export const FarmerDashboard = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="price">Price per Unit (₹) *</label>
+              <label htmlFor="price">{t('farmer.pricePerUnit')}</label>
               <input
                 type="number"
                 id="price"
@@ -298,7 +300,7 @@ export const FarmerDashboard = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="location">Farm Location *</label>
+              <label htmlFor="location">{t('farmer.farmLocation')}</label>
               <input
                 type="text"
                 id="location"
@@ -312,7 +314,7 @@ export const FarmerDashboard = () => {
             </div>
 
             <div className="form-group form-grid-full">
-              <label htmlFor="description">Harvest Description (Optional)</label>
+              <label htmlFor="description">{t('farmer.harvestDesc')}</label>
               <textarea
                 id="description"
                 name="description"
@@ -326,14 +328,14 @@ export const FarmerDashboard = () => {
           </div>
 
           <button type="submit" className="auth-btn" disabled={submitting} style={{ marginTop: '1.25rem', width: '220px' }}>
-            {submitting ? 'Posting...' : 'Post Harvest Listing'}
+            {submitting ? t('farmer.posting') : t('farmer.postHarvestBtn')}
           </button>
         </form>
       </div>
 
       {/* My Harvests Section */}
       <div className="harvests-section-title">
-        <span>📋 My Harvest Listings ({harvests.length})</span>
+        <span>📋 {t('farmer.myHarvests')} ({harvests.length})</span>
         <button onClick={fetchHarvests} className="btn-edit" style={{ flex: 'initial', padding: '0.4rem 1rem' }}>
           🔄 Refresh
         </button>
@@ -341,13 +343,13 @@ export const FarmerDashboard = () => {
 
       {loading ? (
         <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
-          Loading your harvests...
+          {t('common.loading')}
         </div>
       ) : harvests.length === 0 ? (
         <div className="empty-state">
           <div className="empty-icon">🌾</div>
-          <h3>No Harvest Listings Found</h3>
-          <p>You haven't posted any harvest listings yet. Fill out the form above to add your first harvest!</p>
+          <h3>{t('farmer.noHarvests')}</h3>
+          <p>{t('farmer.noHarvestsDesc')}</p>
         </div>
       ) : (
         <div className="harvests-grid">
@@ -363,15 +365,15 @@ export const FarmerDashboard = () => {
 
                 <div className="harvest-details">
                   <div className="detail-row">
-                    <span>Quantity:</span>
+                    <span>{t('common.quantity')}:</span>
                     <strong>{Number(harvest.quantity).toLocaleString()} {harvest.unit}</strong>
                   </div>
                   <div className="detail-row">
-                    <span>Price:</span>
+                    <span>{t('common.price')}:</span>
                     <span className="detail-price">₹{Number(harvest.price).toLocaleString()} / {harvest.unit}</span>
                   </div>
                   <div className="detail-row">
-                    <span>Location:</span>
+                    <span>{t('common.location')}:</span>
                     <span>📍 {harvest.location}</span>
                   </div>
                 </div>
@@ -383,10 +385,10 @@ export const FarmerDashboard = () => {
 
               <div className="harvest-actions">
                 <button onClick={() => openEditModal(harvest)} className="btn-edit">
-                  ✏️ Edit
+                  ✏️ {t('common.edit')}
                 </button>
                 <button onClick={() => handleDelete(harvest.id, harvest.crop_name)} className="btn-delete">
-                  🗑️ Delete
+                  🗑️ {t('common.delete')}
                 </button>
               </div>
             </div>

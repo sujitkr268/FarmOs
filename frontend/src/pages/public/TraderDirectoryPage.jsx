@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { getPublicTraders } from '../../api/traderApi';
 import { getRegisteredBuyers } from '../../api/buyerApi';
+import { useLanguage } from '../../context/LanguageContext';
 
 export const TraderDirectoryPage = () => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('traders'); // 'traders' or 'buyers'
 
   // Data states

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { getMarketPrices } from '../api/marketApi'
+import { useLanguage } from '../context/LanguageContext'
 
 export const MandiPrices = () => {
+  const { t } = useLanguage()
   // Filter states with defaults: West Bengal & Potato
   const [stateFilter, setStateFilter] = useState('West Bengal')
   const [commodityFilter, setCommodityFilter] = useState('Potato')
@@ -81,7 +83,7 @@ export const MandiPrices = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
             <span style={{ fontSize: '1.4rem' }}>📈</span>
             <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-              Live Mandi Market Prices
+              {t('market.title')}
             </h2>
             <span style={{
               backgroundColor: 'rgba(212, 175, 55, 0.15)',
@@ -98,7 +100,7 @@ export const MandiPrices = () => {
             </span>
           </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', margin: 0 }}>
-            Real-time daily mandi rates for agricultural commodities across markets in India.
+            {t('market.subtitle')}
           </p>
         </div>
 
@@ -118,7 +120,7 @@ export const MandiPrices = () => {
             transition: 'all 0.2s'
           }}
         >
-          🔄 Refresh Prices
+          🔄 Refresh
         </button>
       </div>
 
@@ -137,7 +139,7 @@ export const MandiPrices = () => {
         {/* State Filter */}
         <div>
           <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
-            State
+            {t('common.state')}
           </label>
           <input
             type="text"
@@ -160,7 +162,7 @@ export const MandiPrices = () => {
         {/* Commodity Filter */}
         <div>
           <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
-            Commodity / Crop
+            {t('common.commodity')}
           </label>
           <input
             type="text"
@@ -183,7 +185,7 @@ export const MandiPrices = () => {
         {/* District Filter (Optional) */}
         <div>
           <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
-            District (Optional)
+            {t('common.district')}
           </label>
           <input
             type="text"
@@ -218,7 +220,7 @@ export const MandiPrices = () => {
               boxShadow: '0 4px 12px var(--accent-gold-glow)'
             }}
           >
-            🔍 Search Prices
+            🔍 {t('common.search')}
           </button>
           
           <button
@@ -233,9 +235,8 @@ export const MandiPrices = () => {
               fontWeight: 500,
               fontSize: '0.85rem'
             }}
-            title="Reset to default (West Bengal - Potato)"
           >
-            Reset
+            {t('common.resetFilters')}
           </button>
         </div>
       </form>
@@ -255,7 +256,7 @@ export const MandiPrices = () => {
         }}>
           <span style={{ fontSize: '1.2rem' }}>⚠️</span>
           <div>
-            <strong style={{ display: 'block', fontSize: '0.95rem' }}>Connection Error</strong>
+            <strong style={{ display: 'block', fontSize: '0.95rem' }}>{t('common.error')}</strong>
             <span style={{ fontSize: '0.88rem' }}>{error}</span>
           </div>
         </div>
@@ -273,11 +274,8 @@ export const MandiPrices = () => {
         }}>
           <div style={{ fontSize: '2rem', marginBottom: '1rem', animation: 'spin 1s infinite linear' }}>⏳</div>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.3rem' }}>
-            Fetching Live Mandi Prices...
+            {t('common.loading')}
           </h3>
-          <p style={{ fontSize: '0.88rem' }}>
-            Retrieving official market data from FarmOS backend API for {stateFilter || 'all states'} - {commodityFilter || 'all crops'}.
-          </p>
         </div>
       ) : marketData.length === 0 ? (
         /* Empty State */
@@ -290,11 +288,8 @@ export const MandiPrices = () => {
         }}>
           <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🌾</div>
           <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-            No Mandi Records Found
+            {t('market.noPricesFound')}
           </h3>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', maxWidth: '480px', margin: '0 auto 1.5rem auto' }}>
-            No government mandi records were found matching <strong>State: "{stateFilter}"</strong> and <strong>Commodity: "{commodityFilter}"</strong>.
-          </p>
           <button
             onClick={handleResetFilters}
             style={{
@@ -307,7 +302,7 @@ export const MandiPrices = () => {
               fontSize: '0.88rem'
             }}
           >
-            Reset to Default Search (West Bengal - Potato)
+            {t('common.resetFilters')}
           </button>
         </div>
       ) : (
@@ -353,7 +348,7 @@ export const MandiPrices = () => {
                         {item.commodity}
                       </h3>
                       <span style={{ fontSize: '0.82rem', color: 'var(--accent-gold-light)', fontWeight: 500 }}>
-                        Variety: {item.variety || 'Standard'} ({item.grade || 'FAQ'})
+                        {t('market.variety')}: {item.variety || 'Standard'} ({t('market.grade')}: {item.grade || 'FAQ'})
                       </span>
                     </div>
                     
@@ -380,7 +375,7 @@ export const MandiPrices = () => {
                     fontSize: '0.85rem'
                   }}>
                     <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.2rem' }}>
-                      🏛️ Market: {item.market}
+                      🏛️ {t('common.mandi')}: {item.market}
                     </div>
                     <div style={{ color: 'var(--text-secondary)' }}>
                       📍 {item.district}, {item.state}
@@ -400,7 +395,7 @@ export const MandiPrices = () => {
                   }}>
                     <div>
                       <span style={{ display: 'block', fontSize: '0.78rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                        Modal Market Price
+                        {t('market.modalPrice')}
                       </span>
                       <span style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
                         ₹{Number(item.modal_price).toLocaleString()}
@@ -435,7 +430,7 @@ export const MandiPrices = () => {
                       padding: '0.5rem 0.75rem',
                       borderRadius: '10px'
                     }}>
-                      <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', display: 'block' }}>Min Price</span>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', display: 'block' }}>{t('market.minPrice')}</span>
                       <strong style={{ color: 'var(--text-primary)' }}>₹{Number(item.min_price).toLocaleString()}</strong>
                       <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}> / quintal</span>
                     </div>
@@ -446,7 +441,7 @@ export const MandiPrices = () => {
                       padding: '0.5rem 0.75rem',
                       borderRadius: '10px'
                     }}>
-                      <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', display: 'block' }}>Max Price</span>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', display: 'block' }}>{t('market.maxPrice')}</span>
                       <strong style={{ color: 'var(--text-primary)' }}>₹{Number(item.max_price).toLocaleString()}</strong>
                       <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}> / quintal</span>
                     </div>

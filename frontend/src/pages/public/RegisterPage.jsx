@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import API from '../../api/axios'
+import { useLanguage } from '../../context/LanguageContext'
 import './auth.css'
 
 export const RegisterPage = () => {
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -100,15 +102,15 @@ export const RegisterPage = () => {
   return (
     <div className="auth-wrapper">
       <div className="auth-card" style={{ maxWidth: formData.role === 'buyer' ? '600px' : '480px', transition: 'all 0.3s' }}>
-        <h2 className="auth-title">Join FarmOS</h2>
-        <p className="auth-subtitle">Create an account as a Farmer or Registered Buyer</p>
+        <h2 className="auth-title">{t('auth.join')}</h2>
+        <p className="auth-subtitle">{t('auth.joinSub')}</p>
 
         {error && <div className="alert-message alert-error">{error}</div>}
         {success && <div className="alert-message alert-success">{success}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form" style={{ marginTop: (error || success) ? '1rem' : '0' }}>
           <div className="form-group">
-            <label htmlFor="role">Account Type *</label>
+            <label htmlFor="role">{t('auth.accountType')} *</label>
             <select
               id="role"
               name="role"
@@ -117,14 +119,14 @@ export const RegisterPage = () => {
               onChange={handleChange}
               required
             >
-              <option value="farmer">Farmer (Produce Seller)</option>
-              <option value="buyer">Buyer (Voluntary Registered Buyer Account)</option>
+              <option value="farmer">{t('auth.roleFarmer')}</option>
+              <option value="buyer">{t('auth.roleBuyer')}</option>
             </select>
           </div>
 
           <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
             <div className="form-group">
-              <label htmlFor="name">Full Name *</label>
+              <label htmlFor="name">{t('auth.fullName')} *</label>
               <input
                 type="text"
                 id="name"
@@ -138,7 +140,7 @@ export const RegisterPage = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="email">Email Address *</label>
+              <label htmlFor="email">{t('auth.emailAddr')} *</label>
               <input
                 type="email"
                 id="email"
@@ -154,7 +156,7 @@ export const RegisterPage = () => {
 
           <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
             <div className="form-group">
-              <label htmlFor="password">Password *</label>
+              <label htmlFor="password">{t('auth.password')} *</label>
               <input
                 type="password"
                 id="password"
@@ -168,7 +170,7 @@ export const RegisterPage = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="phone">Phone Number *</label>
+              <label htmlFor="phone">{t('auth.phoneNum')} *</label>
               <input
                 type="tel"
                 id="phone"
@@ -183,7 +185,7 @@ export const RegisterPage = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="location">Location / District *</label>
+            <label htmlFor="location">{t('auth.locationDist')} *</label>
             <input
               type="text"
               id="location"
@@ -207,11 +209,11 @@ export const RegisterPage = () => {
               marginBottom: '0.5rem'
             }}>
               <h4 style={{ color: '#60a5fa', margin: '0 0 0.85rem 0', fontSize: '0.92rem' }}>
-                🏢 Buyer Business Profile Details
+                {t('auth.buyerBusinessProfile')}
               </h4>
 
               <div className="form-group" style={{ marginBottom: '0.75rem' }}>
-                <label htmlFor="business_name">Business / Company Name</label>
+                <label htmlFor="business_name">{t('auth.businessName')}</label>
                 <input
                   type="text"
                   id="business_name"
@@ -225,7 +227,7 @@ export const RegisterPage = () => {
 
               <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                 <div className="form-group">
-                  <label htmlFor="commodities">Commodities Purchased</label>
+                  <label htmlFor="commodities">{t('directory.commoditiesPurchased')}</label>
                   <input
                     type="text"
                     id="commodities"
@@ -238,7 +240,7 @@ export const RegisterPage = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="buying_capacity">Buying Capacity</label>
+                  <label htmlFor="buying_capacity">{t('directory.buyingCapacity')}</label>
                   <input
                     type="text"
                     id="buying_capacity"
@@ -253,7 +255,7 @@ export const RegisterPage = () => {
 
               <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginTop: '0.75rem' }}>
                 <div className="form-group">
-                  <label htmlFor="enam_reference">Optional e-NAM Reference</label>
+                  <label htmlFor="enam_reference">{t('auth.optEnamRef')}</label>
                   <input
                     type="text"
                     id="enam_reference"
@@ -266,7 +268,7 @@ export const RegisterPage = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="udyam_reference">Optional Udyam/MSME Ref</label>
+                  <label htmlFor="udyam_reference">{t('auth.optUdyamRef')}</label>
                   <input
                     type="text"
                     id="udyam_reference"
@@ -280,7 +282,7 @@ export const RegisterPage = () => {
               </div>
 
               <div className="form-group" style={{ marginTop: '0.75rem' }}>
-                <label htmlFor="official_website">Official Business Website</label>
+                <label htmlFor="official_website">{t('auth.optWebsite')}</label>
                 <input
                   type="url"
                   id="official_website"
@@ -310,19 +312,19 @@ export const RegisterPage = () => {
                   style={{ width: '18px', height: '18px', cursor: 'pointer' }}
                 />
                 <label htmlFor="show_contact_publicly" style={{ fontSize: '0.82rem', color: '#c9d1d9', cursor: 'pointer' }}>
-                  I explicitly consent to displaying my business phone number & email publicly on the FarmOS Directory.
+                  {t('auth.publicConsentLabel')}
                 </label>
               </div>
             </div>
           )}
 
           <button type="submit" className="auth-btn" disabled={loading} style={{ marginTop: '1rem' }}>
-            {loading ? 'Submitting Registration...' : (formData.role === 'buyer' ? 'Register Buyer Account' : 'Register Account')}
+            {loading ? t('common.loading') : t('nav.register')}
           </button>
         </form>
 
         <p className="auth-footer-text">
-          Already have an account? <Link to="/login">Sign In</Link>
+          {t('auth.alreadyAccount')} <Link to="/login">{t('nav.login')}</Link>
         </p>
       </div>
     </div>

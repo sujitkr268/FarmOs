@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { MandiPrices } from '../../components/MandiPrices'
 import { EnamInfo } from '../../components/EnamInfo'
+import { useLanguage } from '../../context/LanguageContext'
 
 export const MarketPricesPage = () => {
+  const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState('mandi_prices') // 'mandi_prices' | 'enam_info'
 
   return (
@@ -37,7 +39,7 @@ export const MarketPricesPage = () => {
             minWidth: '200px'
           }}
         >
-          📊 Live Govt Mandi Prices
+          📊 {t('market.title')}
         </button>
 
         <button

@@ -3,10 +3,12 @@ import API from '../../api/axios'
 import { useAuth } from '../../context/AuthContext'
 import { MandiPrices } from '../../components/MandiPrices'
 import { EnamInfo } from '../../components/EnamInfo'
+import { useLanguage } from '../../context/LanguageContext'
 import './marketplace.css'
 
 export const Marketplace = () => {
   const { user, isAuthenticated } = useAuth()
+  const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState('farmer_harvests') // 'farmer_harvests' | 'mandi_prices' | 'enam_info'
 
   // Data states
@@ -148,9 +150,9 @@ export const Marketplace = () => {
     <div className="marketplace-container">
       {/* Header */}
       <div className="marketplace-header">
-        <h1 className="marketplace-title">🏪 Agriculture Marketplace</h1>
+        <h1 className="marketplace-title">🏪 {t('nav.marketplace')}</h1>
         <p className="marketplace-subtitle">
-          Browse verified farmer listings & real-time government mandi prices across India.
+          {t('home.heroDesc')}
         </p>
 
         {/* Navigation Tabs */}
@@ -175,7 +177,7 @@ export const Marketplace = () => {
               boxShadow: activeTab === 'farmer_harvests' ? '0 4px 14px var(--accent-gold-glow)' : 'none'
             }}
           >
-            🌾 Direct Farmer Harvests
+            🌾 {t('buyer.availableProduce')}
           </button>
 
           <button
@@ -192,7 +194,7 @@ export const Marketplace = () => {
               boxShadow: activeTab === 'mandi_prices' ? '0 4px 14px var(--accent-gold-glow)' : 'none'
             }}
           >
-            📊 Live Govt Mandi Prices
+            📊 {t('market.title')}
           </button>
 
           <button

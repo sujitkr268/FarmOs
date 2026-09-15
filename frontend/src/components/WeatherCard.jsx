@@ -1,6 +1,8 @@
 import React from 'react'
+import { useLanguage } from '../context/LanguageContext'
 
 export const WeatherCard = ({ weatherData }) => {
+  const { t } = useLanguage()
   if (!weatherData || !weatherData.current) return null
 
   const { current, daily_forecast, latitude, longitude, timezone, elevation } = weatherData
@@ -30,11 +32,11 @@ export const WeatherCard = ({ weatherData }) => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.3rem' }}>
               <span style={{ fontSize: '1.8rem' }}>☁️</span>
               <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
-                Live Weather Intelligence
+                {t('weather.title')}
               </h2>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>
-              📍 Location: <strong>{latitude.toFixed(4)}° N, {longitude.toFixed(4)}° E</strong> ({timezone} • Elev: {elevation}m)
+              📍 {t('common.location')}: <strong>{latitude.toFixed(4)}° N, {longitude.toFixed(4)}° E</strong> ({timezone} • Elev: {elevation}m)
             </p>
           </div>
 
@@ -70,7 +72,7 @@ export const WeatherCard = ({ weatherData }) => {
             textAlign: 'center'
           }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block' }}>
-              Temperature
+              {t('weather.temperature')}
             </span>
             <span style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--accent-gold)' }}>
               {current.temperature}°C
@@ -89,7 +91,7 @@ export const WeatherCard = ({ weatherData }) => {
             textAlign: 'center'
           }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block' }}>
-              Humidity
+              {t('weather.humidity')}
             </span>
             <span style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--text-primary)' }}>
               💧 {current.humidity}%
@@ -108,7 +110,7 @@ export const WeatherCard = ({ weatherData }) => {
             textAlign: 'center'
           }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block' }}>
-              Precipitation / Rain
+              {t('weather.precipitation')}
             </span>
             <span style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--text-primary)' }}>
               🌧️ {current.precipitation} mm
@@ -127,7 +129,7 @@ export const WeatherCard = ({ weatherData }) => {
             textAlign: 'center'
           }}>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block' }}>
-              Wind Speed
+              {t('weather.windSpeed')}
             </span>
             <span style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--text-primary)' }}>
               💨 {current.wind_speed} <span style={{ fontSize: '1.1rem' }}>km/h</span>
