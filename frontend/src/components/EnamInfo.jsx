@@ -126,7 +126,7 @@ export const EnamInfo = () => {
       </div>
 
       {/* Official Government Resource Links */}
-      <div style={{
+      <div className="enam-resource-grid" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
         gap: '1rem',
@@ -210,7 +210,7 @@ export const EnamInfo = () => {
         ✨ Core Advantages of Trading on e-NAM
       </h3>
 
-      <div style={{
+      <div className="enam-adv-grid" style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
         gap: '1.25rem',
@@ -306,6 +306,14 @@ export const EnamInfo = () => {
           📌 Note: e-NAM electronic trading is conducted exclusively through licensed APMC mandis and official portal enam.gov.in.
         </span>
       </div>
+
+      <style>{`
+        @media (max-width: 550px) {
+          .enam-resource-grid, .enam-adv-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }

@@ -184,3 +184,34 @@
   padding-top: 0.5rem;
   margin-top: 0.25rem;
 }
+
+/* RESPONSIVE BREAKPOINTS */
+@media (max-width: 768px) {
+  .marketplace-container {
+    padding: 1.25rem 0.75rem;
+  }
+  .marketplace-title {
+    font-size: 1.8rem;
+  }
+  .marketplace-subtitle {
+    font-size: 0.95rem;
+  }
+  .filter-bar {
+    padding: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-input-group, .filter-group {
+    width: 100%;
+    min-width: auto;
+  }
+  .marketplace-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .marketplace-card {
+    padding: 1.25rem 1rem;
+  }
+}

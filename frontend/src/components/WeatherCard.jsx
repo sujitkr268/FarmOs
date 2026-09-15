@@ -55,7 +55,7 @@ export const WeatherCard = ({ weatherData }) => {
         </div>
 
         {/* Current Weather Grid Metrics */}
-        <div style={{
+        <div className="weather-metrics-grid" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
           gap: '1.25rem',
@@ -146,7 +146,7 @@ export const WeatherCard = ({ weatherData }) => {
             📅 7-Day Agricultural Forecast
           </h3>
 
-          <div style={{
+          <div className="weather-forecast-grid" style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
             gap: '1.25rem'
@@ -180,6 +180,22 @@ export const WeatherCard = ({ weatherData }) => {
           </div>
         </div>
       )}
+
+      <style>{`
+        @media (max-width: 550px) {
+          .weather-metrics-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+          .weather-forecast-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+        @media (max-width: 380px) {
+          .weather-metrics-grid, .weather-forecast-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }

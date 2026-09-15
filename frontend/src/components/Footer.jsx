@@ -72,6 +72,14 @@ export const Footer = () => {
       }}>
         &copy; {new Date().getFullYear()} FarmOS Platform. All rights reserved.
       </div>
+
+      <style>{`
+        @media (max-width: 600px) {
+          footer {
+            padding: 2.5rem 1rem 1.5rem 1rem !important;
+          }
+        }
+      `}</style>
     </footer>
   )
 }

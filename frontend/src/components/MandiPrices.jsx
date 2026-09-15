@@ -328,7 +328,7 @@ export const MandiPrices = () => {
             </span>
           </div>
 
-          <div style={{
+          <div className="mandi-grid" style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
             gap: '1.5rem'
@@ -457,6 +457,13 @@ export const MandiPrices = () => {
           </div>
         </div>
       )}
+      <style>{`
+        @media (max-width: 600px) {
+          .mandi-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }

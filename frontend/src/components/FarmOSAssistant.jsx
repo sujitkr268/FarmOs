@@ -129,7 +129,7 @@ const formatInlineBold = (text) => {
   })
 }
 
-export const FarmOSAssistant = () => {
+export const FarmOSAssistant = ({ isCompact = false }) => {
   // Chat History State
   const [messages, setMessages] = useState([
     {
@@ -220,24 +220,27 @@ export const FarmOSAssistant = () => {
       maxWidth: '1000px',
       margin: '0 auto',
       backgroundColor: 'var(--bg-card)',
-      border: '1px solid var(--border-gold)',
-      borderRadius: '24px',
+      border: isCompact ? 'none' : '1px solid var(--border-gold)',
+      borderRadius: isCompact ? '0' : '24px',
       display: 'flex',
       flexDirection: 'column',
-      height: '720px',
-      boxShadow: '0 12px 40px rgba(0, 0, 0, 0.45)',
+      height: isCompact ? '100%' : '720px',
+      maxHeight: isCompact ? '100%' : 'calc(100vh - 100px)',
+      boxShadow: isCompact ? 'none' : '0 12px 40px rgba(0, 0, 0, 0.45)',
       overflow: 'hidden',
-      position: 'relative'
+      position: 'relative',
+      width: '100%'
     }}>
       {/* Chat Window Header */}
       <div style={{
         background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(16, 19, 26, 0.95) 100%)',
         borderBottom: '1px solid var(--border-color)',
-        padding: '1.25rem 1.75rem',
+        padding: isCompact ? '0.75rem 1rem' : '1rem 1.5rem',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backdropFilter: 'blur(10px)'
+        backdropFilter: 'blur(10px)',
+        flexShrink: 0
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
           <div style={{
@@ -284,11 +287,13 @@ export const FarmOSAssistant = () => {
       <div style={{
         backgroundColor: 'rgba(0, 0, 0, 0.2)',
         borderBottom: '1px solid var(--border-color)',
-        padding: '0.8rem 1.5rem',
+        padding: '0.65rem 1rem',
         display: 'flex',
         alignItems: 'center',
         gap: '0.6rem',
-        flexWrap: 'wrap'
+        overflowX: 'auto',
+        WebkitOverflowScrolling: 'touch',
+        flexShrink: 0
       }}>
         <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>
           💡 Try asking:

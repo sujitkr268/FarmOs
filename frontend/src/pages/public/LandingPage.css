@@ -422,10 +422,10 @@
 
 @media (max-width: 768px) {
   .hero-title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
   .hero-section {
-    padding: 3rem 1.25rem 4rem 1.25rem;
+    padding: 3rem 1rem 4rem 1rem;
   }
   .hero-floating-cards {
     flex-direction: column;
@@ -438,5 +438,55 @@
   }
   .section-title {
     font-size: 1.8rem;
+  }
+  .cta-box {
+    padding: 3rem 1.25rem;
+    margin: 2rem 1rem 4rem 1rem;
+  }
+  .cta-title {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.85rem;
+  }
+  .hero-description {
+    font-size: 0.95rem;
+  }
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .btn-gold, .btn-outline-dark {
+    width: 100%;
+    justify-content: center;
+  }
+  .section {
+    padding: 3.5rem 1rem;
+  }
+  .section-title {
+    font-size: 1.55rem;
+  }
+  .section-subtitle {
+    font-size: 0.92rem;
+    margin-bottom: 2rem;
+  }
+  .cta-title {
+    font-size: 1.6rem;
+  }
+  .cta-description {
+    font-size: 0.92rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .hero-title {
+    font-size: 1.65rem;
+  }
+  .hero-badge {
+    font-size: 0.78rem;
+    padding: 0.35rem 0.75rem;
   }
 }

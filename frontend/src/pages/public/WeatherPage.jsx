@@ -62,10 +62,10 @@ export const WeatherPage = () => {
   }
 
   return (
-    <div style={{
+    <div className="weather-page-container" style={{
       maxWidth: '1280px',
       margin: '0 auto',
-      padding: '2rem 1.5rem',
+      padding: '1.5rem 1rem',
       color: 'var(--text-primary)'
     }}>
       {/* Page Header */}
@@ -258,6 +258,14 @@ export const WeatherPage = () => {
         /* Render Weather Card */
         <WeatherCard weatherData={weatherData} />
       )}
+
+      <style>{`
+        @media (max-width: 600px) {
+          .weather-page-container {
+            padding: 1rem 0.5rem !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }

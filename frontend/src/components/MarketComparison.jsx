@@ -52,7 +52,7 @@ export const MarketComparison = ({ data }) => {
   const rec = comparisonList[0]
 
   return (
-    <div style={{
+    <div className="market-comparison-card" style={{
       width: '100%',
       backgroundColor: 'var(--bg-card, #161b22)',
       border: '1px solid var(--border-gold, #d4af37)',
@@ -152,7 +152,7 @@ export const MarketComparison = ({ data }) => {
             </div>
           </div>
 
-          <div style={{
+          <div className="logistics-metrics-grid" style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
             gap: '0.75rem',
@@ -322,6 +322,23 @@ export const MarketComparison = ({ data }) => {
           </span>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 600px) {
+          .market-comparison-card {
+            padding: 1rem 0.75rem !important;
+            border-radius: 12px !important;
+          }
+          .logistics-metrics-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+        @media (max-width: 400px) {
+          .logistics-metrics-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }

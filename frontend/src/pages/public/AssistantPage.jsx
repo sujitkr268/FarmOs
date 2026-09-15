@@ -6,10 +6,18 @@ export const AssistantPage = () => {
     <div style={{
       maxWidth: '1280px',
       margin: '0 auto',
-      padding: '2rem 1.5rem',
+      padding: '1.5rem 1rem',
       color: 'var(--text-primary)'
-    }}>
+    }} className="assistant-page-container">
       <FarmOSAssistant />
+
+      <style>{`
+        @media (max-width: 480px) {
+          .assistant-page-container {
+            padding: 0.75rem 0.4rem !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }

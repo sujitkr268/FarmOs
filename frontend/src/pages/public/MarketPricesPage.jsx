@@ -9,17 +9,18 @@ export const MarketPricesPage = () => {
     <div style={{
       maxWidth: '1280px',
       margin: '0 auto',
-      padding: '2rem 1.5rem',
+      padding: '1.5rem 1rem',
       color: 'var(--text-primary)'
-    }}>
+    }} className="market-prices-page">
       {/* Tab Selector Header */}
       <div style={{
         display: 'flex',
-        gap: '1rem',
+        gap: '0.75rem',
         marginBottom: '2rem',
         borderBottom: '1px solid var(--border-color)',
-        paddingBottom: '1rem'
-      }}>
+        paddingBottom: '1rem',
+        flexWrap: 'wrap'
+      }} className="tab-selector-bar">
         <button
           onClick={() => setActiveTab('mandi_prices')}
           style={{
@@ -31,7 +32,9 @@ export const MarketPricesPage = () => {
             fontSize: '0.9rem',
             border: 'none',
             cursor: 'pointer',
-            transition: 'all 0.2s ease'
+            transition: 'all 0.2s ease',
+            flex: 1,
+            minWidth: '200px'
           }}
         >
           📊 Live Govt Mandi Prices
@@ -48,7 +51,9 @@ export const MarketPricesPage = () => {
             fontSize: '0.9rem',
             border: 'none',
             cursor: 'pointer',
-            transition: 'all 0.2s ease'
+            transition: 'all 0.2s ease',
+            flex: 1,
+            minWidth: '200px'
           }}
         >
           🏛️ e-NAM Market Information
@@ -56,6 +61,17 @@ export const MarketPricesPage = () => {
       </div>
 
       {activeTab === 'mandi_prices' ? <MandiPrices /> : <EnamInfo />}
+
+      <style>{`
+        @media (max-width: 480px) {
+          .market-prices-page {
+            padding: 1rem 0.5rem !important;
+          }
+          .tab-selector-bar button {
+            min-width: 100% !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }
