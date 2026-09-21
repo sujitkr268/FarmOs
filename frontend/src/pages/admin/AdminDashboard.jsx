@@ -3,10 +3,7 @@ import API from '../../api/axios';
 import { getPublicTraders, createPublicTrader, updatePublicTrader, deletePublicTrader } from '../../api/traderApi';
 import { getPendingBuyers, verifyBuyer, rejectBuyer } from '../../api/buyerApi';
 import { getPendingFarmersApi, verifyFarmerApi, rejectFarmerApi } from '../../api/adminApi';
-import { VerificationBadge } from '../../components/VerificationBadge';
-import { MetricCard } from '../../components/MetricCard';
-import { LoadingState } from '../../components/LoadingState';
-import { EmptyState } from '../../components/EmptyState';
+import TrustBadge from '../../components/TrustBadge';
 import { useLanguage } from '../../context/LanguageContext';
 
 export const AdminDashboard = () => {
@@ -76,10 +73,12 @@ export const AdminDashboard = () => {
     fetchData();
   }, [activeTab]);
 
+  // Handle Verify Buyer
   const handleVerifyBuyer = async (id, name) => {
     try {
       const notes = prompt(`Enter verification note for ${name}:`, 'Verified by admin review of business details');
       if (notes === null) return;
+
       await verifyBuyer(id, notes);
       setSuccess(`Buyer "${name}" verified successfully!`);
       fetchData();
@@ -89,10 +88,12 @@ export const AdminDashboard = () => {
     }
   };
 
+  // Handle Reject Buyer
   const handleRejectBuyer = async (id, name) => {
     try {
       const notes = prompt(`Enter rejection reason for ${name}:`, 'Incomplete registration evidence');
       if (notes === null) return;
+
       await rejectBuyer(id, notes);
       setSuccess(`Buyer "${name}" rejected.`);
       fetchData();
@@ -102,10 +103,12 @@ export const AdminDashboard = () => {
     }
   };
 
+  // Handle Verify Farmer
   const handleVerifyFarmer = async (id, name) => {
     try {
       const notes = prompt(`Enter verification note for Farmer ${name}:`, 'Verified PM-KISAN/Land Record Evidence');
       if (notes === null) return;
+
       await verifyFarmerApi(id, notes);
       setSuccess(`Farmer "${name}" verified successfully!`);
       fetchData();
@@ -115,10 +118,12 @@ export const AdminDashboard = () => {
     }
   };
 
+  // Handle Reject Farmer
   const handleRejectFarmer = async (id, name) => {
     try {
       const notes = prompt(`Enter rejection note for Farmer ${name}:`, 'Incomplete evidence or invalid reference');
       if (notes === null) return;
+
       await rejectFarmerApi(id, notes);
       setSuccess(`Farmer "${name}" verification rejected.`);
       fetchData();
@@ -128,10 +133,12 @@ export const AdminDashboard = () => {
     }
   };
 
+  // Handle Submit Trader Form (Add or Edit)
   const handleTraderSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
+
     try {
       if (editingTrader) {
         await updatePublicTrader(editingTrader.id, traderForm);
@@ -149,6 +156,7 @@ export const AdminDashboard = () => {
     }
   };
 
+  // Open Edit Trader Modal
   const openEditTrader = (trader) => {
     setEditingTrader(trader);
     setTraderForm({
@@ -175,6 +183,7 @@ export const AdminDashboard = () => {
     setShowAddTraderModal(true);
   };
 
+  // Handle Delete Trader
   const handleDeleteTrader = async (id, name) => {
     if (!window.confirm(`Are you sure you want to delete "${name}"?`)) return;
     try {
@@ -189,12 +198,12 @@ export const AdminDashboard = () => {
 
   return (
     <div style={{ color: '#f3f4f6' }}>
-      {/* Header Banner */}
+      {/* Header */}
       <div style={{
-        background: 'linear-gradient(135deg, #091a11 0%, #0f2d1e 50%, #07150d 100%)',
-        border: '1px solid rgba(16, 185, 129, 0.3)',
+        background: 'linear-gradient(135deg, #181408 0%, #291e08 50%, #120e06 100%)',
+        border: '1px solid rgba(245, 158, 11, 0.3)',
         borderRadius: '20px',
-        padding: 'clamp(1.25rem, 3vw, 2rem)',
+        padding: '1.5rem 1.75rem',
         marginBottom: '1.75rem',
         display: 'flex',
         justifyContent: 'space-between',
@@ -204,11 +213,11 @@ export const AdminDashboard = () => {
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
       }}>
         <div>
-          <h1 style={{ fontSize: 'clamp(1.4rem, 4vw, 1.85rem)', fontWeight: 800, color: '#10b981', margin: 0, letterSpacing: '-0.02em' }}>
-            🛡️ FarmOS Administration Portal
+          <h1 style={{ fontSize: '1.85rem', fontWeight: 800, color: '#f59e0b', margin: 0, letterSpacing: '-0.02em' }}>
+            🛡️ {t('admin.title')}
           </h1>
           <p style={{ color: '#9ca3af', fontSize: '0.88rem', margin: '0.3rem 0 0 0' }}>
-            Review buyer/farmer applications & manage verified public trader directory records.
+            {t('admin.subtitle')}
           </p>
         </div>
       </div>
@@ -229,13 +238,12 @@ export const AdminDashboard = () => {
       <div style={{
         display: 'flex',
         gap: '0.5rem',
-        backgroundColor: '#0f2218',
+        backgroundColor: '#111b15',
         padding: '0.4rem',
         borderRadius: '14px',
-        border: '1px solid rgba(31, 64, 46, 0.8)',
+        border: '1px solid rgba(31, 56, 42, 0.8)',
         marginBottom: '1.75rem',
-        overflowX: 'auto',
-        WebkitOverflowScrolling: 'touch'
+        overflowX: 'auto'
       }}>
         <button
           onClick={() => setActiveTab('buyers')}
@@ -244,12 +252,13 @@ export const AdminDashboard = () => {
             borderRadius: '10px',
             fontSize: '0.85rem',
             fontWeight: activeTab === 'buyers' ? 700 : 500,
-            color: activeTab === 'buyers' ? '#06120c' : '#9ca3af',
+            color: activeTab === 'buyers' ? '#080e0a' : '#9ca3af',
             backgroundColor: activeTab === 'buyers' ? '#10b981' : 'transparent',
+            transition: 'all 0.2s',
             whiteSpace: 'nowrap'
           }}
         >
-          ⏳ Pending Buyers ({pendingBuyers.length})
+          {t('admin.tabPendingBuyers')} ({pendingBuyers.length})
         </button>
 
         <button
@@ -259,8 +268,9 @@ export const AdminDashboard = () => {
             borderRadius: '10px',
             fontSize: '0.85rem',
             fontWeight: activeTab === 'farmers' ? 700 : 500,
-            color: activeTab === 'farmers' ? '#06120c' : '#9ca3af',
+            color: activeTab === 'farmers' ? '#080e0a' : '#9ca3af',
             backgroundColor: activeTab === 'farmers' ? '#10b981' : 'transparent',
+            transition: 'all 0.2s',
             whiteSpace: 'nowrap'
           }}
         >
@@ -274,12 +284,13 @@ export const AdminDashboard = () => {
             borderRadius: '10px',
             fontSize: '0.85rem',
             fontWeight: activeTab === 'traders' ? 700 : 500,
-            color: activeTab === 'traders' ? '#06120c' : '#9ca3af',
+            color: activeTab === 'traders' ? '#080e0a' : '#9ca3af',
             backgroundColor: activeTab === 'traders' ? '#10b981' : 'transparent',
+            transition: 'all 0.2s',
             whiteSpace: 'nowrap'
           }}
         >
-          🏬 Trader Records ({publicTraders.length})
+          {t('admin.tabTraderManagement')} ({publicTraders.length})
         </button>
 
         <button
@@ -289,8 +300,9 @@ export const AdminDashboard = () => {
             borderRadius: '10px',
             fontSize: '0.85rem',
             fontWeight: activeTab === 'stats' ? 700 : 500,
-            color: activeTab === 'stats' ? '#06120c' : '#9ca3af',
+            color: activeTab === 'stats' ? '#080e0a' : '#9ca3af',
             backgroundColor: activeTab === 'stats' ? '#10b981' : 'transparent',
+            transition: 'all 0.2s',
             whiteSpace: 'nowrap'
           }}
         >
@@ -299,17 +311,19 @@ export const AdminDashboard = () => {
       </div>
 
       {loading ? (
-        <LoadingState message="Fetching administration records..." />
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#9ca3af' }}>Loading admin records...</div>
       ) : activeTab === 'buyers' ? (
         pendingBuyers.length === 0 ? (
-          <EmptyState icon="🎉" title="No Pending Buyers" description="All buyer account verification applications have been reviewed." />
+          <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '3rem', textAlign: 'center', color: '#9ca3af' }}>
+            🎉 No pending buyer applications right now! All buyer accounts reviewed.
+          </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {pendingBuyers.map((b) => (
               <div
                 key={b.id}
                 style={{
-                  backgroundColor: '#0f2218',
+                  backgroundColor: '#111b15',
                   border: '1px solid rgba(245, 158, 11, 0.3)',
                   borderRadius: '16px',
                   padding: '1.25rem',
@@ -332,15 +346,26 @@ export const AdminDashboard = () => {
 
                   <div style={{ fontSize: '0.85rem', color: '#9ca3af', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                     <div><strong>Applicant:</strong> {b.name} ({b.email} | {b.phone})</div>
-                    <div><strong>Location:</strong> 📍 {b.district || b.location}, {b.state || ''}</div>
+                    <div><strong>Location:</strong> 📍 {b.district || b.location}, {b.state || ''} {b.mandi ? `(Mandi: ${b.mandi})` : ''}</div>
+                    <div><strong>Commodities & Capacity:</strong> {b.commodities || 'N/A'} ({b.buying_capacity})</div>
                     {b.enam_reference && <div style={{ color: '#a855f7' }}><strong>e-NAM Ref:</strong> {b.enam_reference}</div>}
                     {b.udyam_reference && <div style={{ color: '#f59e0b' }}><strong>Udyam Ref:</strong> {b.udyam_reference}</div>}
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', gap: '0.65rem' }}>
-                  <button onClick={() => handleVerifyBuyer(b.id, b.business_name)} style={{ padding: '0.55rem 1.1rem', borderRadius: '10px', backgroundColor: '#10b981', color: '#06120c', fontWeight: 800, border: 'none', cursor: 'pointer', fontSize: '0.85rem' }}>✅ Verify</button>
-                  <button onClick={() => handleRejectBuyer(b.id, b.business_name)} style={{ padding: '0.55rem 1.1rem', borderRadius: '10px', backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', fontWeight: 700, border: '1px solid rgba(239, 68, 68, 0.3)', cursor: 'pointer', fontSize: '0.85rem' }}>❌ Reject</button>
+                  <button
+                    onClick={() => handleVerifyBuyer(b.id, b.business_name)}
+                    style={{ padding: '0.55rem 1.1rem', borderRadius: '10px', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 800, border: 'none', cursor: 'pointer', fontSize: '0.85rem' }}
+                  >
+                    ✅ Verify
+                  </button>
+                  <button
+                    onClick={() => handleRejectBuyer(b.id, b.business_name)}
+                    style={{ padding: '0.55rem 1.1rem', borderRadius: '10px', backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', fontWeight: 700, border: '1px solid rgba(239, 68, 68, 0.3)', cursor: 'pointer', fontSize: '0.85rem' }}
+                  >
+                    ❌ Reject
+                  </button>
                 </div>
               </div>
             ))}
@@ -348,14 +373,16 @@ export const AdminDashboard = () => {
         )
       ) : activeTab === 'farmers' ? (
         pendingFarmers.length === 0 ? (
-          <EmptyState icon="🌾" title="No Pending Farmers" description="All farmer verification requests have been processed." />
+          <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '3rem', textAlign: 'center', color: '#9ca3af' }}>
+            🎉 No pending farmer verification applications right now!
+          </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {pendingFarmers.map((f) => (
               <div
                 key={f.id}
                 style={{
-                  backgroundColor: '#0f2218',
+                  backgroundColor: '#111b15',
                   border: '1px solid rgba(16, 185, 129, 0.3)',
                   borderRadius: '16px',
                   padding: '1.25rem',
@@ -371,27 +398,32 @@ export const AdminDashboard = () => {
                     <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#f3f4f6', margin: 0 }}>
                       {f.name}
                     </h3>
-                    <VerificationBadge status={f.verification_status} role="farmer" size="sm" />
+                    <TrustBadge status={f.verification_status} role="farmer" size="sm" />
                   </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.4rem', fontSize: '0.85rem', color: '#9ca3af' }}>
                     <div>📍 Location: {f.village || f.location}</div>
                     <div>📞 Phone: {f.phone}</div>
                     <div>🌾 Crops: {f.crops_grown || 'N/A'}</div>
+                    <div>📏 Farm Size: {f.farm_size || 'N/A'}</div>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', gap: '0.65rem' }}>
-                  <button onClick={() => handleVerifyFarmer(f.id, f.name)} style={{ padding: '0.55rem 1.1rem', borderRadius: '10px', backgroundColor: '#10b981', color: '#06120c', fontWeight: 800, border: 'none', cursor: 'pointer', fontSize: '0.85rem' }}>✅ Verify</button>
-                  <button onClick={() => handleRejectFarmer(f.id, f.name)} style={{ padding: '0.55rem 1.1rem', borderRadius: '10px', backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', fontWeight: 700, border: '1px solid rgba(239, 68, 68, 0.3)', cursor: 'pointer', fontSize: '0.85rem' }}>❌ Reject</button>
+                  <button onClick={() => handleVerifyFarmer(f.id, f.name)} style={{ padding: '0.55rem 1.1rem', borderRadius: '10px', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 800, border: 'none', cursor: 'pointer', fontSize: '0.85rem' }}>
+                    ✅ Verify
+                  </button>
+                  <button onClick={() => handleRejectFarmer(f.id, f.name)} style={{ padding: '0.55rem 1.1rem', borderRadius: '10px', backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', fontWeight: 700, border: '1px solid rgba(239, 68, 68, 0.3)', cursor: 'pointer', fontSize: '0.85rem' }}>
+                    ❌ Reject
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         )
       ) : activeTab === 'traders' ? (
-        <div style={{ backgroundColor: '#0f2218', border: '1px solid rgba(31, 64, 46, 0.8)', borderRadius: '18px', padding: '1.25rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+        <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#f3f4f6', fontWeight: 700 }}>Public Trader Directory Records ({publicTraders.length})</h3>
             <button
               onClick={() => {
@@ -419,16 +451,16 @@ export const AdminDashboard = () => {
                 });
                 setShowAddTraderModal(true);
               }}
-              style={{ padding: '0.55rem 1.1rem', borderRadius: '10px', backgroundColor: '#10b981', color: '#06120c', fontWeight: 800, border: 'none', cursor: 'pointer', fontSize: '0.85rem' }}
+              style={{ padding: '0.55rem 1.1rem', borderRadius: '10px', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 800, border: 'none', cursor: 'pointer', fontSize: '0.85rem' }}
             >
               ➕ Add Trader Record
             </button>
           </div>
 
           <div className="table-responsive">
-            <table>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', textAlign: 'left' }}>
               <thead>
-                <tr style={{ borderBottom: '1px solid rgba(31, 64, 46, 0.8)', color: '#9ca3af', fontSize: '0.75rem', textTransform: 'uppercase' }}>
+                <tr style={{ borderBottom: '1px solid rgba(31, 56, 42, 0.8)', color: '#9ca3af', fontSize: '0.75rem', textTransform: 'uppercase' }}>
                   <th style={{ padding: '0.75rem' }}>Business Name</th>
                   <th style={{ padding: '0.75rem' }}>Location</th>
                   <th style={{ padding: '0.75rem' }}>Commodities</th>
@@ -438,7 +470,7 @@ export const AdminDashboard = () => {
               </thead>
               <tbody>
                 {publicTraders.map((t) => (
-                  <tr key={t.id} style={{ borderBottom: '1px solid rgba(31, 64, 46, 0.4)', color: '#f3f4f6' }}>
+                  <tr key={t.id} style={{ borderBottom: '1px solid rgba(31, 56, 42, 0.4)', color: '#f3f4f6' }}>
                     <td style={{ padding: '0.75rem', fontWeight: 700 }}>
                       {t.business_name}
                       <div style={{ fontSize: '0.75rem', color: '#9ca3af', fontWeight: 400 }}>{t.business_type}</div>
@@ -452,7 +484,7 @@ export const AdminDashboard = () => {
                     </td>
                     <td style={{ padding: '0.75rem' }}>
                       <div style={{ display: 'flex', gap: '0.4rem' }}>
-                        <button onClick={() => openEditTrader(t)} style={{ padding: '0.35rem 0.65rem', borderRadius: '6px', backgroundColor: '#14291d', color: '#f3f4f6', border: '1px solid rgba(31, 64, 46, 0.8)', cursor: 'pointer', fontSize: '0.75rem' }}>✏️ Edit</button>
+                        <button onClick={() => openEditTrader(t)} style={{ padding: '0.35rem 0.65rem', borderRadius: '6px', backgroundColor: '#16261d', color: '#f3f4f6', border: '1px solid rgba(31, 56, 42, 0.8)', cursor: 'pointer', fontSize: '0.75rem' }}>✏️ Edit</button>
                         <button onClick={() => handleDeleteTrader(t.id, t.business_name)} style={{ padding: '0.35rem 0.65rem', borderRadius: '6px', backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', border: 'none', cursor: 'pointer', fontSize: '0.75rem' }}>🗑️</button>
                       </div>
                     </td>
@@ -464,48 +496,71 @@ export const AdminDashboard = () => {
         </div>
       ) : (
         stats && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem' }}>
-            <MetricCard title="Total Users" value={stats.total_users} icon="👥" color="emerald" />
-            <MetricCard title="Farmers" value={stats.total_farmers} icon="🧑‍🌾" color="emerald" />
-            <MetricCard title="Buyers" value={stats.total_buyers} icon="🏢" color="blue" />
-            <MetricCard title="Harvests Listed" value={stats.total_harvests} icon="🌾" color="amber" />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
+            <div className="stat-metric-card">
+              <span style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase' }}>Total Users</span>
+              <h2 style={{ fontSize: '2.1rem', fontWeight: 800, margin: '0.3rem 0 0 0', color: '#ffffff' }}>{stats.total_users}</h2>
+            </div>
+            <div className="stat-metric-card">
+              <span style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase' }}>Farmers</span>
+              <h2 style={{ fontSize: '2.1rem', fontWeight: 800, margin: '0.3rem 0 0 0', color: '#10b981' }}>{stats.total_farmers}</h2>
+            </div>
+            <div className="stat-metric-card">
+              <span style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase' }}>Buyers</span>
+              <h2 style={{ fontSize: '2.1rem', fontWeight: 800, margin: '0.3rem 0 0 0', color: '#38bdf8' }}>{stats.total_buyers}</h2>
+            </div>
+            <div className="stat-metric-card">
+              <span style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase' }}>Harvests Listed</span>
+              <h2 style={{ fontSize: '2.1rem', fontWeight: 800, margin: '0.3rem 0 0 0', color: '#f59e0b' }}>{stats.total_harvests}</h2>
+            </div>
           </div>
         )
       )}
 
-      {/* Add/Edit Modal */}
+      {/* Add / Edit Public Trader Modal */}
       {showAddTraderModal && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 110, backgroundColor: 'rgba(0,0,0,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div className="farm-modal-content" style={{ backgroundColor: '#0f2218', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '20px', maxWidth: '560px', width: '100%', padding: '1.25rem' }}>
-            <h3 style={{ marginTop: 0, color: '#10b981', fontSize: '1.05rem', fontWeight: 700 }}>
-              {editingTrader ? `✏️ Edit Record: ${editingTrader.business_name}` : '➕ Add Verified Public Trader Record'}
+        <div style={{ position: 'fixed', inset: 0, zIndex: 2000, backgroundColor: 'rgba(0,0,0,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '20px', maxWidth: '600px', width: '100%', padding: '1.5rem', maxHeight: '90vh', overflowY: 'auto' }}>
+            <h3 style={{ marginTop: 0, color: '#10b981', fontSize: '1.1rem', fontWeight: 700 }}>
+              {editingTrader ? `✏️ Edit Public Record: ${editingTrader.business_name}` : '➕ Add Verified Public Trader Record'}
             </h3>
 
             <form onSubmit={handleTraderSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.2rem' }}>Business Name *</label>
-                <input type="text" required value={traderForm.business_name} onChange={(e) => setTraderForm({ ...traderForm, business_name: e.target.value })} style={{ width: '100%', backgroundColor: '#06120c', border: '1px solid rgba(31, 64, 46, 0.8)', color: '#f3f4f6', padding: '0.5rem', borderRadius: '8px' }} />
+                <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.2rem' }}>Business Name *</label>
+                <input type="text" required value={traderForm.business_name} onChange={(e) => setTraderForm({ ...traderForm, business_name: e.target.value })} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#f3f4f6', padding: '0.55rem', borderRadius: '8px' }} />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.2rem' }}>State *</label>
-                  <input type="text" required value={traderForm.state} onChange={(e) => setTraderForm({ ...traderForm, state: e.target.value })} style={{ width: '100%', backgroundColor: '#06120c', border: '1px solid rgba(31, 64, 46, 0.8)', color: '#f3f4f6', padding: '0.5rem', borderRadius: '8px' }} />
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.2rem' }}>State *</label>
+                  <input type="text" required value={traderForm.state} onChange={(e) => setTraderForm({ ...traderForm, state: e.target.value })} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#f3f4f6', padding: '0.55rem', borderRadius: '8px' }} />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.2rem' }}>District *</label>
-                  <input type="text" required value={traderForm.district} onChange={(e) => setTraderForm({ ...traderForm, district: e.target.value })} style={{ width: '100%', backgroundColor: '#06120c', border: '1px solid rgba(31, 64, 46, 0.8)', color: '#f3f4f6', padding: '0.5rem', borderRadius: '8px' }} />
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.2rem' }}>District *</label>
+                  <input type="text" required value={traderForm.district} onChange={(e) => setTraderForm({ ...traderForm, district: e.target.value })} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#f3f4f6', padding: '0.55rem', borderRadius: '8px' }} />
                 </div>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.2rem' }}>Commodities *</label>
-                <input type="text" required placeholder="Potato, Rice, Paddy" value={traderForm.commodities} onChange={(e) => setTraderForm({ ...traderForm, commodities: e.target.value })} style={{ width: '100%', backgroundColor: '#06120c', border: '1px solid rgba(31, 64, 46, 0.8)', color: '#f3f4f6', padding: '0.5rem', borderRadius: '8px' }} />
+                <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.2rem' }}>Commodities Handled *</label>
+                <input type="text" required placeholder="Potato, Rice, Paddy" value={traderForm.commodities} onChange={(e) => setTraderForm({ ...traderForm, commodities: e.target.value })} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#f3f4f6', padding: '0.55rem', borderRadius: '8px' }} />
               </div>
 
-              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem', justifyContent: 'flex-end' }}>
-                <button type="button" onClick={() => setShowAddTraderModal(false)} style={{ padding: '0.5rem 1rem', borderRadius: '8px', backgroundColor: '#14291d', border: '1px solid rgba(31, 64, 46, 0.8)', color: '#9ca3af', cursor: 'pointer', fontSize: '0.82rem' }}>Cancel</button>
-                <button type="submit" style={{ padding: '0.5rem 1.15rem', borderRadius: '8px', backgroundColor: '#10b981', color: '#06120c', fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: '0.82rem' }}>Save Record</button>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.2rem' }}>Verification Source *</label>
+                  <input type="text" required placeholder="APEDA AgriExchange" value={traderForm.verification_source} onChange={(e) => setTraderForm({ ...traderForm, verification_source: e.target.value })} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#f3f4f6', padding: '0.55rem', borderRadius: '8px' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.2rem' }}>Source URL *</label>
+                  <input type="url" required placeholder="https://..." value={traderForm.source_url} onChange={(e) => setTraderForm({ ...traderForm, source_url: e.target.value })} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#f3f4f6', padding: '0.55rem', borderRadius: '8px' }} />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem', justifyContent: 'flex-end' }}>
+                <button type="button" onClick={() => setShowAddTraderModal(false)} style={{ padding: '0.55rem 1.1rem', borderRadius: '8px', backgroundColor: '#16261d', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#9ca3af', cursor: 'pointer', fontSize: '0.85rem' }}>Cancel</button>
+                <button type="submit" style={{ padding: '0.55rem 1.25rem', borderRadius: '8px', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: '0.85rem' }}>Save Record</button>
               </div>
             </form>
           </div>
@@ -514,5 +569,3 @@ export const AdminDashboard = () => {
     </div>
   );
 };
-
-export default AdminDashboard;

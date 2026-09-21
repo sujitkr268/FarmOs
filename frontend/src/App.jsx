@@ -11,16 +11,12 @@ import { MarketPricesPage } from './pages/public/MarketPricesPage'
 import { WeatherPage } from './pages/public/WeatherPage'
 import { AssistantPage } from './pages/public/AssistantPage'
 import { TraderDirectoryPage } from './pages/public/TraderDirectoryPage'
-import { OpportunitiesPage } from './pages/public/OpportunitiesPage'
-import { OrdersPage } from './pages/public/OrdersPage'
-import { HarvestsPage } from './pages/public/HarvestsPage'
 import { FarmerDashboard } from './pages/farmer/FarmerDashboard'
 import { BuyerDashboard } from './pages/buyer/BuyerDashboard'
 import { Marketplace } from './pages/buyer/Marketplace'
 import { AdminDashboard } from './pages/admin/AdminDashboard'
 import { ProfilePage } from './pages/user/ProfilePage'
 import { SettingsPage } from './pages/user/SettingsPage'
-import { EnamInfo } from './components/EnamInfo'
 import { NotFoundPage } from './pages/NotFoundPage'
 
 function App() {
@@ -38,10 +34,6 @@ function App() {
         <Route path="/market" element={<ProtectedRoute><MarketPricesPage /></ProtectedRoute>} />
         <Route path="/weather" element={<ProtectedRoute><WeatherPage /></ProtectedRoute>} />
         <Route path="/assistant" element={<ProtectedRoute><AssistantPage /></ProtectedRoute>} />
-        <Route path="/opportunities" element={<ProtectedRoute><OpportunitiesPage /></ProtectedRoute>} />
-        <Route path="/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
-        <Route path="/harvests" element={<ProtectedRoute><HarvestsPage /></ProtectedRoute>} />
-        <Route path="/enam" element={<ProtectedRoute><EnamInfo /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
         <Route path="/marketplace" element={<ProtectedRoute><Marketplace /></ProtectedRoute>} />
