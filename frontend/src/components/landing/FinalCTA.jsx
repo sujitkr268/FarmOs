@@ -8,7 +8,7 @@ export const FinalCTA = () => {
   return (
     <section style={{
       position: 'relative',
-      padding: '7rem 1.5rem',
+      padding: 'clamp(4rem, 10vw, 7rem) clamp(1rem, 4vw, 1.5rem)',
       backgroundImage: `linear-gradient(180deg, rgba(2, 44, 34, 0.88) 0%, rgba(2, 44, 34, 0.95) 100%), url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1920&q=80')`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -17,7 +17,7 @@ export const FinalCTA = () => {
     }}>
       <div style={{ maxWidth: '850px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
         <h2 style={{
-          fontSize: '3.2rem',
+          fontSize: 'clamp(1.8rem, 6vw, 3.2rem)',
           fontWeight: 800,
           color: '#ffffff',
           lineHeight: 1.15,
@@ -29,7 +29,7 @@ export const FinalCTA = () => {
         </h2>
 
         <p style={{
-          fontSize: '1.2rem',
+          fontSize: 'clamp(1rem, 2.5vw, 1.2rem)',
           color: '#cbd5e1',
           lineHeight: 1.6,
           maxWidth: '650px',

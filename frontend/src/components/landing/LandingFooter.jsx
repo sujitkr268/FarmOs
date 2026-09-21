@@ -10,12 +10,12 @@ export const LandingFooter = () => {
       backgroundColor: '#022c22',
       borderTop: '1px solid rgba(16, 185, 129, 0.2)',
       color: '#cbd5e1',
-      padding: '4rem 1.5rem 2rem 1.5rem'
+      padding: 'clamp(2.5rem, 6vw, 4rem) clamp(1rem, 4vw, 1.5rem) 2rem clamp(1rem, 4vw, 1.5rem)'
     }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
           gap: '2.5rem',
           paddingBottom: '3rem',
           borderBottom: '1px solid rgba(255, 255, 255, 0.1)'

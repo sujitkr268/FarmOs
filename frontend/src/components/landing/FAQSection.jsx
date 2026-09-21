@@ -35,12 +35,12 @@ export const FAQSection = () => {
   return (
     <section id="about" style={{
       backgroundColor: '#ffffff',
-      padding: '6rem 1.5rem',
+      padding: 'clamp(3.5rem, 8vw, 6rem) clamp(1rem, 4vw, 1.5rem)',
       color: '#0f172a'
     }}>
       <div style={{ maxWidth: '900px', margin: '0 auto' }}>
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 5vw, 3.5rem)' }}>
           <span style={{
             color: '#10b981',
             fontSize: '0.85rem',
@@ -53,7 +53,7 @@ export const FAQSection = () => {
             {t('landing.faqBadge', 'Got Questions?')}
           </span>
           <h2 style={{
-            fontSize: '2.5rem',
+            fontSize: 'clamp(1.75rem, 5vw, 2.5rem)',
             fontWeight: 800,
             color: '#022c22',
             letterSpacing: '-0.02em',
@@ -61,7 +61,7 @@ export const FAQSection = () => {
           }}>
             {t('landing.faqTitle', 'Frequently Asked Questions')}
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
+          <p style={{ fontSize: 'clamp(0.95rem, 2vw, 1.05rem)', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
             {t('landing.faqSub', 'Everything you need to know about FarmOS market comparisons and trust verification.')}
           </p>
         </div>

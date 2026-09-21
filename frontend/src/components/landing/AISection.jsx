@@ -8,7 +8,7 @@ export const AISection = () => {
   return (
     <section style={{
       backgroundColor: '#064e3b',
-      padding: '6rem 1.5rem',
+      padding: 'clamp(3.5rem, 8vw, 6rem) clamp(1rem, 4vw, 1.5rem)',
       color: '#ffffff',
       borderTop: '1px solid rgba(16, 185, 129, 0.2)',
       borderBottom: '1px solid rgba(16, 185, 129, 0.2)'
@@ -16,8 +16,8 @@ export const AISection = () => {
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1fr) 480px',
-          gap: '3rem',
+          gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 480px)',
+          gap: 'clamp(1.5rem, 4vw, 3rem)',
           alignItems: 'center'
         }} className="ai-section-grid">
           {/* Left Column: Text & Features */}
@@ -34,7 +34,7 @@ export const AISection = () => {
               {t('landing.aiBadge', 'Gemini AI Powered')}
             </span>
             <h2 style={{
-              fontSize: '2.5rem',
+              fontSize: 'clamp(1.75rem, 5vw, 2.5rem)',
               fontWeight: 800,
               color: '#ffffff',
               letterSpacing: '-0.02em',

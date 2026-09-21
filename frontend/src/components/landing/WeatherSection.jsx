@@ -34,12 +34,12 @@ export const WeatherSection = () => {
   return (
     <section style={{
       backgroundColor: '#ffffff',
-      padding: '6rem 1.5rem',
+      padding: 'clamp(3.5rem, 8vw, 6rem) clamp(1rem, 4vw, 1.5rem)',
       color: '#0f172a'
     }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 5vw, 3.5rem)' }}>
           <span style={{
             color: '#10b981',
             fontSize: '0.85rem',
@@ -52,7 +52,7 @@ export const WeatherSection = () => {
             {t('landing.weatherBadge', 'Localized Forecasts')}
           </span>
           <h2 style={{
-            fontSize: '2.5rem',
+            fontSize: 'clamp(1.75rem, 5vw, 2.5rem)',
             fontWeight: 800,
             color: '#022c22',
             letterSpacing: '-0.02em',
@@ -60,7 +60,7 @@ export const WeatherSection = () => {
           }}>
             {t('landing.weatherTitle', 'Weather Intelligence')}
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
+          <p style={{ fontSize: 'clamp(0.95rem, 2vw, 1.05rem)', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
             {t('landing.weatherSub', 'Plan crop harvest and logistics around hyper-local temperature, humidity, and rainfall predictions.')}
           </p>
         </div>
@@ -70,23 +70,23 @@ export const WeatherSection = () => {
           backgroundColor: '#064e3b',
           color: '#ffffff',
           borderRadius: '24px',
-          padding: '2.5rem',
+          padding: 'clamp(1.25rem, 4vw, 2.5rem)',
           maxWidth: '900px',
           margin: '0 auto',
           boxShadow: '0 12px 40px rgba(6, 78, 59, 0.25)',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
           gap: '2rem',
           alignItems: 'center'
         }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
               <span>📍</span>
-              <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#34d399' }}>
+              <span style={{ fontSize: '1rem', fontWeight: 700, color: '#34d399' }}>
                 {t('landing.weatherHub', 'West Bengal Hub (Kolkata Region)')}
               </span>
             </div>
-            <h3 style={{ fontSize: '3rem', fontWeight: 800, margin: '0 0 0.5rem 0' }}>
+            <h3 style={{ fontSize: 'clamp(2.2rem, 6vw, 3rem)', fontWeight: 800, margin: '0 0 0.5rem 0' }}>
               {current.temperature || '28°C'}
             </h3>
             <span style={{ fontSize: '1.1rem', fontWeight: 600, color: '#cbd5e1' }}>

@@ -140,4 +140,7 @@
     font-size: 0.88rem;
     margin-bottom: 1.5rem;
   }
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
 }

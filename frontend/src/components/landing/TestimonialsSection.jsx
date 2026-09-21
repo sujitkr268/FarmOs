@@ -28,12 +28,12 @@ export const TestimonialsSection = () => {
   return (
     <section style={{
       backgroundColor: '#f7faf8',
-      padding: '6rem 1.5rem',
+      padding: 'clamp(3.5rem, 8vw, 6rem) clamp(1rem, 4vw, 1.5rem)',
       color: '#0f172a'
     }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 5vw, 3.5rem)' }}>
           <span style={{
             color: '#10b981',
             fontSize: '0.85rem',
@@ -46,7 +46,7 @@ export const TestimonialsSection = () => {
             {t('landing.scenariosBadge', 'Illustrative Scenarios')}
           </span>
           <h2 style={{
-            fontSize: '2.5rem',
+            fontSize: 'clamp(1.75rem, 5vw, 2.5rem)',
             fontWeight: 800,
             color: '#022c22',
             letterSpacing: '-0.02em',
@@ -54,7 +54,7 @@ export const TestimonialsSection = () => {
           }}>
             {t('landing.scenariosTitle', 'How FarmOS Empowers Decision Making')}
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
+          <p style={{ fontSize: 'clamp(0.95rem, 2vw, 1.05rem)', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
             {t('landing.scenariosSub', 'Explore practical scenarios showing how mandi price comparisons and freight calculations maximize net profit.')}
           </p>
         </div>
@@ -62,7 +62,7 @@ export const TestimonialsSection = () => {
         {/* Scenario Cards Grid */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
           gap: '2rem'
         }}>
           {scenarios.map((s, idx) => (

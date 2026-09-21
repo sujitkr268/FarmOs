@@ -7,14 +7,14 @@ export const DataSection = () => {
   return (
     <section style={{
       backgroundColor: '#022c22',
-      padding: '6rem 1.5rem',
+      padding: 'clamp(3.5rem, 8vw, 6rem) clamp(1rem, 4vw, 1.5rem)',
       color: '#ffffff',
       borderTop: '1px solid rgba(16, 185, 129, 0.2)',
       borderBottom: '1px solid rgba(16, 185, 129, 0.2)'
     }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         {/* Section Header */}
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 5vw, 3.5rem)' }}>
           <span style={{
             color: '#34d399',
             fontSize: '0.85rem',
@@ -27,7 +27,7 @@ export const DataSection = () => {
             {t('landing.dataSectionBadge', 'Real-Time Intelligence')}
           </span>
           <h2 style={{
-            fontSize: '2.5rem',
+            fontSize: 'clamp(1.75rem, 5vw, 2.5rem)',
             fontWeight: 800,
             color: '#ffffff',
             letterSpacing: '-0.02em',
@@ -35,7 +35,7 @@ export const DataSection = () => {
           }}>
             {t('landing.dataSectionTitle', 'Data. AI. Better Opportunities.')}
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#94a3b8', maxWidth: '650px', margin: '0.75rem auto 0' }}>
+          <p style={{ fontSize: 'clamp(0.95rem, 2vw, 1.05rem)', color: '#94a3b8', maxWidth: '650px', margin: '0.75rem auto 0' }}>
             {t('landing.dataSectionSub', 'Live government APMC feeds, OpenRouteService freight calculations, and AI insights synthesized into one unified dashboard.')}
           </p>
         </div>
@@ -45,7 +45,7 @@ export const DataSection = () => {
           backgroundColor: '#064e3b',
           border: '1px solid rgba(16, 185, 129, 0.4)',
           borderRadius: '24px',
-          padding: '2rem',
+          padding: 'clamp(1rem, 3vw, 2rem)',
           boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)'
         }}>
           {/* Mockup Top Header */}
@@ -63,7 +63,7 @@ export const DataSection = () => {
               <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#ef4444' }} />
               <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#f59e0b' }} />
               <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#10b981' }} />
-              <span style={{ fontSize: '0.9rem', color: '#94a3b8', marginLeft: '0.5rem', fontWeight: 600 }}>
+              <span style={{ fontSize: '0.85rem', color: '#94a3b8', marginLeft: '0.5rem', fontWeight: 600 }}>
                 {t('landing.dataPreviewHeader', 'FarmOS Intelligence Engine • Real-Time Live Preview')}
               </span>
             </div>
@@ -84,7 +84,7 @@ export const DataSection = () => {
           {/* Mockup Grid */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
             gap: '1.25rem'
           }}>
             {/* Stat Card 1 */}

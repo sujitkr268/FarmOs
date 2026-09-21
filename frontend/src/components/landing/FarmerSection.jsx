@@ -7,7 +7,7 @@ export const FarmerSection = () => {
   return (
     <section style={{
       position: 'relative',
-      padding: '7rem 1.5rem',
+      padding: 'clamp(4rem, 10vw, 7rem) clamp(1rem, 4vw, 1.5rem)',
       backgroundImage: `linear-gradient(180deg, rgba(2, 44, 34, 0.85) 0%, rgba(2, 44, 34, 0.9) 100%), url('https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=1920&q=80')`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -29,7 +29,7 @@ export const FarmerSection = () => {
         </span>
 
         <h2 style={{
-          fontSize: '3rem',
+          fontSize: 'clamp(1.8rem, 6vw, 3rem)',
           fontWeight: 800,
           color: '#ffffff',
           lineHeight: 1.2,
@@ -40,7 +40,7 @@ export const FarmerSection = () => {
         </h2>
 
         <p style={{
-          fontSize: '1.15rem',
+          fontSize: 'clamp(1rem, 2.5vw, 1.15rem)',
           color: '#cbd5e1',
           lineHeight: 1.6,
           maxWidth: '700px',
@@ -52,12 +52,12 @@ export const FarmerSection = () => {
         {/* Stats Row */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 160px), 1fr))',
           gap: '1.5rem',
           backgroundColor: 'rgba(6, 78, 59, 0.5)',
           border: '1px solid rgba(16, 185, 129, 0.3)',
           borderRadius: '24px',
-          padding: '2rem',
+          padding: 'clamp(1.25rem, 3vw, 2rem)',
           backdropFilter: 'blur(12px)'
         }}>
           <div>

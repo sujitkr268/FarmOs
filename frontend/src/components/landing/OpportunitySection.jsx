@@ -8,12 +8,12 @@ export const OpportunitySection = () => {
   return (
     <section style={{
       backgroundColor: '#f7faf8',
-      padding: '6rem 1.5rem',
+      padding: 'clamp(3.5rem, 8vw, 6rem) clamp(1rem, 4vw, 1.5rem)',
       color: '#0f172a'
     }}>
       <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 5vw, 3rem)' }}>
           <span style={{
             color: '#10b981',
             fontSize: '0.85rem',
@@ -26,7 +26,7 @@ export const OpportunitySection = () => {
             {t('landing.oppBadge', 'Automated Profit Optimization')}
           </span>
           <h2 style={{
-            fontSize: '2.5rem',
+            fontSize: 'clamp(1.75rem, 5vw, 2.5rem)',
             fontWeight: 800,
             color: '#022c22',
             letterSpacing: '-0.02em',
@@ -34,7 +34,7 @@ export const OpportunitySection = () => {
           }}>
             {t('landing.oppTitle', 'Best Opportunity Engine')}
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
+          <p style={{ fontSize: 'clamp(0.95rem, 2vw, 1.05rem)', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
             {t('landing.oppSub', 'Calculates exact net earnings after deducting logistics freight from live mandi rates.')}
           </p>
         </div>
@@ -44,7 +44,7 @@ export const OpportunitySection = () => {
           backgroundColor: '#ffffff',
           border: '2px solid #10b981',
           borderRadius: '24px',
-          padding: '2.5rem',
+          padding: 'clamp(1.25rem, 4vw, 2.5rem)',
           boxShadow: '0 12px 40px rgba(16, 185, 129, 0.15)',
           position: 'relative',
           overflow: 'hidden'
@@ -61,7 +61,7 @@ export const OpportunitySection = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <span style={{ fontSize: '2rem' }}>🥔</span>
               <div>
-                <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#022c22', margin: 0 }}>
+                <h3 style={{ fontSize: 'clamp(1.3rem, 4vw, 1.6rem)', fontWeight: 800, color: '#022c22', margin: 0 }}>
                   Potato
                 </h3>
                 <span style={{ fontSize: '0.9rem', color: '#64748b' }}>
@@ -87,13 +87,13 @@ export const OpportunitySection = () => {
           {/* Details Grid */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 160px), 1fr))',
             gap: '1.25rem',
             marginBottom: '2rem',
             backgroundColor: '#f8fafc',
             border: '1px solid #e2e8f0',
             borderRadius: '18px',
-            padding: '1.5rem'
+            padding: '1.25rem'
           }}>
             <div>
               <span style={{ fontSize: '0.78rem', color: '#64748b', display: 'block', textTransform: 'uppercase' }}>
@@ -129,7 +129,7 @@ export const OpportunitySection = () => {
             backgroundColor: '#022c22',
             color: '#ffffff',
             borderRadius: '18px',
-            padding: '1.5rem 2rem',
+            padding: 'clamp(1rem, 3vw, 1.5rem) clamp(1.25rem, 3vw, 2rem)',
             flexWrap: 'wrap',
             gap: '1rem'
           }}>

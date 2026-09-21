@@ -16,12 +16,12 @@ export const HowFarmOSWorks = () => {
   return (
     <section style={{
       backgroundColor: '#ffffff',
-      padding: '6rem 1.5rem',
+      padding: 'clamp(3.5rem, 8vw, 6rem) clamp(1rem, 4vw, 1.5rem)',
       color: '#0f172a'
     }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(2rem, 5vw, 4rem)' }}>
           <span style={{
             color: '#10b981',
             fontSize: '0.85rem',
@@ -34,7 +34,7 @@ export const HowFarmOSWorks = () => {
             {t('landing.workflowBadge', 'Simple 6-Step Workflow')}
           </span>
           <h2 style={{
-            fontSize: '2.5rem',
+            fontSize: 'clamp(1.75rem, 5vw, 2.5rem)',
             fontWeight: 800,
             color: '#022c22',
             letterSpacing: '-0.02em',
@@ -42,7 +42,7 @@ export const HowFarmOSWorks = () => {
           }}>
             {t('landing.workflowTitle', 'How FarmOS Works')}
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
+          <p style={{ fontSize: 'clamp(0.95rem, 2vw, 1.05rem)', color: '#475569', maxWidth: '650px', margin: '0.75rem auto 0' }}>
             {t('landing.workflowSub', 'From field harvest to final deal — a streamlined process for maximum profit.')}
           </p>
         </div>
@@ -50,8 +50,8 @@ export const HowFarmOSWorks = () => {
         {/* Process Flow Steps */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          gap: '1.5rem',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 160px), 1fr))',
+          gap: 'clamp(1rem, 2.5vw, 1.5rem)',
           position: 'relative'
         }}>
           {steps.map((s, idx) => (
