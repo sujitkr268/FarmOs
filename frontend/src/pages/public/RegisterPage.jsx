@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import API from '../../api/axios'
+import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import './auth.css'
 
 export const RegisterPage = () => {
   const { t } = useLanguage()
+  const { login } = useAuth()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -80,15 +82,15 @@ export const RegisterPage = () => {
 
       const response = await API.post('/auth/register', payload)
 
-      const successMsg = formData.role === 'buyer'
-        ? 'Buyer account registered! Submitted for admin verification. Redirecting to login...'
-        : 'Account created successfully! Redirecting to login...'
+      const loginRes = await API.post('/auth/login', {
+        email: formData.email,
+        password: formData.password
+      })
 
-      setSuccess(successMsg)
+      const { token, user } = loginRes.data
+      login(token, user)
 
-      setTimeout(() => {
-        navigate('/login')
-      }, 1800)
+      navigate('/profile', { replace: true })
 
     } catch (err) {
       console.error('Registration API Call Failed:', err)

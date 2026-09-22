@@ -46,18 +46,7 @@ export const LoginPage = () => {
       // Save token and user in AuthContext (which syncs to localStorage)
       login(token, user)
 
-      // Redirect user to saved location if present, else default role dashboard
-      if (from) {
-        navigate(from, { replace: true })
-      } else if (user.role === 'farmer') {
-        navigate('/farmer/dashboard', { replace: true })
-      } else if (user.role === 'buyer') {
-        navigate('/buyer/dashboard', { replace: true })
-      } else if (user.role === 'admin') {
-        navigate('/admin/dashboard', { replace: true })
-      } else {
-        navigate('/', { replace: true })
-      }
+      navigate('/profile', { replace: true })
     } catch (err) {
       console.error('Login Error:', err)
       const serverMessage = err.response?.data?.message || 'Login failed. Please check your credentials.'
