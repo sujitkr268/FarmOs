@@ -11,6 +11,7 @@ import { MarketPricesPage } from './pages/public/MarketPricesPage'
 import { WeatherPage } from './pages/public/WeatherPage'
 import { AssistantPage } from './pages/public/AssistantPage'
 import { TraderDirectoryPage } from './pages/public/TraderDirectoryPage'
+import { OpportunitiesPage } from './pages/public/OpportunitiesPage'
 import { FarmerDashboard } from './pages/farmer/FarmerDashboard'
 import { BuyerDashboard } from './pages/buyer/BuyerDashboard'
 import { Marketplace } from './pages/buyer/Marketplace'
@@ -37,6 +38,8 @@ function App() {
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
         <Route path="/marketplace" element={<ProtectedRoute><Marketplace /></ProtectedRoute>} />
+        <Route path="/opportunities" element={<ProtectedRoute><OpportunitiesPage /></ProtectedRoute>} />
+        <Route path="/orders" element={<ProtectedRoute><RoleDashboardRedirect /></ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute><RoleDashboardRedirect /></ProtectedRoute>} />
       </Route>
 
