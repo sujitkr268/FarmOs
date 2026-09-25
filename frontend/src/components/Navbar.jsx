@@ -30,10 +30,10 @@ export const Navbar = () => {
   const publicNavLinks = [
     { label: 'Home', path: '/' },
     { label: 'Market Prices', path: '/market-prices' },
-    { label: 'Marketplace', path: '/marketplace' },
-    { label: 'Weather', path: '/weather' },
+    { label: 'Opportunities', path: '/marketplace' },
     { label: 'Traders', path: '/traders' },
-    { label: 'AI Assistant', path: '/assistant' }
+    { label: 'Weather', path: '/weather' },
+    { label: 'Assistant', path: '/assistant' }
   ]
 
   return (
@@ -41,15 +41,16 @@ export const Navbar = () => {
       position: 'sticky',
       top: 0,
       zIndex: 999,
-      backgroundColor: '#071912',
-      borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+      backgroundColor: '#ffffff',
+      borderBottom: '1px solid #e4eee7',
       width: '100%',
+      boxShadow: '0 2px 10px rgba(11, 35, 25, 0.03)',
       backdropFilter: 'blur(12px)'
     }}>
       <div style={{
-        maxWidth: '1440px',
+        maxWidth: '1380px',
         margin: '0 auto',
-        padding: '0.75rem 1.5rem',
+        padding: '0.85rem 1.5rem',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -57,61 +58,62 @@ export const Navbar = () => {
         width: '100%'
       }}>
         {/* Left: Brand Logo */}
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none' }}>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', textDecoration: 'none' }}>
           <div style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '10px',
+            width: '38px',
+            height: '38px',
+            borderRadius: '12px',
             backgroundColor: '#10b981',
-            color: '#071912',
+            color: '#ffffff',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontWeight: 800,
-            fontSize: '1.2rem',
+            fontSize: '1.25rem',
             boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
           }}>
-            🌱
+            🌿
           </div>
-          <span style={{ fontSize: '1.4rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em' }}>
-            Farm<span style={{ color: '#34d399' }}>OS</span>
+          <span style={{ fontSize: '1.45rem', fontWeight: 800, color: '#0b3d2e', letterSpacing: '-0.025em' }}>
+            Farm<span style={{ color: '#10b981' }}>OS</span>
           </span>
         </Link>
 
-        {/* Center: Search Input (when authenticated) or Navigation Links */}
+        {/* Center: Search Input (authenticated) or Nav Links (unauthenticated) */}
         {isAuthenticated ? (
-          <form onSubmit={handleSearchSubmit} className="topbar-search" style={{ flex: 1, maxWidth: '380px' }}>
+          <form onSubmit={handleSearchSubmit} className="topbar-search" style={{ flex: 1, maxWidth: '400px' }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              backgroundColor: 'rgba(255, 255, 255, 0.06)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
-              borderRadius: '20px',
-              padding: '0.4rem 1rem',
+              backgroundColor: '#f4f8f5',
+              border: '1px solid #d6e4db',
+              borderRadius: '24px',
+              padding: '0.45rem 1.1rem',
               gap: '0.6rem'
             }}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a89c" strokeWidth="2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#647d70" strokeWidth="2.2">
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
               <input
                 type="text"
-                placeholder="Search markets, crops, buyers..."
+                placeholder="Search mandi prices, crops, buyers..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
                   background: 'transparent',
                   border: 'none',
                   outline: 'none',
-                  color: '#ffffff',
-                  fontSize: '0.82rem',
-                  width: '100%'
+                  color: '#10231b',
+                  fontSize: '0.88rem',
+                  width: '100%',
+                  fontWeight: 500
                 }}
               />
             </div>
           </form>
         ) : (
-          <nav style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }} className="hidden-mobile-nav">
+          <nav style={{ display: 'flex', alignItems: 'center', gap: '1.75rem' }} className="hidden-mobile-nav">
             {publicNavLinks.map((link, idx) => {
               const isActive = location.pathname === link.path
               return (
@@ -119,11 +121,13 @@ export const Navbar = () => {
                   key={idx}
                   to={link.path}
                   style={{
-                    color: isActive ? '#34d399' : '#cde0d5',
+                    color: isActive ? '#0b3d2e' : '#475569',
                     fontWeight: isActive ? 700 : 500,
-                    fontSize: '0.88rem',
+                    fontSize: '0.92rem',
                     transition: 'color 0.2s ease',
-                    textDecoration: 'none'
+                    textDecoration: 'none',
+                    borderBottom: isActive ? '2px solid #10b981' : '2px solid transparent',
+                    paddingBottom: '0.2rem'
                   }}
                 >
                   {link.label}
@@ -135,25 +139,25 @@ export const Navbar = () => {
 
         {/* Right Actions: Language Switcher, Auth & User Profile */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-          {/* Language Switcher Pill */}
+          {/* Language Switcher Pill matching reference */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            backgroundColor: 'rgba(255, 255, 255, 0.06)',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
+            backgroundColor: '#f4f8f5',
+            border: '1px solid #d6e4db',
             borderRadius: '20px',
             padding: '2px',
-            fontSize: '0.78rem'
+            fontSize: '0.8rem'
           }}>
             <button
               onClick={() => setLanguage('en')}
               style={{
-                background: language === 'en' ? '#10b981' : 'transparent',
-                color: language === 'en' ? '#ffffff' : '#94a89c',
+                background: language === 'en' ? '#0b3d2e' : 'transparent',
+                color: language === 'en' ? '#ffffff' : '#647d70',
                 border: 'none',
                 borderRadius: '16px',
-                padding: '0.2rem 0.65rem',
-                fontSize: '0.78rem',
+                padding: '0.25rem 0.75rem',
+                fontSize: '0.8rem',
                 fontWeight: language === 'en' ? 700 : 500,
                 cursor: 'pointer'
               }}
@@ -163,12 +167,12 @@ export const Navbar = () => {
             <button
               onClick={() => setLanguage('hi')}
               style={{
-                background: language === 'hi' ? '#10b981' : 'transparent',
-                color: language === 'hi' ? '#ffffff' : '#94a89c',
+                background: language === 'hi' ? '#0b3d2e' : 'transparent',
+                color: language === 'hi' ? '#ffffff' : '#647d70',
                 border: 'none',
                 borderRadius: '16px',
-                padding: '0.2rem 0.65rem',
-                fontSize: '0.78rem',
+                padding: '0.25rem 0.75rem',
+                fontSize: '0.8rem',
                 fontWeight: language === 'hi' ? 700 : 500,
                 cursor: 'pointer'
               }}
@@ -177,20 +181,21 @@ export const Navbar = () => {
             </button>
           </div>
 
-          {/* Authenticated User Menu or Auth CTAs */}
+          {/* User Auth Controls */}
           {isAuthenticated && user ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
               <button
                 onClick={() => navigate('/dashboard')}
                 style={{
-                  padding: '0.45rem 0.95rem',
-                  borderRadius: '10px',
-                  backgroundColor: '#10b981',
+                  padding: '0.5rem 1.1rem',
+                  borderRadius: '12px',
+                  backgroundColor: '#0b3d2e',
                   color: '#ffffff',
                   fontWeight: 700,
-                  fontSize: '0.82rem',
+                  fontSize: '0.88rem',
                   border: 'none',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 12px rgba(11, 61, 46, 0.2)'
                 }}
               >
                 Dashboard
@@ -201,16 +206,16 @@ export const Navbar = () => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                  border: '1px solid rgba(255, 255, 255, 0.12)',
+                  backgroundColor: '#f4f8f5',
+                  border: '1px solid #d6e4db',
                   padding: '0.25rem 0.75rem 0.25rem 0.35rem',
                   borderRadius: '20px',
                   cursor: 'pointer'
                 }}
               >
                 <div style={{
-                  width: '28px',
-                  height: '28px',
+                  width: '30px',
+                  height: '30px',
                   borderRadius: '50%',
                   backgroundColor: '#10b981',
                   color: '#ffffff',
@@ -218,11 +223,11 @@ export const Navbar = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: 800,
-                  fontSize: '0.8rem'
+                  fontSize: '0.85rem'
                 }}>
                   {user.name ? user.name.charAt(0).toUpperCase() : 'S'}
                 </div>
-                <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#ffffff' }} className="hidden-mobile-nav">
+                <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#10231b' }} className="hidden-mobile-nav">
                   {user.name}
                 </span>
               </div>
@@ -232,12 +237,12 @@ export const Navbar = () => {
               <Link
                 to="/login"
                 style={{
-                  padding: '0.45rem 1rem',
-                  borderRadius: '10px',
-                  color: '#ffffff',
-                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                  border: '1px solid rgba(255, 255, 255, 0.12)',
-                  fontSize: '0.82rem',
+                  padding: '0.5rem 1.1rem',
+                  borderRadius: '12px',
+                  color: '#0b3d2e',
+                  backgroundColor: '#f4f8f5',
+                  border: '1px solid #d6e4db',
+                  fontSize: '0.88rem',
                   fontWeight: 600,
                   textDecoration: 'none'
                 }}
@@ -247,17 +252,17 @@ export const Navbar = () => {
               <Link
                 to="/register"
                 style={{
-                  padding: '0.45rem 1.1rem',
-                  borderRadius: '10px',
+                  padding: '0.5rem 1.25rem',
+                  borderRadius: '12px',
                   color: '#ffffff',
-                  backgroundColor: '#10b981',
-                  fontSize: '0.82rem',
+                  backgroundColor: '#0b3d2e',
+                  fontSize: '0.88rem',
                   fontWeight: 700,
                   textDecoration: 'none',
-                  boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
+                  boxShadow: '0 4px 14px rgba(11, 61, 46, 0.25)'
                 }}
               >
-                Get Started
+                Register
               </Link>
             </div>
           )}
@@ -270,13 +275,13 @@ export const Navbar = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '36px',
-              height: '36px',
-              borderRadius: '8px',
-              backgroundColor: 'rgba(255, 255, 255, 0.06)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
-              color: '#34d399',
-              fontSize: '1.2rem',
+              width: '38px',
+              height: '38px',
+              borderRadius: '10px',
+              backgroundColor: '#f4f8f5',
+              border: '1px solid #d6e4db',
+              color: '#0b3d2e',
+              fontSize: '1.25rem',
               cursor: 'pointer'
             }}
           >
@@ -288,8 +293,8 @@ export const Navbar = () => {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div style={{
-          backgroundColor: '#071912',
-          borderBottom: '1px solid rgba(16, 185, 129, 0.3)',
+          backgroundColor: '#ffffff',
+          borderBottom: '1px solid #d6e4db',
           padding: '1.25rem 1.5rem',
           display: 'flex',
           flexDirection: 'column',
@@ -300,7 +305,7 @@ export const Navbar = () => {
               key={idx}
               to={item.path}
               onClick={() => setMobileMenuOpen(false)}
-              style={{ color: '#ffffff', fontWeight: 600, fontSize: '0.92rem', padding: '0.4rem 0', textDecoration: 'none' }}
+              style={{ color: '#10231b', fontWeight: 600, fontSize: '0.95rem', padding: '0.4rem 0', textDecoration: 'none' }}
             >
               {item.label}
             </Link>
@@ -310,12 +315,12 @@ export const Navbar = () => {
               onClick={handleLogout}
               style={{
                 marginTop: '0.5rem',
-                padding: '0.6rem',
-                backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                padding: '0.65rem',
+                backgroundColor: 'rgba(239, 68, 68, 0.1)',
                 color: '#ef4444',
-                borderRadius: '8px',
+                borderRadius: '10px',
                 fontWeight: 700,
-                fontSize: '0.85rem',
+                fontSize: '0.88rem',
                 border: 'none',
                 cursor: 'pointer'
               }}
@@ -327,11 +332,11 @@ export const Navbar = () => {
       )}
 
       <style>{`
-        @media (max-width: 840px) {
+        @media (max-width: 860px) {
           .topbar-search { display: none !important; }
           .hidden-mobile-nav { display: none !important; }
         }
-        @media (min-width: 841px) {
+        @media (min-width: 861px) {
           .mobile-hamburger { display: none !important; }
           .mobile-drawer { display: none !important; }
         }

@@ -120,11 +120,11 @@ const BuyerDashboard = () => {
   const acceptedOrdersCount = orders.filter(o => o.status === 'accepted').length
 
   return (
-    <div style={{ color: '#f3f4f6' }}>
+    <div style={{ color: '#10231b' }}>
       {/* 1. Header Banner */}
       <div style={{
-        background: 'linear-gradient(135deg, #0d1a22 0%, #142834 50%, #0a141b 100%)',
-        border: '1px solid rgba(56, 189, 248, 0.25)',
+        backgroundColor: '#ffffff',
+        border: '1px solid #d6e4db',
         borderRadius: '20px',
         padding: '1.75rem',
         marginBottom: '1.75rem',
@@ -133,18 +133,18 @@ const BuyerDashboard = () => {
         justifyContent: 'space-between',
         alignItems: 'center',
         gap: '1.25rem',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+        boxShadow: '0 4px 20px rgba(11, 35, 25, 0.04)'
       }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
-            <h1 style={{ fontSize: '1.85rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em' }}>
+            <h1 style={{ fontSize: '1.85rem', fontWeight: 800, color: '#0b3d2e', letterSpacing: '-0.02em' }}>
               {user?.business_name || user?.name} 🏢
             </h1>
             <TrustBadge status={user?.verification_status} role="buyer" size="md" />
           </div>
-          <p style={{ color: '#9ca3af', fontSize: '0.9rem', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <span>📍 <strong style={{ color: '#f3f4f6' }}>{user?.state ? `${user.state}, ${user.district || ''}` : user?.location || 'Location Not Specified'}</strong></span>
-            {user?.mandi && <span>• Mandi: <strong style={{ color: '#38bdf8' }}>{user.mandi}</strong></span>}
+          <p style={{ color: '#647d70', fontSize: '0.9rem', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <span>📍 <strong style={{ color: '#10231b' }}>{user?.state ? `${user.state}, ${user.district || ''}` : user?.location || 'Location Not Specified'}</strong></span>
+            {user?.mandi && <span>• Mandi: <strong style={{ color: '#166534' }}>{user.mandi}</strong></span>}
           </p>
         </div>
 
@@ -154,9 +154,9 @@ const BuyerDashboard = () => {
             style={{
               padding: '0.6rem 1.25rem',
               borderRadius: '12px',
-              backgroundColor: 'rgba(56, 189, 248, 0.15)',
-              border: '1px solid rgba(56, 189, 248, 0.4)',
-              color: '#38bdf8',
+              backgroundColor: '#ebf3ed',
+              border: '1px solid #d6e4db',
+              color: '#0b3d2e',
               fontWeight: 700,
               fontSize: '0.88rem',
               display: 'flex',
@@ -171,58 +171,58 @@ const BuyerDashboard = () => {
 
       {/* Global Alerts */}
       {orderSuccess && (
-        <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.4)', color: '#6ee7b7', padding: '1rem', borderRadius: '14px', marginBottom: '1.5rem', fontSize: '0.9rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ backgroundColor: '#dcfce7', border: '1px solid #a7f3d0', color: '#166534', padding: '1rem', borderRadius: '14px', marginBottom: '1.5rem', fontSize: '0.9rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span>{orderSuccess}</span>
-          <button onClick={() => setOrderSuccess('')} style={{ background: 'none', border: 'none', color: '#6ee7b7', fontWeight: 'bold', fontSize: '1.2rem', cursor: 'pointer' }}>✕</button>
+          <button onClick={() => setOrderSuccess('')} style={{ background: 'none', border: 'none', color: '#166534', fontWeight: 'bold', fontSize: '1.2rem', cursor: 'pointer' }}>✕</button>
         </div>
       )}
 
       {/* 2. Stat Metrics Grid (4 Columns) */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', marginBottom: '1.75rem' }}>
-        <div className="stat-metric-card">
+        <div style={{ backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 2px 10px rgba(11, 35, 25, 0.03)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Orders Placed</span>
-            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
+            <span style={{ fontSize: '0.8rem', color: '#647d70', fontWeight: 600, textTransform: 'uppercase' }}>Orders Placed</span>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: '#ebf3ed', color: '#0b3d2e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
               📦
             </div>
           </div>
-          <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#ffffff', lineHeight: 1.1 }}>{totalOrdersCount}</div>
-          <div style={{ fontSize: '0.78rem', color: '#38bdf8', fontWeight: 600, marginTop: '0.6rem' }}>Total Direct Procurement</div>
+          <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#10231b', lineHeight: 1.1 }}>{totalOrdersCount}</div>
+          <div style={{ fontSize: '0.78rem', color: '#0b3d2e', fontWeight: 600, marginTop: '0.6rem' }}>Total Direct Procurement</div>
         </div>
 
-        <div className="stat-metric-card">
+        <div style={{ backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 2px 10px rgba(11, 35, 25, 0.03)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Pending Approval</span>
-            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
+            <span style={{ fontSize: '0.8rem', color: '#647d70', fontWeight: 600, textTransform: 'uppercase' }}>Pending Approval</span>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: '#fef3c7', color: '#d97706', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
               ⏳
             </div>
           </div>
-          <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#f59e0b', lineHeight: 1.1 }}>{pendingOrdersCount}</div>
-          <div style={{ fontSize: '0.78rem', color: '#f59e0b', fontWeight: 600, marginTop: '0.6rem' }}>Awaiting Farmer Confirmation</div>
+          <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#d97706', lineHeight: 1.1 }}>{pendingOrdersCount}</div>
+          <div style={{ fontSize: '0.78rem', color: '#d97706', fontWeight: 600, marginTop: '0.6rem' }}>Awaiting Farmer Confirmation</div>
         </div>
 
-        <div className="stat-metric-card">
+        <div style={{ backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 2px 10px rgba(11, 35, 25, 0.03)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Accepted Orders</span>
-            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(16, 185, 129, 0.15)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
+            <span style={{ fontSize: '0.8rem', color: '#647d70', fontWeight: 600, textTransform: 'uppercase' }}>Accepted Orders</span>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: '#dcfce7', color: '#166534', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
               ✅
             </div>
           </div>
-          <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#10b981', lineHeight: 1.1 }}>{acceptedOrdersCount}</div>
-          <div style={{ fontSize: '0.78rem', color: '#10b981', fontWeight: 600, marginTop: '0.6rem' }}>Ready for Fulfillment</div>
+          <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#166534', lineHeight: 1.1 }}>{acceptedOrdersCount}</div>
+          <div style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 600, marginTop: '0.6rem' }}>Ready for Fulfillment</div>
         </div>
 
-        <div className="stat-metric-card">
+        <div style={{ backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 2px 10px rgba(11, 35, 25, 0.03)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.8rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Verification Status</span>
-            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: 'rgba(168, 85, 247, 0.15)', color: '#a855f7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
+            <span style={{ fontSize: '0.8rem', color: '#647d70', fontWeight: 600, textTransform: 'uppercase' }}>Verification Status</span>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: '#ebf3ed', color: '#0b3d2e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
               🛡️
             </div>
           </div>
           <div style={{ marginTop: '0.2rem' }}>
             <TrustBadge status={user?.verification_status} role="buyer" size="sm" />
           </div>
-          <div style={{ fontSize: '0.78rem', color: '#a855f7', fontWeight: 600, marginTop: '0.6rem' }}>Buyer Account Trust Level</div>
+          <div style={{ fontSize: '0.78rem', color: '#0b3d2e', fontWeight: 600, marginTop: '0.6rem' }}>Buyer Account Trust Level</div>
         </div>
       </div>
 
@@ -230,10 +230,10 @@ const BuyerDashboard = () => {
       <div style={{
         display: 'flex',
         gap: '0.5rem',
-        backgroundColor: '#111b15',
+        backgroundColor: '#f4f8f5',
         padding: '0.4rem',
         borderRadius: '14px',
-        border: '1px solid rgba(31, 56, 42, 0.8)',
+        border: '1px solid #d6e4db',
         marginBottom: '1.75rem',
         overflowX: 'auto'
       }}>
@@ -244,8 +244,8 @@ const BuyerDashboard = () => {
             borderRadius: '10px',
             fontSize: '0.85rem',
             fontWeight: activeTab === 'orders' ? 700 : 500,
-            color: activeTab === 'orders' ? '#080e0a' : '#9ca3af',
-            backgroundColor: activeTab === 'orders' ? '#10b981' : 'transparent',
+            color: activeTab === 'orders' ? '#ffffff' : '#475569',
+            backgroundColor: activeTab === 'orders' ? '#0b3d2e' : 'transparent',
             transition: 'all 0.2s',
             whiteSpace: 'nowrap'
           }}

@@ -1,21 +1,53 @@
 :root {
-  --bg-primary: #f3f7f4;
-  --bg-secondary: #e6eee8;
-  --sidebar-bg: #0b2319;
+  /* Greenvest Inspired Agtech Color Tokens */
+  --ag-forest-dark: #0b2319;
+  --ag-forest-deep: #0b3d2e;
+  --ag-forest-mid: #166534;
+  --ag-emerald: #10b981;
+  --ag-emerald-bright: #34d399;
+  --ag-emerald-dark: #059669;
+  --ag-mint-light: #dcfce7;
+
+  --ag-cream-bg: #f7faf8;
+  --ag-cream-section: #ebf3ed;
+  --ag-cream-card: #ffffff;
+  --ag-cream-muted: #e2eee6;
+
+  --ag-text-dark: #10231b;
+  --ag-text-body: #2d4237;
+  --ag-text-muted: #647d70;
+  --ag-text-light: #8fa598;
+
+  --ag-border-subtle: #d6e4db;
+  --ag-border-light: #e4eee7;
+  --ag-border-dark: rgba(255, 255, 255, 0.12);
+
+  --ag-shadow-sm: 0 2px 8px rgba(11, 35, 25, 0.04);
+  --ag-shadow-md: 0 6px 20px rgba(11, 35, 25, 0.06);
+  --ag-shadow-lg: 0 16px 40px rgba(11, 35, 25, 0.09);
+  --ag-shadow-glow: 0 8px 24px rgba(16, 185, 129, 0.22);
+
+  --ag-radius-sm: 10px;
+  --ag-radius-md: 16px;
+  --ag-radius-lg: 24px;
+  --ag-radius-full: 9999px;
+
+  /* Backward Compatibility Variables */
+  --bg-primary: #f7faf8;
+  --bg-secondary: #ebf3ed;
+  --sidebar-bg: #0b3d2e;
   --sidebar-active: rgba(16, 185, 129, 0.18);
-  --navbar-bg: #0b2319;
+  --navbar-bg: #ffffff;
   --primary-emerald: #10b981;
-  --emerald-dark: #059669;
-  --emerald-light: #e6f4ea;
+  --emerald-dark: #166534;
+  --emerald-light: #dcfce7;
   --card-bg: #ffffff;
   --card-border: #e2e8f0;
   --card-border-emerald: #a7f3d0;
-  --text-heading: #0f172a;
-  --text-body: #475569;
-  --text-muted: #94a3b8;
+  --text-heading: #10231b;
+  --text-body: #2d4237;
+  --text-muted: #647d70;
   --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-
-  /* Backwards compatibility for existing components */
   --accent-gold: #10b981;
   --accent-gold-light: #34d399;
   --accent-gold-muted: #059669;
@@ -33,8 +65,8 @@ html, body {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
-  background-color: var(--bg-primary);
-  color: var(--text-body);
+  background-color: var(--ag-cream-bg);
+  color: var(--ag-text-body);
 }
 
 body {
@@ -70,14 +102,14 @@ input, select, textarea, button {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: var(--ag-cream-bg);
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(16, 185, 129, 0.3);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-emerald);
+  background: var(--ag-emerald);
 }
 
 /* Global Responsive Table Container */
@@ -108,7 +140,7 @@ input, select, textarea, button {
   left: 0;
   right: 0;
   height: 62px;
-  background-color: #0b2319;
+  background-color: #0b3d2e;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   z-index: 1000;
   align-items: center;

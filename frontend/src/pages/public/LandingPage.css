@@ -1,45 +1,8 @@
 /* =========================================================
-   FARMOS LANDING PAGE — EDITORIAL AG-TECH STYLING
-   Inspired by Greenvest Sustainable Agriculture Landing Page
+   FARMOS LANDING PAGE — GREENVEST AGTECH VISUAL DESIGN
+   Clean Cream/Forest Green System inspired by reference image
    ========================================================= */
 
-:root {
-  --ag-forest-dark: #071912;
-  --ag-forest-deep: #0b2319;
-  --ag-forest-mid: #103828;
-  --ag-emerald: #10b981;
-  --ag-emerald-bright: #34d399;
-  --ag-emerald-dark: #059669;
-  --ag-mint-light: #e6f4ea;
-
-  --ag-cream-bg: #fbfdfa;
-  --ag-cream-section: #f4f8f5;
-  --ag-cream-card: #ffffff;
-  --ag-cream-muted: #e9f1eb;
-
-  --ag-text-dark: #0a1813;
-  --ag-text-body: #2d4237;
-  --ag-text-muted: #647d70;
-  --ag-text-light: #94a89c;
-
-  --ag-border-subtle: #d6e4db;
-  --ag-border-light: #e4eee7;
-  --ag-border-dark: rgba(255, 255, 255, 0.12);
-
-  --ag-shadow-sm: 0 4px 12px rgba(11, 35, 25, 0.04);
-  --ag-shadow-md: 0 10px 30px rgba(11, 35, 25, 0.06);
-  --ag-shadow-lg: 0 20px 50px rgba(11, 35, 25, 0.1);
-  --ag-shadow-glow: 0 8px 30px rgba(16, 185, 129, 0.25);
-
-  --ag-radius-sm: 12px;
-  --ag-radius-md: 20px;
-  --ag-radius-lg: 28px;
-  --ag-radius-full: 9999px;
-
-  --ag-transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Base Landing Reset & Container */
 .farmos-landing-wrapper {
   background-color: var(--ag-cream-bg);
   color: var(--ag-text-body);
@@ -49,30 +12,30 @@
 }
 
 .ag-container {
-  max-width: 1280px;
+  max-width: 1340px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
 
 /* Typography Hierarchy */
 .ag-heading-xl {
-  font-size: clamp(2.5rem, 5vw, 4.2rem);
+  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
   font-weight: 800;
-  line-height: 1.08;
+  line-height: 1.1;
   letter-spacing: -0.03em;
   color: var(--ag-text-dark);
 }
 
 .ag-heading-lg {
-  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-size: clamp(1.85rem, 3.2vw, 2.75rem);
   font-weight: 800;
-  line-height: 1.15;
+  line-height: 1.18;
   letter-spacing: -0.025em;
   color: var(--ag-text-dark);
 }
 
 .ag-heading-md {
-  font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
   font-weight: 800;
   line-height: 1.25;
   letter-spacing: -0.015em;
@@ -80,24 +43,25 @@
 }
 
 .ag-heading-sm {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 700;
   line-height: 1.3;
   color: var(--ag-text-dark);
 }
 
 .ag-body-lg {
-  font-size: clamp(1rem, 1.3vw, 1.18rem);
+  font-size: clamp(1rem, 1.2vw, 1.15rem);
   line-height: 1.6;
   color: var(--ag-text-muted);
 }
 
 .ag-body-md {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   line-height: 1.55;
   color: var(--ag-text-muted);
 }
 
+/* Badges */
 .ag-badge {
   display: inline-flex;
   align-items: center;
@@ -107,19 +71,24 @@
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.02em;
-  text-transform: uppercase;
 }
 
 .ag-badge-emerald {
-  background-color: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  color: var(--ag-emerald-bright);
+  background-color: #dcfce7;
+  border: 1px solid #a7f3d0;
+  color: #166534;
+}
+
+.ag-badge-dark {
+  background-color: #0b3d2e;
+  border: 1px solid #166534;
+  color: #ffffff;
 }
 
 .ag-badge-light {
-  background-color: var(--ag-mint-light);
-  border: 1px solid var(--ag-border-subtle);
-  color: var(--ag-emerald-dark);
+  background-color: #ebf3ed;
+  border: 1px solid #d6e4db;
+  color: #0b3d2e;
 }
 
 /* Buttons */
@@ -128,21 +97,21 @@
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  padding: 0.9rem 2.2rem;
+  padding: 0.85rem 2rem;
   border-radius: var(--ag-radius-md);
-  background-color: var(--ag-emerald);
+  background-color: #0b3d2e;
   color: #ffffff;
   font-weight: 800;
-  font-size: 1rem;
-  box-shadow: var(--ag-shadow-glow);
-  transition: var(--ag-transition);
+  font-size: 0.98rem;
+  box-shadow: 0 4px 16px rgba(11, 61, 46, 0.25);
+  transition: all 0.25s ease;
   text-decoration: none;
 }
 
 .ag-btn-primary:hover {
-  background-color: var(--ag-emerald-dark);
+  background-color: #166534;
   transform: translateY(-2px);
-  box-shadow: 0 12px 36px rgba(16, 185, 129, 0.35);
+  box-shadow: 0 8px 24px rgba(11, 61, 46, 0.32);
 }
 
 .ag-btn-secondary {
@@ -150,22 +119,21 @@
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  padding: 0.9rem 2.2rem;
+  padding: 0.85rem 2rem;
   border-radius: var(--ag-radius-md);
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #ffffff;
+  background-color: #dcfce7;
+  border: 1px solid #a7f3d0;
+  color: #166534;
   font-weight: 700;
-  font-size: 1rem;
-  backdrop-filter: blur(10px);
-  transition: var(--ag-transition);
+  font-size: 0.98rem;
+  transition: all 0.25s ease;
   text-decoration: none;
 }
 
 .ag-btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: #bbf7d0;
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.4);
+  color: #0b3d2e;
 }
 
 .ag-btn-outline {
@@ -173,69 +141,36 @@
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  padding: 0.85rem 2rem;
+  padding: 0.8rem 1.8rem;
   border-radius: var(--ag-radius-md);
   background-color: #ffffff;
-  border: 1px solid var(--ag-border-subtle);
-  color: var(--ag-text-dark);
+  border: 1px solid #d6e4db;
+  color: #0b3d2e;
   font-weight: 700;
-  font-size: 0.95rem;
-  transition: var(--ag-transition);
+  font-size: 0.92rem;
+  transition: all 0.25s ease;
   text-decoration: none;
   box-shadow: var(--ag-shadow-sm);
 }
 
 .ag-btn-outline:hover {
-  border-color: var(--ag-emerald);
-  color: var(--ag-emerald-dark);
+  border-color: #10b981;
+  color: #166534;
   transform: translateY(-2px);
   box-shadow: var(--ag-shadow-md);
 }
 
-/* ================= HERO SECTION ================= */
+/* ================= 1. HERO SECTION ================= */
 .ag-hero-section {
   position: relative;
-  background-color: var(--ag-forest-dark);
-  color: #ffffff;
-  padding: 4rem 0 6rem 0;
-  min-height: 90vh;
-  display: flex;
-  align-items: center;
+  background-color: #f7faf8;
+  padding: 3.5rem 0 5rem 0;
   overflow: hidden;
 }
 
-.ag-hero-bg-media {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-}
-
-.ag-hero-bg-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  opacity: 0.38;
-  filter: contrast(1.05) saturate(1.1);
-}
-
-.ag-hero-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background: linear-gradient(
-    180deg,
-    rgba(7, 25, 18, 0.85) 0%,
-    rgba(11, 35, 25, 0.92) 60%,
-    rgba(7, 25, 18, 0.98) 100%
-  );
-}
-
 .ag-hero-grid {
-  position: relative;
-  z-index: 5;
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
+  grid-template-columns: 1fr 1.05fr;
   gap: 3.5rem;
   align-items: center;
 }
@@ -247,361 +182,343 @@
 }
 
 .ag-hero-headline {
-  color: #ffffff;
-  margin: 1.25rem 0 1.5rem 0;
-}
-
-.ag-hero-headline span {
-  color: var(--ag-emerald-bright);
+  color: #10231b;
+  margin: 1.1rem 0 1.25rem 0;
 }
 
 .ag-hero-subtext {
-  color: #cde0d5;
-  margin-bottom: 2.25rem;
-  max-width: 620px;
+  color: #475569;
+  margin-bottom: 2rem;
+  max-width: 580px;
 }
 
 .ag-hero-actions {
   display: flex;
+  gap: 1.1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.ag-hero-trust-bar {
+  display: flex;
+  align-items: center;
   gap: 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2d4237;
   flex-wrap: wrap;
 }
 
-/* Floating Hero Data Cards */
-.ag-hero-visual-stack {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.ag-glass-card {
-  background: rgba(16, 38, 28, 0.75);
-  border: 1px solid rgba(52, 211, 153, 0.25);
-  border-radius: var(--ag-radius-lg);
-  padding: 1.5rem;
-  backdrop-filter: blur(16px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-}
-
-.ag-opp-badge {
-  background: rgba(16, 185, 129, 0.2);
-  border: 1px solid var(--ag-emerald);
-  color: var(--ag-emerald-bright);
-  font-size: 0.75rem;
-  font-weight: 800;
-  padding: 0.25rem 0.65rem;
-  border-radius: var(--ag-radius-full);
-}
-
-/* ================= SECTION: HOW IT WORKS ================= */
-.ag-process-section {
-  position: relative;
-  z-index: 10;
-  margin-top: -3.5rem;
-  margin-bottom: 5rem;
-}
-
-.ag-process-container {
-  background-color: var(--ag-cream-card);
-  border: 1px solid var(--ag-border-subtle);
-  border-radius: var(--ag-radius-lg);
-  padding: 3rem 2rem;
-  box-shadow: var(--ag-shadow-lg);
-}
-
-.ag-process-header {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.ag-process-flow-desktop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  position: relative;
-}
-
-.ag-process-step {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  position: relative;
-  z-index: 2;
-}
-
-.ag-step-node {
-  width: 64px;
-  height: 64px;
+/* Mock Dashboard Canvas inside Hero */
+.ag-hero-mock-canvas {
+  background-color: #ffffff;
+  border: 1px solid #d6e4db;
   border-radius: 20px;
-  background-color: var(--ag-mint-light);
-  border: 2px solid var(--ag-emerald);
-  color: var(--ag-emerald-dark);
+  padding: 1.25rem;
+  box-shadow: 0 16px 40px rgba(11, 35, 25, 0.08);
+  position: relative;
+}
+
+.ag-mock-dashboard-preview {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.25rem;
+}
+
+.ag-mock-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.ag-mock-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.ag-mock-stat-pill {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.6rem;
+  text-align: center;
+}
+
+.ag-mock-opp-card {
+  background: #ffffff;
+  border: 2px solid #10b981;
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.12);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.ag-mock-weather-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 0.85rem 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ================= 2. ONE DECISION SECTION ================= */
+.ag-one-decision-section {
+  padding: 2.5rem 0 4.5rem 0;
+}
+
+.ag-decision-container {
+  background-color: #ebf3ed;
+  border: 1px solid #d6e4db;
+  border-radius: 24px;
+  padding: 2.75rem 2rem;
+  box-shadow: var(--ag-shadow-sm);
+  text-align: center;
+}
+
+.ag-decision-flow-flex {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.75rem;
-  margin-bottom: 1.25rem;
-  transition: var(--ag-transition);
-  box-shadow: var(--ag-shadow-sm);
+  gap: 0.85rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
 }
 
-.ag-process-step:hover .ag-step-node {
-  transform: scale(1.1) translateY(-4px);
-  background-color: var(--ag-emerald);
-  color: #ffffff;
-  box-shadow: var(--ag-shadow-glow);
+.ag-decision-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #ffffff;
+  border: 1px solid #d6e4db;
+  border-radius: 14px;
+  padding: 0.65rem 1rem;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #10231b;
 }
 
-.ag-step-title {
-  font-size: 1rem;
+.ag-decision-operator {
   font-weight: 800;
-  color: var(--ag-text-dark);
+  color: #10b981;
+  font-size: 1.1rem;
+}
+
+.ag-decision-item.highlight-net {
+  background-color: #0b3d2e;
+  color: #ffffff;
+  border-color: #0b3d2e;
+}
+
+.ag-decision-item.highlight-best {
+  background-color: #dcfce7;
+  border-color: #10b981;
+  color: #166534;
+}
+
+/* ================= 3. FROM HARVEST TO OPPORTUNITY ================= */
+.ag-workflow-section {
+  padding: 4.5rem 0;
+  background-color: #ffffff;
+}
+
+.ag-workflow-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 3.5rem auto;
+}
+
+.ag-workflow-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.75rem;
+  align-items: flex-start;
+  position: relative;
+}
+
+.ag-workflow-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.ag-workflow-node {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background-color: #ebf3ed;
+  border: 2px solid #10b981;
+  color: #0b3d2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.12);
+  transition: all 0.25s ease;
+}
+
+.ag-workflow-card:hover .ag-workflow-node {
+  background-color: #0b3d2e;
+  color: #ffffff;
+  transform: translateY(-4px);
+}
+
+.ag-workflow-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #10231b;
   margin-bottom: 0.25rem;
 }
 
-.ag-step-subtitle {
+.ag-workflow-desc {
   font-size: 0.78rem;
-  color: var(--ag-text-muted);
-  line-height: 1.3;
+  color: #647d70;
+  line-height: 1.35;
 }
 
-.ag-process-arrow {
-  color: var(--ag-emerald);
-  font-size: 1.2rem;
-  opacity: 0.6;
+/* ================= 4. OPPORTUNITY ENGINE CENTERPIECE ================= */
+.ag-engine-centerpiece-section {
+  padding: 5rem 0;
+  background-color: #ebf3ed;
+  border-top: 1px solid #d6e4db;
+  border-bottom: 1px solid #d6e4db;
 }
 
-/* ================= SECTION: CORE FEATURES ================= */
-.ag-features-section {
-  padding: 4rem 0 6rem 0;
-}
-
-.ag-section-header {
-  text-align: center;
-  max-width: 750px;
-  margin: 0 auto 4rem auto;
-}
-
-.ag-features-grid {
+.ag-engine-split {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: 320px 1fr;
   gap: 2rem;
+  margin-top: 2.5rem;
 }
 
-.ag-feature-card {
-  background-color: var(--ag-cream-card);
-  border: 1px solid var(--ag-border-subtle);
-  border-radius: var(--ag-radius-lg);
-  padding: 2.25rem;
-  box-shadow: var(--ag-shadow-md);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: var(--ag-transition);
-}
-
-.ag-feature-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--ag-emerald);
-  box-shadow: var(--ag-shadow-lg);
-}
-
-.ag-feature-icon-box {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
-  background-color: var(--ag-mint-light);
-  color: var(--ag-emerald-dark);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6rem;
-  margin-bottom: 1.5rem;
-}
-
-.ag-feature-demo-box {
-  background-color: var(--ag-cream-section);
-  border: 1px solid var(--ag-border-light);
-  border-radius: var(--ag-radius-sm);
-  padding: 1.1rem;
-  margin-top: 1.5rem;
-  font-size: 0.85rem;
-}
-
-/* ================= SECTION: OPPORTUNITY ENGINE ================= */
-.ag-engine-section {
-  background-color: var(--ag-forest-deep);
-  color: #ffffff;
-  padding: 6rem 0;
-  position: relative;
-  overflow: hidden;
-}
-
-.ag-engine-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: center;
-}
-
-.ag-engine-flow-box {
-  background: rgba(16, 38, 28, 0.8);
-  border: 1px solid rgba(52, 211, 153, 0.3);
-  border-radius: var(--ag-radius-lg);
-  padding: 2.25rem;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
-}
-
-.ag-market-opt-row {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--ag-radius-md);
-  padding: 1.25rem;
-  margin-top: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: var(--ag-transition);
-}
-
-.ag-market-opt-row.best-opt {
-  background: rgba(16, 185, 129, 0.15);
-  border-color: var(--ag-emerald);
-}
-
-/* ================= SECTION: FARMOS ANYWHERE ================= */
-.ag-anywhere-section {
-  padding: 6rem 0;
-  background-color: var(--ag-cream-section);
-}
-
-.ag-preview-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
-  margin-top: 3.5rem;
-}
-
-.ag-device-mockup-card {
-  background-color: var(--ag-cream-card);
-  border: 1px solid var(--ag-border-subtle);
-  border-radius: var(--ag-radius-lg);
-  padding: 2rem;
-  box-shadow: var(--ag-shadow-md);
-  display: flex;
-  flex-direction: column;
-}
-
-.ag-mobile-screen-sim {
-  background-color: #0b2319;
-  color: #ffffff;
-  border: 4px solid #1a3c2e;
+.ag-engine-input-card {
+  background-color: #ffffff;
+  border: 1px solid #d6e4db;
   border-radius: 20px;
-  padding: 1.25rem;
-  margin-top: 1.25rem;
+  padding: 1.5rem;
+  box-shadow: var(--ag-shadow-md);
 }
 
-/* ================= SECTION: WEATHER + AI ================= */
-.ag-weather-ai-section {
-  padding: 6rem 0;
+.ag-engine-table-card {
+  background-color: #ffffff;
+  border: 1px solid #d6e4db;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: var(--ag-shadow-md);
 }
 
-.ag-weather-ai-grid {
+.ag-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.ag-table th {
+  padding: 0.85rem;
+  background-color: #f4f8f5;
+  color: #475569;
+  font-weight: 700;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.ag-table td {
+  padding: 1rem 0.85rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #10231b;
+}
+
+.ag-table tr.best-row {
+  background-color: #f0fdf4;
+}
+
+/* ================= 5. FEATURE CARDS ================= */
+.ag-features-section {
+  padding: 5rem 0;
+  background-color: #ffffff;
+}
+
+.ag-features-5grid {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 3.5rem;
-  align-items: center;
-}
-
-/* ================= SECTION: BUYER DISCOVERY ================= */
-.ag-buyers-section {
-  background-color: var(--ag-cream-section);
-  padding: 6rem 0;
-}
-
-.ag-buyer-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 1.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
   margin-top: 3rem;
 }
 
-/* ================= SECTION: DASHBOARD PREVIEWS ================= */
-.ag-dashboards-section {
-  padding: 6rem 0;
+.ag-feature-box {
+  background-color: #f7faf8;
+  border: 1px solid #d6e4db;
+  border-radius: 20px;
+  padding: 1.75rem;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.ag-dashboard-preview-split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2.5rem;
-  margin-top: 3.5rem;
+.ag-feature-box:hover {
+  transform: translateY(-4px);
+  border-color: #10b981;
+  box-shadow: 0 10px 30px rgba(11, 35, 25, 0.08);
 }
 
-/* RESPONSIVE MEDIA QUERIES */
+/* ================= 6. FARMOS ANYWHERE & FOOTER BANNER ================= */
+.ag-anywhere-section {
+  padding: 5rem 0;
+  background-color: #ebf3ed;
+}
+
+.ag-footer-banner {
+  background-color: #0b3d2e;
+  color: #ffffff;
+  padding: 4.5rem 2rem;
+  text-align: center;
+}
+
+/* RESPONSIVE BREAKPOINTS */
 @media (max-width: 1024px) {
   .ag-hero-grid {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2.5rem;
   }
-
-  .ag-engine-grid {
-    grid-template-columns: 1fr;
-    gap: 3rem;
+  .ag-workflow-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
   }
-
-  .ag-weather-ai-grid {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-
-  .ag-dashboard-preview-split {
+  .ag-engine-split {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 768px) {
-  .ag-process-flow-desktop {
+  .ag-workflow-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .ag-decision-flow-flex {
     flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .ag-process-arrow {
-    transform: rotate(90deg);
-  }
-
-  .ag-features-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .ag-buyer-cards-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .ag-hero-actions {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .ag-hero-actions a {
-    width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .ag-container {
-    padding: 0 1rem;
+  .ag-workflow-grid {
+    grid-template-columns: 1fr;
   }
-
-  .ag-hero-section {
-    padding: 3rem 0 4rem 0;
+  .ag-hero-actions {
+    flex-direction: column;
+    width: 100%;
   }
-
-  .ag-glass-card {
-    padding: 1.1rem;
+  .ag-hero-actions a {
+    width: 100%;
   }
 }
