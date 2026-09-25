@@ -944,4 +944,995 @@ FarmOS connects every harvest to its best opportunity by combining real agricult
 ```
 
 ---
+FarmOS provides calculated decision support. It does not guarantee market prices, buyers, transportation rates, or commercial profits.
+
+❓ 2. Problem Statement
+
+Indian farmers frequently face the following challenges:
+
+┌───────────────────────────┐     ┌───────────────────────────┐     ┌───────────────────────────┐
+│     Price Asymmetry       │     │   Lack of Comparisons     │     │     Data Isolation        │
+│ Farmers know what crop    │     │ Mandi price lists exist   │     │ Weather, prices, buyer    │
+│ they have, but do not know│ --> │ but do not compare market │ --> │ information and transport│
+│ which market may provide  │     │ returns for a specific    │     │ data exist separately.    │
+│ better returns.           │     │ harvest quantity.         │     │                           │
+└───────────────────────────┘     └───────────────────────────┘     └───────────────────────────┘
+Raw Data vs. Actionable Decision Support
+Dimension	Raw Government Mandi Data	FarmOS Decision Support
+Output Type	Static price records	Evaluated market opportunities
+Quantity Context	Price per quintal	Farmer's actual harvest quantity
+Return Calculation	Manual arithmetic required	Estimated gross value calculated automatically
+Market Comparison	Individual market records	Multiple markets compared together
+Transportation	Not included	Estimated road distance and freight
+Net Return	Not available directly	Estimated gross value minus estimated freight
+Guidance	Limited to raw data	Opportunity ranking + AI explanation
+Buyer Discovery	Separate process	Potential buyer/trader discovery
+💡 3. The FarmOS Solution
+
+FarmOS unifies agricultural data feeds, internal harvest listings, logistics calculations, and AI reasoning into an integrated workflow:
+
+FarmOS does not replace government mandis or guarantee earnings. It provides calculated information to help farmers compare selling opportunities.
+
+📊 4. Key Features Status
+Feature	Description	Status
+JWT Authentication	Secure registration and login for Farmers, Buyers, and Admins	✅ Implemented
+Role-Based Access	Middleware enforcing farmer, buyer, and admin permissions	✅ Implemented
+Harvest Management	Farmers can create, read, update, and delete crop harvest listings	✅ Implemented
+Mandi Market Prices	Government of India Agmarknet/data.gov.in market price integration	✅ Implemented
+Opportunity Engine	Compares available markets using deterministic calculations	✅ Implemented
+FarmOS Opportunity Score	0–100 score based on price strength and consistency	✅ Implemented
+Smart Freight Logistics	Road routing, vehicle selection, freight estimation, and fallback routing	✅ Implemented
+Estimated Net Return	Estimated gross value minus estimated freight cost	✅ Implemented
+Weather Intelligence	Current weather and 7-day forecast using Open-Meteo	✅ Implemented
+Weather Caching	15-minute in-memory cache with fallback handling	✅ Implemented
+AI Agriculture Assistant	Context-aware chatbot powered by Google Gemini API	✅ Implemented
+Floating Assistant	Site-wide floating AI assistant	✅ Implemented
+Buyer Marketplace	Buyers can browse available farmer harvests	✅ Implemented
+Order Management	Buyers place orders and farmers accept/reject them	✅ Implemented
+Public Trader Directory	Public agricultural businesses and trader information	✅ Implemented
+Potential Buyer Discovery	Commodity and location-based buyer matching	✅ Implemented
+Buyer Verification	FarmOS registered buyer verification workflow	✅ Implemented
+Farmer/Buyer Trust System	Platform-level verification and trust badges	✅ Implemented
+Buyer Privacy Controls	Public contact information consent controls	✅ Implemented
+e-NAM Guidance	Official e-NAM resources and workflow guidance	✅ Implemented
+English & Hindi Interface	Static interface localization with language persistence	✅ Implemented
+Swagger API Docs	Interactive OpenAPI documentation at /api-docs	✅ Implemented
+Digital Payments	Online payment / escrow integration	🔮 Future Scope
+WhatsApp/SMS Alerts	Automated price and weather notifications	🔮 Future Scope
+Predictive Analytics	Machine-learning based price forecasting	🔮 Future Scope
+🚀 5. Core Innovation — Market Opportunity Engine
+
+Simply listing raw market prices requires the farmer to manually compare markets, convert quantities, estimate revenue, and consider transportation costs.
+
+The FarmOS Market Opportunity Engine automates this process:
+
+The engine separates the calculation layer from the AI explanation layer.
+
+This means market prices, freight calculations, and opportunity scores are calculated by FarmOS services rather than being invented by the AI assistant.
+
+🏗️ 6. Complete System Architecture
+🔄 7. Farmer Decision Workflow
+🧮 8. Market Opportunity Engine Deep-Dive
+8.1 Unit Conversion
+
+Agmarknet prices are reported per quintal.
+
+1 Quintal = 100 kg
+
+Formula:
+
+Quantity in Quintals = Quantity in kg / 100
+
+Example:
+
+500 kg = 5 quintals
+8.2 Estimated Gross Value
+Estimated Gross Value
+= Quantity in Quintals × Modal Price
+
+Example:
+
+5 quintals × ₹2,500/quintal
+= ₹12,500 estimated gross value
+8.3 FarmOS Opportunity Score
+
+The FarmOS Opportunity Score ranges from 0 to 100.
+
+Opportunity Score
+= Price Score + Consistency Score
+
+The score is capped at 100.
+
+Price Ratio Score
+Price Score =
+(Selected Market Modal Price /
+Highest Modal Price in Dataset) × 70
+Price-Range Consistency Score
+Consistency Ratio =
+Minimum Price / Maximum Price
+Consistency Score =
+Consistency Ratio × 30
+
+The score is an analytical indicator used for comparing available market records. It is not a guarantee of future price performance.
+
+🚚 8.4 Smart Freight Logistics & Estimated Net Return
+
+A market with a higher selling price may not produce the highest estimated net return when transportation costs are considered.
+
+FarmOS therefore integrates a Smart Freight Logistics Engine.
+
+Vehicle Requirement
+Vehicles Required =
+CEILING(Quantity in kg / Vehicle Capacity)
+Trip Cost
+Trip Cost =
+MAX(Minimum Charge, Road Distance × Base Rate)
+Estimated Freight Cost
+Estimated Freight Cost =
+Trip Cost × Number of Vehicles
+Estimated Net Return
+Estimated Net Return =
+Estimated Gross Revenue - Estimated Freight Cost
+Vehicle Configuration
+Vehicle Category	Typical Vehicle	Capacity	Base Rate	Minimum Charge
+Mini Truck	Tata Ace / Bolero Pickup	1,000 kg	₹20/km	₹500
+Small Truck	Eicher / Canter	3,000 kg	₹30/km	₹1,000
+Medium Truck	6-Wheeler / 17ft Eicher	9,000 kg	₹45/km	₹2,000
+Heavy Truck	10-Wheeler / Multi-Axle	20,000 kg	₹65/km	₹3,500
+
+These are FarmOS-configured estimates for decision support and are not guaranteed real-world transport quotations.
+
+Routing Strategy
+
+FarmOS uses the following routing hierarchy:
+
+OpenRouteService for road distance and travel time.
+Known APMC coordinate data where available.
+Haversine geographical estimation fallback when live routing is unavailable.
+A road-circuity factor may be applied to geographical fallback distances.
+
+When logistics data is available, candidate markets can be re-ranked using estimated net return.
+
+🏛️ 9. Government Market Data Integration
+
+FarmOS integrates with the official Government of India data ecosystem through the Agmarknet dataset available on data.gov.in.
+
+Schema & Fields
+Field	Description
+state	State where the mandi is located
+district	District of the mandi
+market	Official market/APMC name
+commodity	Crop or commodity
+variety	Commodity variety
+grade	Reported quality grade
+arrival_date	Market arrival reporting date
+min_price	Minimum reported price in ₹/quintal
+max_price	Maximum reported price in ₹/quintal
+modal_price	Modal price in ₹/quintal
+
+FarmOS does not claim ownership of government data. Market figures displayed by FarmOS reflect available records from the government data feed.
+
+🌤️ 10. Weather Intelligence & Caching
+
+FarmOS integrates the Open-Meteo REST API for weather information.
+
+The weather service provides:
+
+Current weather information
+Daily forecast information
+Agricultural decision context
+Backend caching
+Graceful handling of upstream failures
+Caching Architecture
+
+FarmOS does not generate fake weather values when the upstream service is unavailable.
+
+🤖 11. AI Agriculture Assistant
+
+FarmOS includes a context-aware AI Agriculture Assistant powered by the Google Gemini API.
+
+The assistant can help explain:
+
+Mandi prices
+Market opportunities
+Weather information
+Freight and transportation
+Selling decisions
+General agriculture questions
+Context Injection
+
+The AI assistant is designed to explain FarmOS calculations and available data, rather than independently inventing market prices, freight costs, or guaranteed selling outcomes.
+
+🌐 12. e-NAM Integration
+
+FarmOS provides transparent guidance regarding the National Agriculture Market (e-NAM).
+
+Provided Information
+Official e-NAM portal resources
+Stakeholder information
+APMC/e-NAM workflow guidance
+Registration guidance
+Trading process explanation
+Official links
+
+FarmOS does not scrape private e-NAM trader registration information or expose private trader credentials.
+
+FarmOS acts as an information and decision-support layer around the official e-NAM ecosystem.
+
+🏢 13. Verified Agricultural Business & Buyer Directory
+
+FarmOS separates public agricultural businesses from voluntarily registered FarmOS buyers.
+
+13.1 Public Trader / Agricultural Business Directory
+
+The public trader directory can contain agricultural businesses supported by legitimate public or official sources.
+
+Sources may include:
+
+APEDA
+WBSAMB
+APMC/public market information
+Agricultural business websites
+Public business information
+
+Each record can contain source/evidence information.
+
+Verification Levels
+FarmOS Verified Business
+        ↓
+Supported by available official/public evidence
+
+Public Business Information
+        ↓
+Official/public business information available
+
+Public Business Listing
+        ↓
+Public listing requiring additional review
+
+These labels describe the evidence available to FarmOS and are not government certifications.
+
+13.2 FarmOS Registered Buyers
+
+Registered buyers can provide:
+
+Business name
+Contact person
+State
+District
+Mandi
+Commodities
+Buying capacity
+e-NAM reference
+Udyam reference
+Official website
+Public contact preference
+13.3 FarmOS Buyer Verification
+
+Registered buyers can move through a platform verification process:
+
+Registered Buyer
+      ↓
+Profile Information
+      ↓
+Verification Review
+      ↓
+Pending
+      ↓
+Verified / Rejected
+
+FarmOS verification is a platform-level trust status and does not represent government certification.
+
+13.4 Privacy
+
+Buyer contact information is only displayed publicly when the buyer has enabled the appropriate public-contact preference.
+
+🔐 14. Authentication & Authorization
+
+FarmOS uses:
+
+JSON Web Tokens (JWT)
+bcryptjs password hashing
+Authentication middleware
+Role-based authorization middleware
+Supported Roles
+Role	Main Permissions
+farmer	Manage harvests, view orders, manage incoming orders
+buyer	Browse marketplace, place orders, manage buyer profile
+admin	Administrative management, verification and platform oversight
+Trust / Verification Status
+
+User roles and verification status are separate concepts.
+
+Examples:
+
+Registered Farmer
+FarmOS Verified Farmer
+
+Registered Buyer
+FarmOS Verified Buyer
+
+Verification does not change the user's underlying role.
+
+🛒 15. Order & Marketplace System
+
+Farmers can create harvest listings and buyers can place orders.
+
+Atomic database transactions help prevent conflicting harvest quantity updates.
+
+🗄️ 16. Database Architecture
+
+FarmOS uses PostgreSQL hosted on Neon Cloud.
+
+Core Data Models
+
+The project includes core models for:
+
+Users
+Harvests
+Orders
+Public agricultural businesses/traders
+Buyer verification/profile information
+Simplified Relationship
+USERS
+ │
+ ├── FARMER
+ │      └── HARVESTS
+ │              └── ORDERS
+ │
+ ├── BUYER
+ │      └── ORDERS
+ │
+ └── ADMIN
+        └── Verification / Management
+
+PUBLIC_TRADERS
+      └── Public Agricultural Business Information
+Buyer Profile Information
+
+The buyer profile system can include:
+
+business_name
+contact_person
+state
+district
+mandi
+commodities
+buying_capacity
+enam_reference
+udyam_reference
+official_website
+show_contact_publicly
+verification_status
+verification_notes
+
+Sensitive verification information is not intended for public exposure.
+
+🖥️ 17. Frontend Architecture
+
+FarmOS uses React 18 + Vite.
+
+Main Frontend Responsibilities
+UI rendering
+Route management
+Authentication state
+API communication
+Market comparison
+Weather presentation
+AI assistant interface
+Marketplace
+Farmer dashboard
+Buyer dashboard
+Admin dashboard
+English/Hindi localization
+Main Frontend Architecture
+React Application
+       ↓
+React Router
+       ↓
+Layouts
+       ↓
+Pages
+       ↓
+Reusable Components
+       ↓
+Context / State
+       ↓
+Axios API Client
+       ↓
+FarmOS Backend
+Authentication
+
+AuthContext.jsx manages authentication state and user information.
+
+API Client
+
+Axios is used for REST API communication, including authentication token handling.
+
+Localization
+
+English and Hindi translations are stored locally and selected through the application's language context.
+
+⚙️ 18. Backend Architecture
+
+FarmOS backend is built with Node.js and Express.
+
+Request
+   ↓
+Route
+   ↓
+Authentication / Role Middleware
+   ↓
+Controller
+   ↓
+Service
+   ↓
+PostgreSQL / External API
+   ↓
+Response
+Backend Layers
+Routes
+
+Define HTTP endpoints.
+
+Controllers
+
+Handle request validation, response formatting, and HTTP status codes.
+
+Services
+
+Contain:
+
+Market data integration
+Opportunity calculations
+Logistics calculations
+Weather integration
+AI integration
+e-NAM information
+Business logic
+Middleware
+
+Handles:
+
+JWT authentication
+Role-based authorization
+📁 19. Project Structure
+FarmOs/
+├── backend/
+│   ├── config/
+│   │   ├── db.js
+│   │   ├── logisticsRates.js
+│   │   └── swagger.js
+│   │
+│   ├── controllers/
+│   │   ├── adminController.js
+│   │   ├── authController.js
+│   │   ├── chatController.js
+│   │   ├── enamController.js
+│   │   ├── harvestController.js
+│   │   ├── logisticsController.js
+│   │   ├── marketController.js
+│   │   ├── opportunityController.js
+│   │   ├── orderController.js
+│   │   └── weatherController.js
+│   │
+│   ├── database/
+│   │   └── schema.sql
+│   │
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   └── roleMiddleware.js
+│   │
+│   ├── routes/
+│   │   ├── adminRoutes.js
+│   │   ├── authRoutes.js
+│   │   ├── chatRoutes.js
+│   │   ├── enamRoutes.js
+│   │   ├── harvestRoutes.js
+│   │   ├── logisticsRoutes.js
+│   │   ├── marketRoutes.js
+│   │   ├── opportunityRoutes.js
+│   │   ├── orderRoutes.js
+│   │   └── weatherRoutes.js
+│   │
+│   ├── services/
+│   │   ├── chatService.js
+│   │   ├── enamService.js
+│   │   ├── logisticsService.js
+│   │   ├── marketService.js
+│   │   ├── opportunityService.js
+│   │   └── weatherService.js
+│   │
+│   ├── .env
+│   ├── package.json
+│   └── server.js
+│
+├── docs/
+│   └── images/
+│       ├── floating_assistant.png
+│       ├── landing_page.png
+│       └── mandi_prices.png
+│
+├── frontend/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── layouts/
+│   │   ├── pages/
+│   │   │   ├── admin/
+│   │   │   ├── buyer/
+│   │   │   ├── farmer/
+│   │   │   └── public/
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   │
+│   ├── package.json
+│   └── vite.config.js
+│
+└── README.md
+🔌 20. API Endpoint Documentation
+Authentication
+Method	Endpoint	Description	Auth
+POST	/api/auth/register	Register user	❌
+POST	/api/auth/login	Login and receive JWT	❌
+GET	/api/auth/profile	Get current profile	✅
+Market
+Method	Endpoint	Description	Auth
+GET	/api/market/prices	Query Agmarknet market prices	❌
+Opportunity Engine
+Method	Endpoint	Description	Auth
+GET/POST	/api/opportunities/compare	Compare market opportunities	❌
+POST	/api/opportunities/evaluate	Evaluate selling opportunities	❌
+Logistics
+Method	Endpoint	Description	Auth
+GET	/api/logistics/vehicles	Get vehicle configuration	❌
+GET	/api/logistics/estimate	Estimate logistics	❌
+POST	/api/logistics/estimate	Calculate freight and routing	❌
+Weather
+Method	Endpoint	Description	Auth
+GET	/api/weather	Current weather and forecast	❌
+AI Assistant
+Method	Endpoint	Description	Auth
+POST	/api/chat	Send message to AI assistant	❌
+e-NAM
+Method	Endpoint	Description	Auth
+GET	/api/enam/info	e-NAM information and official resources	❌
+Harvests
+Method	Endpoint	Description	Auth
+POST	/api/harvests	Create harvest	Farmer
+GET	/api/harvests	Get available harvests	❌
+GET	/api/harvests/:id	Get harvest details	❌
+PUT	/api/harvests/:id	Update harvest	Farmer
+DELETE	/api/harvests/:id	Delete harvest	Farmer
+Orders
+Method	Endpoint	Description	Auth
+POST	/api/orders	Place order	Buyer
+GET	/api/orders/my-orders	Buyer's orders	Buyer
+GET	/api/orders/incoming	Farmer's incoming orders	Farmer
+PUT	/api/orders/:id/status	Accept/reject order	Farmer
+Public Traders
+Method	Endpoint	Description	Auth
+GET	/api/traders	Search/filter public traders	❌
+GET	/api/traders/:id	Get trader details	❌
+Buyers
+Method	Endpoint	Description	Auth
+GET	/api/buyers	Search verified buyers	❌
+GET	/api/buyers/:id	Get buyer information	❌
+PUT	/api/buyers/profile	Update buyer profile	Buyer
+Admin Buyer Verification
+Method	Endpoint	Description	Auth
+GET	/api/admin/buyers/pending	View pending buyers	Admin
+PUT	/api/admin/buyers/:id/verify	Verify buyer	Admin
+PUT	/api/admin/buyers/:id/reject	Reject buyer	Admin
+Admin Trader Management
+Method	Endpoint	Description	Auth
+POST	/api/admin/traders	Create trader record	Admin
+PUT	/api/admin/traders/:id	Update trader	Admin
+DELETE	/api/admin/traders/:id	Delete trader	Admin
+Admin
+Method	Endpoint	Description	Auth
+GET	/api/admin/users	User registry	Admin
+GET	/api/admin/harvests	All harvests	Admin
+GET	/api/admin/orders	All orders	Admin
+GET	/api/admin/dashboard	Platform statistics	Admin
+API Documentation
+GET /api-docs
+
+Provides interactive Swagger/OpenAPI documentation.
+
+🛠️ 21. Technology Stack
+Layer	Technology	Purpose
+Frontend UI	React 18	Component-based user interface
+Build Tool	Vite	Development server and production build
+Routing	React Router DOM	Client-side navigation and route protection
+HTTP Client	Axios	REST API communication
+State Management	React Context API	Authentication and language state
+Styling	CSS3	Application styling and responsive layout
+Backend Runtime	Node.js	Server-side JavaScript runtime
+Server Framework	Express 5	REST API and middleware
+Database	PostgreSQL	Relational database
+Database Host	Neon Cloud	Managed PostgreSQL hosting
+Authentication	JWT	Stateless authentication
+Password Security	bcryptjs	Password hashing
+API Documentation	Swagger / OpenAPI	Interactive API documentation
+Market Data	Government Agmarknet / data.gov.in	Mandi market prices
+Weather	Open-Meteo	Weather and forecast data
+Routing / Logistics	OpenRouteService	Road distance and travel-time routing
+AI Engine	Google Gemini API	Context-aware agricultural assistant
+Deployment	Vercel	Frontend hosting
+Backend Hosting	Render	Backend hosting
+Repository	GitHub	Source control
+🔑 22. Environment Variables
+Backend
+
+Create:
+
+backend/.env
+
+Example:
+
+PORT=5000
+
+DATABASE_URL=your_neon_postgresql_connection_string
+
+JWT_SECRET=your_jwt_secret
+
+DATA_GOV_API_KEY=your_datagov_api_key
+
+GEMINI_API_KEY=your_gemini_api_key
+
+OPENROUTESERVICE_API_KEY=your_openrouteservice_api_key
+
+CLIENT_URL=https://farm-os-beta-roan.vercel.app
+Frontend
+
+Create:
+
+frontend/.env
+
+Example:
+
+VITE_API_URL=http://localhost:5000/api
+
+For production:
+
+VITE_API_URL=https://farmos-df0q.onrender.com/api
+
+⚠️ Never commit real API keys, database credentials, JWT secrets, or production .env files to GitHub.
+
+💻 23. Local Development Setup
+Prerequisites
+Node.js 18+
+npm
+Git
+1. Clone Repository
+git clone https://github.com/sujitkr268/FarmOs.git
+cd FarmOs
+2. Backend
+cd backend
+npm install
+
+Create .env using the required variables.
+
+Start backend:
+
+npm run dev
+
+Backend:
+
+http://localhost:5000
+3. Frontend
+
+Open another terminal:
+
+cd frontend
+npm install
+
+Create:
+
+VITE_API_URL=http://localhost:5000/api
+
+Start:
+
+npm run dev
+
+Frontend:
+
+http://localhost:5173
+☁️ 24. Deployment Architecture
+
+FarmOS is deployed using Vercel, Render, Neon, and GitHub.
+
+Production Services
+
+Frontend:
+
+https://farm-os-beta-roan.vercel.app
+
+Backend:
+
+https://farmos-df0q.onrender.com
+
+Backend API:
+
+https://farmos-df0q.onrender.com/api
+🔒 25. Security Practices
+
+FarmOS follows several security practices:
+
+Password Security
+
+Passwords are hashed using bcryptjs.
+
+JWT Authentication
+
+Authenticated requests use JWT bearer tokens.
+
+Backend Secrets
+
+Sensitive API keys are stored on the backend and are not intended to be exposed through the frontend.
+
+SQL Injection Protection
+
+Database operations use parameterized PostgreSQL queries.
+
+Role-Based Authorization
+
+Protected backend routes use role middleware.
+
+Contact Privacy
+
+Buyer contact details are only exposed publicly according to the buyer's public-contact preference.
+
+Verification Privacy
+
+Verification information is handled through protected administrative workflows and is not intended to expose sensitive documents publicly.
+
+Environment Security
+
+Production credentials must remain outside public source control.
+
+🧪 26. Testing & Verification
+
+FarmOS testing includes:
+
+Backend API verification
+Authentication testing
+Market API testing
+Weather API testing
+Logistics testing
+Opportunity engine testing
+Buyer/trader verification testing
+Marketplace testing
+Order workflow testing
+Frontend production build testing
+Frontend Build
+npm run build
+
+The production frontend is built using Vite.
+
+API Documentation
+
+Swagger/OpenAPI documentation is available through:
+
+/api-docs
+Important Validation Areas
+Authentication
+Market Data
+Opportunity Calculation
+Logistics Calculation
+Weather
+AI Assistant
+Marketplace
+Orders
+Buyer Verification
+Trader Directory
+API Security
+Frontend Build
+⚠️ 27. Current Limitations
+
+FarmOS is a decision-support prototype and has several practical limitations.
+
+Market Data
+
+Mandi prices depend on the availability and freshness of the government data feed.
+
+Road Routing
+
+OpenRouteService routing depends on:
+
+API availability
+valid coordinates
+routing service response
+
+FarmOS includes coordinate and geographical fallback mechanisms where applicable.
+
+Freight Estimates
+
+Freight rates are FarmOS-configured estimates based on vehicle capacity and configured rates.
+
+They are not live transport-provider quotations.
+
+Market Availability
+
+The presence of a market price record does not guarantee that a farmer can immediately sell a specific quantity at that price.
+
+Buyer Discovery
+
+A potential buyer match does not guarantee a purchase or transaction.
+
+AI
+
+AI-generated explanations should be treated as contextual assistance and not as guaranteed financial, legal, agricultural, or commercial advice.
+
+e-NAM
+
+FarmOS provides official e-NAM guidance but does not directly participate in private e-NAM auction bidding.
+
+🔮 28. Future Scope
+💳 1. Digital Payment Gateway
+Razorpay / UPI integration
+Digital payment confirmation
+Digital invoices
+Optional escrow-style workflows
+🚚 2. Advanced Freight Marketplace
+Real-time transport-provider matching
+Live freight quotations
+Fleet availability
+Toll estimation
+Transport-provider discovery
+🔔 3. Automated Notifications
+WhatsApp price alerts
+SMS notifications
+Weather warnings
+Opportunity alerts
+📈 4. Predictive Market Intelligence
+Historical price analysis
+Price trend visualization
+Machine-learning forecasting
+Seasonal demand analysis
+🎙️ 5. Multilingual Voice Assistant
+Voice-based farmer interaction
+Additional Indian languages
+Speech-to-text
+Text-to-speech
+📐 29. Future-Proof Architecture
+
+FarmOS is designed so additional services can be connected through the existing REST API architecture without replacing the core platform.
+
+🌍 30. Social Impact & Farmer Empowerment
+
+FarmOS aims to improve agricultural decision-making by reducing information gaps.
+
+Key Impact Areas
+Market Transparency
+
+Farmers can view available government mandi price information.
+
+Market Comparison
+
+Farmers can compare multiple markets instead of relying on a single local price.
+
+Transportation Awareness
+
+FarmOS introduces estimated logistics costs into the selling decision.
+
+Buyer Discovery
+
+Farmers can discover potential agricultural businesses and registered buyers.
+
+Digital Accessibility
+
+The platform supports both English and Hindi interfaces.
+
+FarmOS aligns conceptually with Sustainable Development Goals including:
+
+SDG 1 — No Poverty
+SDG 8 — Decent Work and Economic Growth
+💎 31. Value Proposition
+RAW DATA
+   ↓
+INTELLIGENCE
+   ↓
+COMPARISON
+   ↓
+ESTIMATED RETURN
+   ↓
+DECISION
+   ↓
+ACTION
+
+FarmOS transforms fragmented agricultural information into a structured decision-support workflow.
+
+The platform connects:
+
+🌾 Harvest
+   ↓
+📊 Market Data
+   ↓
+⚖️ Comparison
+   ↓
+🚚 Logistics
+   ↓
+💰 Estimated Net Return
+   ↓
+🤝 Buyer Discovery
+   ↓
+🏆 Selling Opportunity
+🔄 32. End-to-End System Flow
+📋 33. Project Status Overview
+✅ Implemented
+ Full-Stack React + Node.js + PostgreSQL Architecture
+ JWT Authentication
+ Role-Based Authorization
+ Farmer, Buyer & Admin Roles
+ Harvest Management
+ Live Government Mandi Prices via Agmarknet
+ Market Opportunity Engine
+ FarmOS Opportunity Score
+ Smart Freight Logistics
+ Estimated Freight Cost Calculation
+ Estimated Net Return Optimization
+ OpenRouteService Road Routing
+ Geographical Routing Fallback
+ Weather Intelligence
+ 15-Minute Weather Cache
+ Google Gemini AI Agriculture Assistant
+ Floating AI Assistant
+ Buyer Marketplace
+ Order Management
+ Atomic Order/Harvest Transactions
+ Public Trader / Agricultural Business Directory
+ Potential Buyer Discovery
+ FarmOS Registered Buyer System
+ FarmOS Buyer Verification Workflow
+ Farmer/Buyer Trust Verification
+ Buyer Public Contact Privacy Controls
+ e-NAM Official Resources & Workflow Guidance
+ English & Hindi Interface
+ Swagger / OpenAPI Documentation
+ Vercel Frontend Deployment
+ Render Backend Deployment
+ Neon PostgreSQL Database
+🔮 Future Scope
+ Digital Payment Gateway
+ Real-Time Transport Provider Matching
+ Live Freight Quotations
+ WhatsApp / SMS Automated Alerts
+ Predictive Price Forecasting
+ Multilingual Voice AI Assistant
+⚖️ 34. Commercial Disclaimer
+
+Disclaimer: FarmOS is a decision-support prototype platform. Market prices, weather forecasts, and other information are derived from third-party government and open data services. Opportunity scores, gross values, freight costs, and net-return figures are calculated estimates and do not constitute guaranteed commercial returns, guaranteed buyers, or financial advice. Transport rates are configured estimates and may differ from actual local quotations. Users should independently verify critical commercial transactions.
+
+🏁 35. Final Summary
+
+FarmOS connects every harvest to its best available opportunity by combining:
+
+🌾 HARVEST
+     ↓
+📊 GOVERNMENT MARKET DATA
+     ↓
+⚖️ MARKET COMPARISON
+     ↓
+🚚 FREIGHT ESTIMATION
+     ↓
+💰 ESTIMATED NET RETURN
+     ↓
+🏆 OPPORTUNITY RANKING
+     ↓
+🤝 BUYER DISCOVERY
+     ↓
+🤖 AI EXPLANATION
+     ↓
+🛒 MARKETPLACE / SELLING ACTION
+
+FarmOS brings together agricultural market intelligence, logistics estimation, weather information, buyer discovery, marketplace functionality, and AI-assisted explanations in a single platform.
+
+The central idea is simple:
+
+Connect every harvest to its best available opportunity using transparent, calculated agricultural intelligence.
+
+Maintained by the FarmOS Development Team • Built for Smart India Hackathon & Open-Source Agricultural Innovation.
 *Maintained by the FarmOS Development Team • Built for Smart India Hackathon & Open-Source Agricultural Innovation.*
