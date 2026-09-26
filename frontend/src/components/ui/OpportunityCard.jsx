@@ -14,7 +14,7 @@ export const OpportunityCard = ({ data, onViewClick }) => {
     )
   }
 
-  const bestMarket = data.best_opportunity || (data.opportunities && data.opportunities[0]) || {}
+  const bestMarket = data.recommended || data.best_opportunity || (data.opportunities && data.opportunities[0]) || {}
 
   return (
     <div style={{

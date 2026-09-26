@@ -279,11 +279,7 @@ export const OpportunitiesPage = () => {
               </Link>
             </div>
 
-            <PotentialBuyersCard buyers={potentialBuyers.length > 0 ? potentialBuyers : [
-              { id: 1, business_name: 'AgriTrade Foods', verification_status: 'verified', badge_label: '🟢 FarmOS Verified Business', location: 'Kolkata, West Bengal', commodities: 'Potato, Onion', buying_capacity: '10,000 kg', show_contact_publicly: true, public_phone: '+91 98765 43210' },
-              { id: 2, business_name: 'GreenHarvest Ltd', verification_status: 'website_verified', badge_label: '🌐 Public Business Info', location: 'Howrah, West Bengal', commodities: 'Potato, Vegetables', buying_capacity: '5,000 kg', show_contact_publicly: true, public_phone: '+91 98765 11223' },
-              { id: 3, business_name: 'FreshMart Traders', verification_status: 'unverified', badge_label: '🏢 Public Listing', location: 'Kolkata, West Bengal', commodities: 'Potato, Tomato', buying_capacity: '3,000 kg', show_contact_publicly: false }
-            ]} />
+            <PotentialBuyersCard buyers={potentialBuyers} />
           </div>
         </div>
       )}
