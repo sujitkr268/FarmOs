@@ -162,6 +162,9 @@ const findPotentialBuyers = async (crop, state = "", district = "") => {
   }
 };
 
+const opportunityCache = new Map();
+const OPP_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes TTL
+
 const evaluateOpportunities = async (params = {}) => {
   const crop = params.crop || params.commodity || "Potato";
   const quantityInput = params.quantity !== undefined ? params.quantity : 500;
@@ -170,6 +173,16 @@ const evaluateOpportunities = async (params = {}) => {
   const district = params.district || "";
   const farmerLocation = params.location || params.origin || "";
   const requestedVehicleType = params.vehicle_type || "";
+
+  const cacheKey = `${crop.toLowerCase()}_${quantityInput}_${unitInput}_${state.toLowerCase()}_${district.toLowerCase()}_${farmerLocation.toLowerCase()}`;
+  const now = Date.now();
+
+  if (opportunityCache.has(cacheKey)) {
+    const cached = opportunityCache.get(cacheKey);
+    if (now - cached.timestamp < OPP_CACHE_TTL_MS) {
+      return cached.data;
+    }
+  }
 
   const qtyInQuintals = convertToQuintals(quantityInput, unitInput);
   const qtyInKg = Math.round(qtyInQuintals * 100);
@@ -338,7 +351,7 @@ const evaluateOpportunities = async (params = {}) => {
     );
   }
 
-  return {
+  const finalResult = {
     success: true,
     data_source: "Govt of India Agmarknet (data.gov.in)",
     commodity: crop,
@@ -379,6 +392,9 @@ const evaluateOpportunities = async (params = {}) => {
       net_return_formula: "Estimated Net Return = Estimated Gross Revenue - Estimated Freight Cost"
     }
   };
+
+  opportunityCache.set(cacheKey, { timestamp: Date.now(), data: finalResult });
+  return finalResult;
 };
 
 module.exports = {
