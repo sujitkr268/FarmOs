@@ -61,12 +61,15 @@
     "viewAll": "View All →"
   },
   "home": {
-    "heroBadge": "Smart Agriculture • Better Markets • Higher Returns",
+    "heroBadge": "Announcing FarmOS Decision Support 2.0",
     "heroTitleLine1": "Connecting Every Harvest",
     "heroTitleLine2": "to Its Best Opportunity",
     "heroDesc": "FarmOS helps farmers discover better market opportunities by combining real mandi prices, logistics costs, weather intelligence and buyer discovery.",
+    "heroSubtext": "Know your crop. Understand your market. Find your opportunity.",
     "exploreMarketplace": "Explore Opportunities",
     "getStartedFree": "View Market Prices",
+    "learnMore": "Learn More",
+    "scrollMore": "SCROLL MORE",
     "card1Title": "Verified Connection to Buyers",
     "card2Title": "Fair and Transparent Pricing",
     "card3Title": "Seamless Harvest Management",
