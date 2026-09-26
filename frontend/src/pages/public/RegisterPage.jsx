@@ -103,9 +103,12 @@ export const RegisterPage = () => {
 
   return (
     <div className="auth-wrapper">
-      <div className="auth-card" style={{ maxWidth: formData.role === 'buyer' ? '600px' : '480px', transition: 'all 0.3s' }}>
-        <h2 className="auth-title">{t('auth.join')}</h2>
-        <p className="auth-subtitle">{t('auth.joinSub')}</p>
+      <div className="auth-card" style={{ maxWidth: formData.role === 'buyer' ? '620px' : '500px', transition: 'all 0.3s' }}>
+        <div className="auth-header-brand">
+          <div className="auth-brand-logo">🌿</div>
+          <h2 className="auth-title">{t('auth.join')}</h2>
+          <p className="auth-subtitle">{t('auth.joinSub')}</p>
+        </div>
 
         {error && <div className="alert-message alert-error">{error}</div>}
         {success && <div className="alert-message alert-success">{success}</div>}

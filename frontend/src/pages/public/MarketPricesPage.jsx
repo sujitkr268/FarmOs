@@ -39,22 +39,25 @@ export const MarketPricesPage = () => {
       {/* Tab Selector Header */}
       <div style={{
         display: 'flex',
-        gap: '0.75rem',
+        gap: '0.5rem',
         marginBottom: '2rem',
-        borderBottom: '1px solid #e2e8f0',
-        paddingBottom: '1rem',
+        backgroundColor: '#ebf3ed',
+        border: '1px solid #d6e4db',
+        borderRadius: '16px',
+        padding: '5px',
         flexWrap: 'wrap'
       }} className="tab-selector-bar">
         <button
           onClick={() => setActiveTab('mandi_prices')}
           style={{
-            padding: '0.65rem 1.25rem',
+            padding: '0.7rem 1.25rem',
             borderRadius: '12px',
-            backgroundColor: activeTab === 'mandi_prices' ? '#10b981' : '#f8fafc',
-            color: activeTab === 'mandi_prices' ? '#ffffff' : '#475569',
+            backgroundColor: activeTab === 'mandi_prices' ? '#0b3d2e' : 'transparent',
+            color: activeTab === 'mandi_prices' ? '#ffffff' : '#647d70',
             fontWeight: 700,
             fontSize: '0.9rem',
-            border: activeTab === 'mandi_prices' ? '1px solid #10b981' : '1px solid #cbd5e1',
+            border: 'none',
+            boxShadow: activeTab === 'mandi_prices' ? '0 4px 12px rgba(11, 35, 25, 0.1)' : 'none',
             cursor: 'pointer',
             transition: 'all 0.2s ease',
             flex: 1,
@@ -67,13 +70,14 @@ export const MarketPricesPage = () => {
         <button
           onClick={() => setActiveTab('analytics')}
           style={{
-            padding: '0.65rem 1.25rem',
+            padding: '0.7rem 1.25rem',
             borderRadius: '12px',
-            backgroundColor: activeTab === 'analytics' ? '#10b981' : '#f8fafc',
-            color: activeTab === 'analytics' ? '#ffffff' : '#475569',
+            backgroundColor: activeTab === 'analytics' ? '#0b3d2e' : 'transparent',
+            color: activeTab === 'analytics' ? '#ffffff' : '#647d70',
             fontWeight: 700,
             fontSize: '0.9rem',
-            border: activeTab === 'analytics' ? '1px solid #10b981' : '1px solid #cbd5e1',
+            border: 'none',
+            boxShadow: activeTab === 'analytics' ? '0 4px 12px rgba(11, 35, 25, 0.1)' : 'none',
             cursor: 'pointer',
             transition: 'all 0.2s ease',
             flex: 1,
@@ -86,13 +90,14 @@ export const MarketPricesPage = () => {
         <button
           onClick={() => setActiveTab('enam_info')}
           style={{
-            padding: '0.65rem 1.25rem',
+            padding: '0.7rem 1.25rem',
             borderRadius: '12px',
-            backgroundColor: activeTab === 'enam_info' ? '#10b981' : '#f8fafc',
-            color: activeTab === 'enam_info' ? '#ffffff' : '#475569',
+            backgroundColor: activeTab === 'enam_info' ? '#0b3d2e' : 'transparent',
+            color: activeTab === 'enam_info' ? '#ffffff' : '#647d70',
             fontWeight: 700,
             fontSize: '0.9rem',
-            border: activeTab === 'enam_info' ? '1px solid #10b981' : '1px solid #cbd5e1',
+            border: 'none',
+            boxShadow: activeTab === 'enam_info' ? '0 4px 12px rgba(11, 35, 25, 0.1)' : 'none',
             cursor: 'pointer',
             transition: 'all 0.2s ease',
             flex: 1,

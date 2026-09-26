@@ -59,8 +59,11 @@ export const LoginPage = () => {
   return (
     <div className="auth-wrapper">
       <div className="auth-card">
-        <h2 className="auth-title">{t('auth.signIn')}</h2>
-        <p className="auth-subtitle">{t('auth.signInSub')}</p>
+        <div className="auth-header-brand">
+          <div className="auth-brand-logo">🌿</div>
+          <h2 className="auth-title">{t('auth.signIn')}</h2>
+          <p className="auth-subtitle">{t('auth.signInSub')}</p>
+        </div>
 
         {error && <div className="alert-message alert-error">{error}</div>}
 

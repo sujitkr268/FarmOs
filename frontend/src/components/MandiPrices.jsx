@@ -80,9 +80,9 @@ export const MandiPrices = () => {
     <div style={{ width: '100%' }}>
       {/* Component Header Banner */}
       <div style={{
-        background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(17, 21, 28, 0.95) 100%)',
-        border: '1px solid var(--border-gold)',
-        borderRadius: '20px',
+        backgroundColor: '#ffffff',
+        border: '1px solid var(--ag-border-subtle, #d6e4db)',
+        borderRadius: 'var(--ag-radius-lg, 24px)',
         padding: '1.75rem 2rem',
         marginBottom: '2rem',
         display: 'flex',
@@ -90,29 +90,29 @@ export const MandiPrices = () => {
         alignItems: 'center',
         flexWrap: 'wrap',
         gap: '1rem',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)'
+        boxShadow: '0 4px 20px rgba(11, 35, 25, 0.04)'
       }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '1.4rem' }}>📈</span>
-            <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+            <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--ag-forest-dark, #0b2319)', margin: 0 }}>
               {t('market.title')}
             </h2>
             <span style={{
-              backgroundColor: 'rgba(212, 175, 55, 0.15)',
-              border: '1px solid var(--accent-gold)',
-              color: 'var(--accent-gold-light)',
+              backgroundColor: 'var(--ag-mint-light, #dcfce7)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              color: 'var(--ag-forest-mid, #166534)',
               fontSize: '0.75rem',
-              fontWeight: 700,
-              padding: '0.2rem 0.6rem',
-              borderRadius: '20px',
+              fontWeight: 800,
+              padding: '0.25rem 0.75rem',
+              borderRadius: '9999px',
               textTransform: 'uppercase',
-              letterSpacing: '0.05em'
+              letterSpacing: '0.04em'
             }}>
               Govt of India Agmarknet
             </span>
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', margin: 0 }}>
+          <p style={{ color: 'var(--ag-text-muted, #647d70)', fontSize: '0.92rem', margin: 0 }}>
             {t('market.subtitle')}
           </p>
         </div>
@@ -120,16 +120,17 @@ export const MandiPrices = () => {
         <button
           onClick={fetchPrices}
           style={{
-            padding: '0.6rem 1.2rem',
-            borderRadius: '10px',
-            backgroundColor: 'rgba(255, 255, 255, 0.08)',
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            color: 'var(--text-primary)',
-            fontWeight: 600,
+            padding: '0.65rem 1.25rem',
+            borderRadius: '9999px',
+            backgroundColor: 'var(--ag-cream-section, #ebf3ed)',
+            border: '1px solid var(--ag-border-subtle, #d6e4db)',
+            color: 'var(--ag-forest-dark, #0b2319)',
+            fontWeight: 700,
             fontSize: '0.88rem',
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
+            cursor: 'pointer',
             transition: 'all 0.2s'
           }}
         >

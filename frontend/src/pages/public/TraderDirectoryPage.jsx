@@ -85,19 +85,19 @@ export const TraderDirectoryPage = () => {
       {/* Header Banner */}
       <div style={{
         backgroundColor: '#ffffff',
-        border: '1px solid #e2e8f0',
-        borderRadius: '20px',
-        padding: '2rem 1.5rem',
+        border: '1px solid #d6e4db',
+        borderRadius: '24px',
+        padding: '2rem 1.75rem',
         marginBottom: '2rem',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)'
+        boxShadow: '0 4px 20px rgba(11, 35, 25, 0.04)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
           <span style={{ fontSize: '2rem' }}>🏛️</span>
-          <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0b2319', margin: 0 }}>
+          <h1 style={{ fontSize: '1.85rem', fontWeight: 800, color: '#0b2319', margin: 0, letterSpacing: '-0.02em' }}>
             {t('directory.title')}
           </h1>
         </div>
-        <p style={{ color: '#475569', fontSize: '0.95rem', maxWidth: '850px', lineHeight: '1.5', margin: '0.5rem 0 0 0' }}>
+        <p style={{ color: '#647d70', fontSize: '0.95rem', maxWidth: '850px', lineHeight: '1.5', margin: '0.5rem 0 0 0' }}>
           {t('directory.subtitle')}
         </p>
       </div>
@@ -106,21 +106,25 @@ export const TraderDirectoryPage = () => {
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '0.75rem',
-        marginBottom: '1.5rem',
-        borderBottom: '1px solid #e2e8f0',
-        paddingBottom: '0.75rem'
+        gap: '0.5rem',
+        marginBottom: '1.75rem',
+        backgroundColor: '#ebf3ed',
+        border: '1px solid #d6e4db',
+        padding: '5px',
+        borderRadius: '16px',
+        width: 'fit-content'
       }}>
         <button
           onClick={() => setActiveTab('traders')}
           style={{
             padding: '0.65rem 1.4rem',
-            borderRadius: '10px',
-            border: activeTab === 'traders' ? '1px solid #0b2319' : '1px solid #e2e8f0',
-            backgroundColor: activeTab === 'traders' ? '#0b2319' : '#ffffff',
-            color: activeTab === 'traders' ? '#ffffff' : '#475569',
+            borderRadius: '12px',
+            border: 'none',
+            backgroundColor: activeTab === 'traders' ? '#0b3d2e' : 'transparent',
+            color: activeTab === 'traders' ? '#ffffff' : '#647d70',
             fontWeight: 700,
-            fontSize: '0.95rem',
+            fontSize: '0.92rem',
+            boxShadow: activeTab === 'traders' ? '0 4px 12px rgba(11, 35, 25, 0.1)' : 'none',
             cursor: 'pointer',
             transition: 'all 0.2s'
           }}
@@ -132,17 +136,18 @@ export const TraderDirectoryPage = () => {
           onClick={() => setActiveTab('buyers')}
           style={{
             padding: '0.65rem 1.4rem',
-            borderRadius: '10px',
-            border: activeTab === 'buyers' ? '1px solid #0b2319' : '1px solid #e2e8f0',
-            backgroundColor: activeTab === 'buyers' ? '#0b2319' : '#ffffff',
-            color: activeTab === 'buyers' ? '#ffffff' : '#475569',
+            borderRadius: '12px',
+            border: 'none',
+            backgroundColor: activeTab === 'buyers' ? '#0b3d2e' : 'transparent',
+            color: activeTab === 'buyers' ? '#ffffff' : '#647d70',
             fontWeight: 700,
-            fontSize: '0.95rem',
+            fontSize: '0.92rem',
+            boxShadow: activeTab === 'buyers' ? '0 4px 12px rgba(11, 35, 25, 0.1)' : 'none',
             cursor: 'pointer',
             transition: 'all 0.2s'
           }}
         >
-          🔵 {t('directory.tabBuyers')} ({activeTab === 'buyers' ? buyers.length : '...'})
+          💼 Registered Buyers ({activeTab === 'buyers' ? buyers.length : '...'})
         </button>
       </div>
 
