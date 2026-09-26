@@ -28,12 +28,21 @@ export const MandiPrices = () => {
 
       const response = await getMarketPrices(params)
 
-      if (response && response.success) {
-        setMarketData(response.data || [])
-        setTotalCount(response.total || response.count || (response.data ? response.data.length : 0))
+      let records = []
+      if (Array.isArray(response)) {
+        records = response
+      } else if (response && Array.isArray(response.data)) {
+        records = response.data
+      } else if (response && Array.isArray(response.records)) {
+        records = response.records
+      }
+
+      if (records.length > 0 || (response && response.success !== false)) {
+        setMarketData(records)
+        setTotalCount(response?.total || response?.count || records.length)
       } else {
         setMarketData([])
-        setError('Failed to load Mandi market prices.')
+        setError('No Mandi market prices available for the selected filters.')
       }
     } catch (err) {
       console.error('Fetch Mandi Prices Error:', err)

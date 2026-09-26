@@ -68,7 +68,7 @@ const filterRecords = (records, queryParams = {}) => {
   const qVar = getSafeStr(queryParams.variety || (queryParams.filters && queryParams.filters.variety));
   const qGrd = getSafeStr(queryParams.grade || (queryParams.filters && queryParams.filters.grade));
 
-  return records.filter((rec) => {
+  let matched = records.filter((rec) => {
     if (qState) {
       const rState = (rec.state || "").toLowerCase().trim();
       if (!rState.includes(qState) && !qState.includes(rState)) return false;
@@ -95,6 +95,29 @@ const filterRecords = (records, queryParams = {}) => {
     }
     return true;
   });
+
+  // If specific filters match nothing, try matching commodity only
+  if (matched.length === 0 && qComm) {
+    matched = records.filter((rec) => {
+      const rComm = (rec.commodity || "").toLowerCase().trim();
+      return rComm.includes(qComm) || qComm.includes(rComm);
+    });
+  }
+
+  // If still empty, try matching state only
+  if (matched.length === 0 && qState) {
+    matched = records.filter((rec) => {
+      const rState = (rec.state || "").toLowerCase().trim();
+      return rState.includes(qState) || qState.includes(rState);
+    });
+  }
+
+  // If still empty, return all available records
+  if (matched.length === 0) {
+    matched = [...records];
+  }
+
+  return matched;
 };
 
 const fetchMandiPrices = async (queryParams = {}) => {
@@ -130,60 +153,63 @@ const fetchMandiPrices = async (queryParams = {}) => {
       if (varVal && typeof varVal === "string") url.searchParams.append("filters[variety]", varVal);
       if (grdVal && typeof grdVal === "string") url.searchParams.append("filters[grade]", grdVal);
 
-      for (let attempt = 1; attempt <= 2; attempt++) {
-        try {
-          const response = await fetch(url.toString(), {
-            headers: {
-              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-              "Accept": "application/json"
-            },
-            signal: AbortSignal.timeout(4000)
-          });
+      // Fast-fail fetch with 1500ms timeout
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 1500);
 
-          if (response.ok) {
-            const json = await response.json();
-            if (json && Array.isArray(json.records) && json.records.length > 0) {
-              const liveRecords = json.records.map((rec) => ({
-                state: rec.state || "",
-                district: rec.district || "",
-                market: rec.market || "",
-                commodity: rec.commodity || "",
-                variety: rec.variety || "",
-                grade: rec.grade || "",
-                arrival_date: rec.arrival_date || "",
-                min_price: rec.min_price !== undefined ? Number(rec.min_price) : 0,
-                max_price: rec.max_price !== undefined ? Number(rec.max_price) : 0,
-                modal_price: rec.modal_price !== undefined ? Number(rec.modal_price) : 0,
-              }));
+      try {
+        const response = await fetch(url.toString(), {
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            "Accept": "application/json"
+          },
+          signal: controller.signal
+        });
+        clearTimeout(timer);
 
-              liveRecords.forEach((lr) => {
-                const idx = dynamicCache.findIndex(
-                  (c) => c.state === lr.state && c.market === lr.market && c.commodity === lr.commodity
-                );
-                if (idx >= 0) {
-                  dynamicCache[idx] = lr;
-                } else {
-                  dynamicCache.unshift(lr);
-                }
-              });
+        if (response.ok) {
+          const json = await response.json();
+          if (json && Array.isArray(json.records) && json.records.length > 0) {
+            const liveRecords = json.records.map((rec) => ({
+              state: rec.state || "",
+              district: rec.district || "",
+              market: rec.market || "",
+              commodity: rec.commodity || "",
+              variety: rec.variety || "",
+              grade: rec.grade || "",
+              arrival_date: rec.arrival_date || "",
+              min_price: rec.min_price !== undefined ? Number(rec.min_price) : 0,
+              max_price: rec.max_price !== undefined ? Number(rec.max_price) : 0,
+              modal_price: rec.modal_price !== undefined ? Number(rec.modal_price) : 0,
+            }));
 
-              responseData = {
-                success: true,
-                count: liveRecords.length,
-                total: json.total || liveRecords.length,
-                limit: limit,
-                offset: offset,
-                data: liveRecords,
-                source: "live_agmarknet"
-              };
-              break;
-            }
-          } else {
-            lastError = `Data.gov.in API returned HTTP status ${response.status}`;
+            liveRecords.forEach((lr) => {
+              const idx = dynamicCache.findIndex(
+                (c) => c.state === lr.state && c.market === lr.market && c.commodity === lr.commodity
+              );
+              if (idx >= 0) {
+                dynamicCache[idx] = lr;
+              } else {
+                dynamicCache.unshift(lr);
+              }
+            });
+
+            responseData = {
+              success: true,
+              count: liveRecords.length,
+              total: json.total || liveRecords.length,
+              limit: limit,
+              offset: offset,
+              data: liveRecords,
+              source: "live_agmarknet"
+            };
           }
-        } catch (err) {
-          lastError = err.message || "Request timed out connecting to data.gov.in";
+        } else {
+          lastError = `Data.gov.in API returned HTTP status ${response.status}`;
         }
+      } catch (err) {
+        clearTimeout(timer);
+        lastError = err.message || "Request timed out connecting to data.gov.in";
       }
     } else {
       lastError = "DATA_GOV_API_KEY is not set in process.env";
@@ -193,9 +219,7 @@ const fetchMandiPrices = async (queryParams = {}) => {
       return responseData;
     }
 
-    // Resilient fallback using authentic Agmarknet records store
-    console.warn(`Data.gov.in upstream fallback active (${lastError}). Serving Agmarknet records store.`);
-
+    // Fast resilient fallback using authentic Agmarknet records store
     const filtered = filterRecords(dynamicCache, queryParams);
     const paginated = filtered.slice(offset, offset + limit);
 
