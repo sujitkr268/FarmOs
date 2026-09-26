@@ -53,35 +53,43 @@ const SEED_AGMARKNET_RECORDS = [
 // Dynamic cache updated whenever data.gov.in succeeds
 let dynamicCache = [...SEED_AGMARKNET_RECORDS];
 
-const filterRecords = (records, queryParams) => {
+const getSafeStr = (val) => {
+  if (!val) return "";
+  if (typeof val === "string") return val.toLowerCase().trim();
+  if (typeof val === "object" && val.keyword) return String(val.keyword).toLowerCase().trim();
+  return String(val).toLowerCase().trim();
+};
+
+const filterRecords = (records, queryParams = {}) => {
+  const qState = getSafeStr(queryParams.state || (queryParams.filters && queryParams.filters.state));
+  const qDist = getSafeStr(queryParams.district || (queryParams.filters && queryParams.filters.district));
+  const qComm = getSafeStr(queryParams.commodity || (queryParams.filters && queryParams.filters.commodity));
+  const qMkt = getSafeStr(queryParams.market || (queryParams.filters && queryParams.filters.market));
+  const qVar = getSafeStr(queryParams.variety || (queryParams.filters && queryParams.filters.variety));
+  const qGrd = getSafeStr(queryParams.grade || (queryParams.filters && queryParams.filters.grade));
+
   return records.filter((rec) => {
-    if (queryParams.state) {
-      const qState = queryParams.state.toLowerCase().trim();
+    if (qState) {
       const rState = (rec.state || "").toLowerCase().trim();
       if (!rState.includes(qState) && !qState.includes(rState)) return false;
     }
-    if (queryParams.district) {
-      const qDist = queryParams.district.toLowerCase().trim();
+    if (qDist) {
       const rDist = (rec.district || "").toLowerCase().trim();
       if (!rDist.includes(qDist) && !qDist.includes(rDist)) return false;
     }
-    if (queryParams.commodity) {
-      const qComm = queryParams.commodity.toLowerCase().trim();
+    if (qComm) {
       const rComm = (rec.commodity || "").toLowerCase().trim();
       if (!rComm.includes(qComm) && !qComm.includes(rComm)) return false;
     }
-    if (queryParams.market) {
-      const qMkt = queryParams.market.toLowerCase().trim();
+    if (qMkt) {
       const rMkt = (rec.market || "").toLowerCase().trim();
       if (!rMkt.includes(qMkt) && !qMkt.includes(rMkt)) return false;
     }
-    if (queryParams.variety) {
-      const qVar = queryParams.variety.toLowerCase().trim();
+    if (qVar) {
       const rVar = (rec.variety || "").toLowerCase().trim();
       if (!rVar.includes(qVar) && !qVar.includes(rVar)) return false;
     }
-    if (queryParams.grade) {
-      const qGrd = queryParams.grade.toLowerCase().trim();
+    if (qGrd) {
       const rGrd = (rec.grade || "").toLowerCase().trim();
       if (!rGrd.includes(qGrd) && !qGrd.includes(rGrd)) return false;
     }
@@ -90,121 +98,135 @@ const filterRecords = (records, queryParams) => {
 };
 
 const fetchMandiPrices = async (queryParams = {}) => {
-  const limit = queryParams.limit ? parseInt(queryParams.limit, 10) : 12;
-  const offset = queryParams.offset ? parseInt(queryParams.offset, 10) : 0;
-  const apiKey = process.env.DATA_GOV_API_KEY || "579b464db66ec23bdd000001fb34c61dc1764ff840bfc0882b9ae96e";
+  try {
+    const limit = queryParams && queryParams.limit ? parseInt(queryParams.limit, 10) : 12;
+    const offset = queryParams && queryParams.offset ? parseInt(queryParams.offset, 10) : 0;
+    const apiKey = process.env.DATA_GOV_API_KEY || "579b464db66ec23bdd000001fb34c61dc1764ff840bfc0882b9ae96e";
 
-  let lastError = null;
-  let responseData = null;
+    let lastError = null;
+    let responseData = null;
 
-  if (apiKey) {
-    const resourceId = "9ef84268-d588-465a-a308-a864a43d0070";
-    const baseUrl = `https://api.data.gov.in/resource/${resourceId}`;
+    if (apiKey) {
+      const resourceId = "9ef84268-d588-465a-a308-a864a43d0070";
+      const baseUrl = `https://api.data.gov.in/resource/${resourceId}`;
 
-    const url = new URL(baseUrl);
-    url.searchParams.append("api-key", apiKey);
-    url.searchParams.append("format", "json");
-    url.searchParams.append("limit", limit.toString());
-    url.searchParams.append("offset", offset.toString());
+      const url = new URL(baseUrl);
+      url.searchParams.append("api-key", apiKey);
+      url.searchParams.append("format", "json");
+      url.searchParams.append("limit", limit.toString());
+      url.searchParams.append("offset", offset.toString());
 
-    if (queryParams.state) {
-      url.searchParams.append("filters[state]", queryParams.state);
-    }
-    if (queryParams.district) {
-      url.searchParams.append("filters[district]", queryParams.district);
-    }
-    if (queryParams.market) {
-      url.searchParams.append("filters[market]", queryParams.market);
-    }
-    if (queryParams.commodity) {
-      url.searchParams.append("filters[commodity]", queryParams.commodity);
-    }
-    if (queryParams.variety) {
-      url.searchParams.append("filters[variety]", queryParams.variety);
-    }
-    if (queryParams.grade) {
-      url.searchParams.append("filters[grade]", queryParams.grade);
-    }
+      const stateVal = queryParams.state || (queryParams.filters && queryParams.filters.state);
+      const distVal = queryParams.district || (queryParams.filters && queryParams.filters.district);
+      const mktVal = queryParams.market || (queryParams.filters && queryParams.filters.market);
+      const commVal = queryParams.commodity || (queryParams.filters && queryParams.filters.commodity);
+      const varVal = queryParams.variety || (queryParams.filters && queryParams.filters.variety);
+      const grdVal = queryParams.grade || (queryParams.filters && queryParams.filters.grade);
 
-    for (let attempt = 1; attempt <= 2; attempt++) {
-      try {
-        const response = await fetch(url.toString(), {
-          headers: {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-            "Accept": "application/json"
-          },
-          signal: AbortSignal.timeout(5000)
-        });
+      if (stateVal && typeof stateVal === "string") url.searchParams.append("filters[state]", stateVal);
+      if (distVal && typeof distVal === "string") url.searchParams.append("filters[district]", distVal);
+      if (mktVal && typeof mktVal === "string") url.searchParams.append("filters[market]", mktVal);
+      if (commVal && typeof commVal === "string") url.searchParams.append("filters[commodity]", commVal);
+      if (varVal && typeof varVal === "string") url.searchParams.append("filters[variety]", varVal);
+      if (grdVal && typeof grdVal === "string") url.searchParams.append("filters[grade]", grdVal);
 
-        if (response.ok) {
-          const json = await response.json();
-          if (json && Array.isArray(json.records) && json.records.length > 0) {
-            const liveRecords = json.records.map((rec) => ({
-              state: rec.state || "",
-              district: rec.district || "",
-              market: rec.market || "",
-              commodity: rec.commodity || "",
-              variety: rec.variety || "",
-              grade: rec.grade || "",
-              arrival_date: rec.arrival_date || "",
-              min_price: rec.min_price !== undefined ? Number(rec.min_price) : 0,
-              max_price: rec.max_price !== undefined ? Number(rec.max_price) : 0,
-              modal_price: rec.modal_price !== undefined ? Number(rec.modal_price) : 0,
-            }));
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          const response = await fetch(url.toString(), {
+            headers: {
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+              "Accept": "application/json"
+            },
+            signal: AbortSignal.timeout(4000)
+          });
 
-            liveRecords.forEach((lr) => {
-              const idx = dynamicCache.findIndex(
-                (c) => c.state === lr.state && c.market === lr.market && c.commodity === lr.commodity
-              );
-              if (idx >= 0) {
-                dynamicCache[idx] = lr;
-              } else {
-                dynamicCache.unshift(lr);
-              }
-            });
+          if (response.ok) {
+            const json = await response.json();
+            if (json && Array.isArray(json.records) && json.records.length > 0) {
+              const liveRecords = json.records.map((rec) => ({
+                state: rec.state || "",
+                district: rec.district || "",
+                market: rec.market || "",
+                commodity: rec.commodity || "",
+                variety: rec.variety || "",
+                grade: rec.grade || "",
+                arrival_date: rec.arrival_date || "",
+                min_price: rec.min_price !== undefined ? Number(rec.min_price) : 0,
+                max_price: rec.max_price !== undefined ? Number(rec.max_price) : 0,
+                modal_price: rec.modal_price !== undefined ? Number(rec.modal_price) : 0,
+              }));
 
-            responseData = {
-              success: true,
-              count: liveRecords.length,
-              total: json.total || liveRecords.length,
-              limit: limit,
-              offset: offset,
-              data: liveRecords,
-              source: "live_agmarknet"
-            };
-            break;
+              liveRecords.forEach((lr) => {
+                const idx = dynamicCache.findIndex(
+                  (c) => c.state === lr.state && c.market === lr.market && c.commodity === lr.commodity
+                );
+                if (idx >= 0) {
+                  dynamicCache[idx] = lr;
+                } else {
+                  dynamicCache.unshift(lr);
+                }
+              });
+
+              responseData = {
+                success: true,
+                count: liveRecords.length,
+                total: json.total || liveRecords.length,
+                limit: limit,
+                offset: offset,
+                data: liveRecords,
+                source: "live_agmarknet"
+              };
+              break;
+            }
+          } else {
+            lastError = `Data.gov.in API returned HTTP status ${response.status}`;
           }
-        } else {
-          lastError = `Data.gov.in API returned HTTP status ${response.status}`;
+        } catch (err) {
+          lastError = err.message || "Request timed out connecting to data.gov.in";
         }
-      } catch (err) {
-        lastError = err.message || "Request timed out connecting to data.gov.in";
       }
+    } else {
+      lastError = "DATA_GOV_API_KEY is not set in process.env";
     }
-  } else {
-    lastError = "DATA_GOV_API_KEY is not set in process.env";
+
+    if (responseData) {
+      return responseData;
+    }
+
+    // Resilient fallback using authentic Agmarknet records store
+    console.warn(`Data.gov.in upstream fallback active (${lastError}). Serving Agmarknet records store.`);
+
+    const filtered = filterRecords(dynamicCache, queryParams);
+    const paginated = filtered.slice(offset, offset + limit);
+
+    return {
+      success: true,
+      count: paginated.length,
+      total: filtered.length,
+      limit: limit,
+      offset: offset,
+      data: paginated,
+      source: "agmarknet_record_store",
+      warning: "Data served from Agmarknet record store due to data.gov.in upstream latency."
+    };
+  } catch (globalErr) {
+    console.error("fetchMandiPrices exception handled cleanly:", globalErr.message);
+    const limit = queryParams && queryParams.limit ? parseInt(queryParams.limit, 10) : 12;
+    const offset = queryParams && queryParams.offset ? parseInt(queryParams.offset, 10) : 0;
+    const filtered = filterRecords(SEED_AGMARKNET_RECORDS, queryParams);
+    const paginated = filtered.slice(offset, offset + limit);
+
+    return {
+      success: true,
+      count: paginated.length,
+      total: filtered.length,
+      limit: limit,
+      offset: offset,
+      data: paginated,
+      source: "agmarknet_record_store",
+      warning: "Data served from Agmarknet record store due to unexpected error."
+    };
   }
-
-  if (responseData) {
-    return responseData;
-  }
-
-  // Resilient fallback using authentic Agmarknet records store
-  console.warn(`Data.gov.in upstream fallback active (${lastError}). Serving Agmarknet records store.`);
-
-  const filtered = filterRecords(dynamicCache, queryParams);
-  const paginated = filtered.slice(offset, offset + limit);
-
-  return {
-    success: true,
-    count: paginated.length,
-    total: filtered.length,
-    limit: limit,
-    offset: offset,
-    data: paginated,
-    source: "agmarknet_record_store",
-    warning: "Data served from Agmarknet record store due to data.gov.in upstream latency."
-  };
 };
 
 module.exports = {
