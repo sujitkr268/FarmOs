@@ -1,19 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import en from '../i18n/en.json';
 import hi from '../i18n/hi.json';
+import bn from '../i18n/bn.json';
 
 const LanguageContext = createContext();
 
 const dictionaries = {
   en,
-  hi
+  hi,
+  bn
 };
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguageState] = useState(() => {
     try {
       const savedLang = localStorage.getItem('farmos_language');
-      if (savedLang === 'hi' || savedLang === 'en') {
+      if (savedLang === 'hi' || savedLang === 'bn' || savedLang === 'en') {
         return savedLang;
       }
     } catch (e) {
@@ -23,7 +25,7 @@ export const LanguageProvider = ({ children }) => {
   });
 
   const setLanguage = (lang) => {
-    const targetLang = lang === 'hi' ? 'hi' : 'en';
+    const targetLang = (lang === 'hi' || lang === 'bn') ? lang : 'en';
     setLanguageState(targetLang);
     try {
       localStorage.setItem('farmos_language', targetLang);

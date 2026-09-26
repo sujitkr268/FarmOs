@@ -156,13 +156,28 @@ export const Navbar = () => {
                 color: language === 'en' ? '#ffffff' : '#647d70',
                 border: 'none',
                 borderRadius: '16px',
-                padding: '0.25rem 0.75rem',
-                fontSize: '0.8rem',
+                padding: '0.25rem 0.65rem',
+                fontSize: '0.78rem',
                 fontWeight: language === 'en' ? 700 : 500,
                 cursor: 'pointer'
               }}
             >
-              English
+              EN
+            </button>
+            <button
+              onClick={() => setLanguage('bn')}
+              style={{
+                background: language === 'bn' ? '#0b3d2e' : 'transparent',
+                color: language === 'bn' ? '#ffffff' : '#647d70',
+                border: 'none',
+                borderRadius: '16px',
+                padding: '0.25rem 0.65rem',
+                fontSize: '0.78rem',
+                fontWeight: language === 'bn' ? 700 : 500,
+                cursor: 'pointer'
+              }}
+            >
+              বাংলা
             </button>
             <button
               onClick={() => setLanguage('hi')}
@@ -171,8 +186,8 @@ export const Navbar = () => {
                 color: language === 'hi' ? '#ffffff' : '#647d70',
                 border: 'none',
                 borderRadius: '16px',
-                padding: '0.25rem 0.75rem',
-                fontSize: '0.8rem',
+                padding: '0.25rem 0.65rem',
+                fontSize: '0.78rem',
                 fontWeight: language === 'hi' ? 700 : 500,
                 cursor: 'pointer'
               }}
