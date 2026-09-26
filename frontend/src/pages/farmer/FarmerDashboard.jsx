@@ -7,7 +7,7 @@ import { getFarmerOrdersApi, updateOrderStatusApi } from '../../api/orderApi'
 import { compareMarketOpportunities } from '../../api/opportunityApi'
 import { MarketComparison } from '../../components/MarketComparison'
 import { PotentialBuyersCard } from '../../components/PotentialBuyersCard'
-import { WeatherCard } from '../../components/WeatherCard'
+import { MarketAnalyticsSection } from '../../components/analytics/MarketAnalyticsSection'
 import { getWeatherForecast } from '../../api/weatherApi'
 
 // UI Reusable Components
@@ -26,7 +26,7 @@ const FarmerDashboard = () => {
   const { user } = useAuth()
   const { t } = useLanguage()
 
-  const [activeTab, setActiveTab] = useState('overview') // 'overview' | 'harvests' | 'orders' | 'opportunities' | 'buyers' | 'weather'
+  const [activeTab, setActiveTab] = useState('overview') // 'overview' | 'harvests' | 'orders' | 'opportunities' | 'buyers' | 'analytics'
 
   // Harvest states
   const [harvests, setHarvests] = useState([])
@@ -41,40 +41,27 @@ const FarmerDashboard = () => {
 
   // Opportunity state
   const [oppCrop, setOppCrop] = useState('Potato')
-  const [oppQuantity, setOppQuantity] = useState('500')
+  const [oppQuantity, setOppQuantity] = useState('2000')
   const [oppUnit, setOppUnit] = useState('kg')
-  const [oppLocation, setOppLocation] = useState(user?.location || 'Kolkata')
+  const [oppQuality, setOppQuality] = useState('FAQ Grade')
+  const [oppLocation, setOppLocation] = useState(user?.location || 'Kolkata, West Bengal')
   const [oppLoading, setOppLoading] = useState(false)
   const [oppResult, setOppResult] = useState(null)
-
-  // Weather state
-  const [weatherData, setWeatherData] = useState(null)
-  const [weatherLoading, setWeatherLoading] = useState(false)
 
   // Potential Buyers state
   const [potentialBuyers, setPotentialBuyers] = useState([])
   const [buyersLoading, setBuyersLoading] = useState(false)
 
-  // Form states for Add Harvest
+  // Form states for Add Harvest (Crop Registration)
   const [formData, setFormData] = useState({
-    crop_name: '',
-    quantity: '',
+    crop_name: 'Potato',
+    quantity: '2000',
     unit: 'kg',
-    price: '',
-    location: user?.location || '',
-    description: ''
-  })
-
-  // Edit Modal State
-  const [editingHarvest, setEditingHarvest] = useState(null)
-  const [editFormData, setEditFormData] = useState({
-    crop_name: '',
-    quantity: '',
-    unit: 'kg',
-    price: '',
-    location: '',
+    grade: 'FAQ Grade',
+    price: '1850',
+    location: user?.location || 'Hooghly, West Bengal',
     description: '',
-    status: 'available'
+    availability: 'Available Now'
   })
 
   // Fetch harvests for logged-in farmer
@@ -88,6 +75,13 @@ const FarmerDashboard = () => {
         (h) => String(h.farmer_id) === String(user?.id)
       )
       setHarvests(farmerHarvests)
+      if (farmerHarvests.length > 0) {
+        const first = farmerHarvests[0]
+        setOppCrop(first.crop_name || 'Potato')
+        setOppQuantity(String(first.quantity || '2000'))
+        setOppUnit(first.unit || 'kg')
+        setOppQuality(first.grade || 'FAQ Grade')
+      }
     } catch (err) {
       console.error('Fetch Harvests Error:', err)
       setError(err.response?.data?.message || 'Failed to load your harvests.')
@@ -130,19 +124,6 @@ const FarmerDashboard = () => {
     }
   }
 
-  // Fetch Weather Forecast
-  const fetchWeather = async () => {
-    setWeatherLoading(true)
-    try {
-      const res = await getWeatherForecast(22.5726, 88.3639) // Default Kolkata / WB
-      setWeatherData(res)
-    } catch (err) {
-      console.error('Fetch Weather Error:', err)
-    } finally {
-      setWeatherLoading(false)
-    }
-  }
-
   // Fetch Registered Potential Buyers
   const fetchBuyers = async () => {
     setBuyersLoading(true)
@@ -162,7 +143,6 @@ const FarmerDashboard = () => {
       fetchHarvests()
       fetchOrders()
       handleCalculateOpportunity()
-      fetchWeather()
       fetchBuyers()
     }
   }, [user])
@@ -185,6 +165,7 @@ const FarmerDashboard = () => {
         quantity: Number(formData.quantity),
         unit: formData.unit,
         price: Number(formData.price),
+        grade: formData.grade,
         location: formData.location || user?.location || 'Location Not Specified',
         description: formData.description
       })
@@ -194,9 +175,11 @@ const FarmerDashboard = () => {
         crop_name: '',
         quantity: '',
         unit: 'kg',
+        grade: 'FAQ Grade',
         price: '',
         location: user?.location || '',
-        description: ''
+        description: '',
+        availability: 'Available Now'
       })
       fetchHarvests()
     } catch (err) {
@@ -207,94 +190,69 @@ const FarmerDashboard = () => {
     }
   }
 
-  const openEditModal = (harvest) => {
-    setEditingHarvest(harvest)
-    setEditFormData({
-      crop_name: harvest.crop_name || '',
-      quantity: harvest.quantity || '',
-      unit: harvest.unit || 'kg',
-      price: harvest.price || '',
-      location: harvest.location || '',
-      description: harvest.description || '',
-      status: harvest.status || 'available'
-    })
-    setError('')
-    setSuccess('')
+  const bestOpp = oppResult?.best_opportunity || (oppResult?.opportunities && oppResult.opportunities[0]) || {
+    market: 'Hooghly Mandi',
+    modal_price: 1850,
+    estimated_gross_value: 37000,
+    estimated_freight_cost: 2400,
+    estimated_net_return: 34600,
+    estimated_distance: '45 km',
+    travel_time_mins: 72
   }
 
-  const handleEditChange = (e) => {
-    setEditFormData({ ...editFormData, [e.target.name]: e.target.value })
+  const activeHarvest = harvests[0] || {
+    crop_name: oppCrop,
+    quantity: oppQuantity,
+    unit: oppUnit,
+    grade: oppQuality,
+    location: oppLocation
   }
-
-  const handleEditSubmit = async (e) => {
-    e.preventDefault()
-    setSubmitting(true)
-    setError('')
-    setSuccess('')
-
-    try {
-      await API.put(`/harvests/${editingHarvest.id}`, {
-        crop_name: editFormData.crop_name,
-        quantity: Number(editFormData.quantity),
-        unit: editFormData.unit,
-        price: Number(editFormData.price),
-        location: editFormData.location,
-        description: editFormData.description,
-        status: editFormData.status
-      })
-
-      setSuccess(`Harvest "${editFormData.crop_name}" updated successfully!`)
-      setEditingHarvest(null)
-      fetchHarvests()
-    } catch (err) {
-      console.error('Update Harvest Error:', err)
-      setError(err.response?.data?.message || 'Failed to update harvest.')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleDelete = async (id, cropName) => {
-    if (!window.confirm(`Are you sure you want to delete "${cropName}"?`)) return
-    setError('')
-    setSuccess('')
-    try {
-      await API.delete(`/harvests/${id}`)
-      setSuccess(`Harvest "${cropName}" deleted.`)
-      fetchHarvests()
-    } catch (err) {
-      console.error('Delete Harvest Error:', err)
-      setError(err.response?.data?.message || 'Failed to delete harvest.')
-    }
-  }
-
-  const handleUpdateOrderStatus = async (orderId, newStatus) => {
-    try {
-      await updateOrderStatusApi(orderId, newStatus)
-      setSuccess(`Order #${orderId} has been ${newStatus}.`)
-      fetchOrders()
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to update order status.')
-    }
-  }
-
-  // Derived Statistics
-  const totalListings = harvests.length || 12
-  const activeOrdersCount = orders.length || 4
-  const opportunitiesCount = (oppResult?.opportunities?.length) || 8
-  const estimatedReturns = oppResult?.best_opportunity?.net_return
-    ? `₹${Number(oppResult.best_opportunity.net_return).toLocaleString()}`
-    : '₹48,500'
 
   return (
     <div style={{ color: '#0f172a' }}>
-      {/* 1. Large Farmland Hero Banner matching screenshot */}
-      <HeroBanner
-        userName={user?.name}
-        location={user?.location || 'West Bengal, Kolkata'}
-        verificationStatus={user?.verification_status}
-        role={user?.role || 'farmer'}
-      />
+      {/* 1. Farmer Daily Decision Header */}
+      <div style={{
+        backgroundColor: '#ffffff',
+        border: '1px solid #e2e8f0',
+        borderRadius: '20px',
+        padding: '1.75rem 2rem',
+        marginBottom: '1.75rem',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.03)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: '1rem'
+      }}>
+        <div>
+          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', margin: 0, letterSpacing: '-0.02em' }}>
+            {t('farmer.goodMorning', { name: user?.name || 'Farmer' })}
+          </h1>
+          <p style={{ color: '#64748b', fontSize: '0.95rem', margin: '0.3rem 0 0 0', fontWeight: 500 }}>
+            {t('farmer.dailySub')}
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <button
+            onClick={() => setActiveTab('harvests')}
+            style={{
+              padding: '0.65rem 1.2rem',
+              borderRadius: '12px',
+              backgroundColor: '#10b981',
+              color: '#ffffff',
+              fontWeight: 700,
+              fontSize: '0.88rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              boxShadow: '0 4px 12px rgba(16, 185, 129, 0.25)'
+            }}
+          >
+            🌾 Post New Harvest
+          </button>
+        </div>
+      </div>
 
       {/* Global Alerts */}
       {error && (
@@ -308,323 +266,352 @@ const FarmerDashboard = () => {
         </div>
       )}
 
-      {/* 2. 4 Metric Cards Grid matching screenshot */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', marginBottom: '1.75rem' }}>
-        <MetricCard
-          icon="🌾"
-          title={t('farmer.totalListings')}
-          value={totalListings}
-          subtitle={t('farmer.cropsHarvested')}
-          color="emerald"
-          onClick={() => setActiveTab('harvests')}
-        />
-        <MetricCard
-          icon="📋"
-          title={t('buyer.myOrders')}
-          value={activeOrdersCount}
-          subtitle={t('farmer.ordersInProgress')}
-          color="blue"
-          onClick={() => setActiveTab('orders')}
-        />
-        <MetricCard
-          icon="🎯"
-          title={t('opportunity.title')}
-          value={opportunitiesCount}
-          subtitle={t('farmer.availableMarkets')}
-          color="amber"
-          onClick={() => setActiveTab('opportunities')}
-        />
-        <MetricCard
-          icon="₹"
-          title={t('opportunity.estNetReturn')}
-          value={estimatedReturns}
-          subtitle={t('farmer.totalProfit')}
-          color="purple"
-          onClick={() => setActiveTab('opportunities')}
-        />
+      {/* 2. Top Summary Row: HARVEST SUMMARY & CURRENT MARKET PRICE */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginBottom: '1.75rem' }}>
+        {/* HARVEST SUMMARY CARD */}
+        <div style={{
+          backgroundColor: '#ffffff',
+          border: '1px solid #e2e8f0',
+          borderRadius: '18px',
+          padding: '1.25rem 1.5rem',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem' }}>
+            <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              {t('farmer.harvestSummary')}
+            </span>
+            <span style={{ backgroundColor: '#dcfce7', color: '#15803d', fontSize: '0.72rem', fontWeight: 800, padding: '0.2rem 0.6rem', borderRadius: '10px' }}>
+              Active
+            </span>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem', fontSize: '0.9rem' }}>
+            <div>
+              <span style={{ color: '#64748b', fontSize: '0.78rem', display: 'block' }}>🌾 Crop</span>
+              <strong style={{ color: '#0f172a', fontSize: '1.1rem' }}>{activeHarvest.crop_name}</strong>
+            </div>
+            <div>
+              <span style={{ color: '#64748b', fontSize: '0.78rem', display: 'block' }}>📦 Quantity</span>
+              <strong style={{ color: '#0f172a', fontSize: '1.1rem' }}>{Number(activeHarvest.quantity).toLocaleString()} {activeHarvest.unit || 'kg'}</strong>
+            </div>
+            <div>
+              <span style={{ color: '#64748b', fontSize: '0.78rem', display: 'block' }}>🏷 Quality / Grade</span>
+              <strong style={{ color: '#15803d', fontSize: '0.92rem' }}>{activeHarvest.grade || 'FAQ Grade'}</strong>
+            </div>
+            <div>
+              <span style={{ color: '#64748b', fontSize: '0.78rem', display: 'block' }}>📅 Availability</span>
+              <strong style={{ color: '#0f172a', fontSize: '0.92rem' }}>Available Now</strong>
+            </div>
+          </div>
+        </div>
+
+        {/* CURRENT MARKET PRICE CARD */}
+        <div style={{
+          backgroundColor: '#ffffff',
+          border: '1px solid #e2e8f0',
+          borderRadius: '18px',
+          padding: '1.25rem 1.5rem',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem' }}>
+            <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              {t('common.price')} ({activeHarvest.crop_name})
+            </span>
+            <span style={{ backgroundColor: '#eff6ff', color: '#1d4ed8', fontSize: '0.72rem', fontWeight: 800, padding: '0.2rem 0.6rem', borderRadius: '10px' }}>
+              Agmarknet Benchmark
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.6rem' }}>
+            <div>
+              <span style={{ fontSize: '2rem', fontWeight: 800, color: '#10b981' }}>
+                ₹{Number(bestOpp.modal_price || 1850).toLocaleString()}
+              </span>
+              <span style={{ fontSize: '0.82rem', color: '#64748b', marginLeft: '0.3rem' }}>
+                / quintal
+              </span>
+            </div>
+            <span style={{ fontSize: '0.8rem', color: '#15803d', fontWeight: 700, backgroundColor: '#f0fdf4', padding: '0.25rem 0.55rem', borderRadius: '8px' }}>
+              📈 Stable Trend
+            </span>
+          </div>
+
+          <div style={{ fontSize: '0.83rem', color: '#64748b', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #f1f5f9', paddingTop: '0.6rem' }}>
+            <span>📍 Market: <strong style={{ color: '#0f172a' }}>{bestOpp.market || 'Hooghly Mandi'}</strong></span>
+            <span>📅 Updated: <strong style={{ color: '#0f172a' }}>Today</strong></span>
+          </div>
+        </div>
       </div>
 
-      {/* Today's Action & Recommendation Banner */}
+      {/* 3. BEST OPPORTUNITY (MAIN VISUAL FOCUS) */}
       <div style={{
         backgroundColor: '#ffffff',
-        border: '1px solid #10b981',
-        borderRadius: '20px',
-        padding: '1.25rem 1.5rem',
-        marginBottom: '1.75rem',
-        boxShadow: '0 4px 20px rgba(16, 185, 129, 0.08)',
-        background: 'linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%)'
+        border: '2px solid #10b981',
+        borderRadius: '22px',
+        padding: '1.75rem',
+        marginBottom: '2rem',
+        boxShadow: '0 8px 30px rgba(16, 185, 129, 0.1)',
+        position: 'relative'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyBetween: 'space-between', gap: '0.75rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <span style={{ fontSize: '1.3rem' }}>💡</span>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0b3d2e', margin: 0 }}>
-              {t('farmer.todaysRecommendation') || "Today's FarmOS Recommendation"}
-            </h3>
+            <span style={{ fontSize: '1.4rem' }}>⭐</span>
+            <div>
+              <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                {t('opportunity.yourOpportunity')}
+              </h2>
+              <span style={{ fontSize: '0.84rem', color: '#64748b' }}>
+                {t('opportunity.recommendedMarket')}: <strong style={{ color: '#059669' }}>{bestOpp.market || 'Hooghly Mandi'}</strong>
+              </span>
+            </div>
           </div>
-          <span style={{ backgroundColor: '#10b981', color: '#ffffff', fontSize: '0.72rem', fontWeight: 800, padding: '0.25rem 0.65rem', borderRadius: '20px', textTransform: 'uppercase' }}>
-            Live Market Signal
+
+          <span style={{
+            backgroundColor: '#10b981',
+            color: '#ffffff',
+            fontSize: '0.78rem',
+            fontWeight: 800,
+            padding: '0.35rem 0.85rem',
+            borderRadius: '20px',
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em'
+          }}>
+            RECOMMENDED BY FARMOS
           </span>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', fontSize: '0.88rem', color: '#334155' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#ffffff', padding: '0.65rem 0.85rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-            <span>📈</span>
-            <div>
-              <strong style={{ color: '#0f172a', display: 'block' }}>{oppCrop} Prices Increasing</strong>
-              <span style={{ fontSize: '0.78rem', color: '#166534' }}>+4.2% modal rate in regional mandis</span>
-            </div>
+        {/* Financial Numbers Grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+          gap: '1rem',
+          backgroundColor: '#f8fafc',
+          border: '1px solid #e2e8f0',
+          borderRadius: '16px',
+          padding: '1.25rem',
+          marginBottom: '1.5rem'
+        }}>
+          <div>
+            <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 600, display: 'block' }}>{t('opportunity.estGrossValue')}</span>
+            <strong style={{ fontSize: '1.2rem', fontWeight: 800, color: '#334155' }}>
+              ₹{Number(bestOpp.estimated_gross_value || 37000).toLocaleString()}
+            </strong>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#ffffff', padding: '0.65rem 0.85rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-            <span>🤝</span>
-            <div>
-              <strong style={{ color: '#0f172a', display: 'block' }}>Verified Buyer Demand</strong>
-              <span style={{ fontSize: '0.78rem', color: '#64748b' }}>{potentialBuyers.length || 3} active buyers seeking produce</span>
-            </div>
+          <div>
+            <span style={{ fontSize: '0.78rem', color: '#dc2626', fontWeight: 600, display: 'block' }}>Freight Transport Cost</span>
+            <strong style={{ fontSize: '1.2rem', fontWeight: 800, color: '#dc2626' }}>
+              −₹{Number(bestOpp.estimated_freight_cost || 2400).toLocaleString()}
+            </strong>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: '#ffffff', padding: '0.65rem 0.85rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-            <span>🎯</span>
-            <div>
-              <strong style={{ color: '#0f172a', display: 'block' }}>{t('farmer.bestPlaceToSell')}</strong>
-              <span style={{ fontSize: '0.78rem', color: '#059669' }}>{oppResult?.best_opportunity?.market || 'Sheoraphuly APMC'} (High Net Return)</span>
+          <div style={{ backgroundColor: '#ffffff', border: '1px solid #a7f3d0', borderRadius: '12px', padding: '0.65rem 0.9rem' }}>
+            <span style={{ fontSize: '0.75rem', color: '#15803d', fontWeight: 800, display: 'block', textTransform: 'uppercase' }}>{t('opportunity.estNetReturn')}</span>
+            <strong style={{ fontSize: '1.4rem', fontWeight: 800, color: '#059669' }}>
+              ₹{Number(bestOpp.estimated_net_return || 34600).toLocaleString()}
+            </strong>
+          </div>
+
+          <div>
+            <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 600, display: 'block' }}>{t('opportunity.routeDistance')} & {t('opportunity.travelTime')}</span>
+            <strong style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a' }}>
+              🚗 {bestOpp.estimated_distance || '45 km'} (~{Math.round((bestOpp.travel_time_mins || 72) / 60 * 10) / 10} hrs)
+            </strong>
+          </div>
+        </div>
+
+        {/* WHY THIS OPPORTUNITY? Checkmark Rationale */}
+        <div style={{ marginBottom: '1.5rem' }}>
+          <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.75rem' }}>
+            {t('opportunity.whyThisOpp')}
+          </h4>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.6rem', fontSize: '0.86rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#15803d', fontWeight: 600 }}>
+              <span>✓</span> {t('opportunity.reasonGoodPrice')}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#15803d', fontWeight: 600 }}>
+              <span>✓</span> {t('opportunity.reasonLowerTransport')}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#15803d', fontWeight: 600 }}>
+              <span>✓</span> {t('opportunity.reasonQuantityMatch')}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#15803d', fontWeight: 600 }}>
+              <span>✓</span> {t('opportunity.reasonGradeMatch')}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#15803d', fontWeight: 600 }}>
+              <span>✓</span> {t('opportunity.reasonBuyerDemand')}
             </div>
           </div>
         </div>
+
+        {/* Primary Action Button */}
+        <button
+          onClick={() => setActiveTab('analytics')}
+          style={{
+            width: '100%',
+            padding: '0.9rem',
+            backgroundColor: '#10b981',
+            color: '#ffffff',
+            fontWeight: 800,
+            fontSize: '1rem',
+            borderRadius: '14px',
+            border: 'none',
+            boxShadow: '0 4px 16px rgba(16, 185, 129, 0.3)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.6rem'
+          }}
+        >
+          View Opportunity & Market Analytics →
+        </button>
       </div>
 
-      {/* Main 2-Column Dashboard Canvas Structure matching screenshot */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 360px', gap: '1.5rem', marginBottom: '2rem' }} className="farmer-dashboard-split">
-        {/* Left Primary Work Column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {/* 4. ANALYTICS SECTION ("Understand your market") */}
+      <MarketAnalyticsSection
+        opportunityData={oppResult}
+        cropName={oppCrop}
+        quantity={oppQuantity}
+        unit={oppUnit}
+      />
 
-          {/* My Crop Quick Card */}
-          {harvests.length > 0 && (
-            <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '20px', padding: '1.25rem 1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <span style={{ fontSize: '1.2rem' }}>🌾</span>
-                  <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>{t('farmer.myCrops')}</h3>
-                </div>
-                <button onClick={() => setActiveTab('harvests')} style={{ background: 'none', border: 'none', color: '#10b981', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer' }}>
-                  {t('farmer.manageHarvests')} →
-                </button>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.85rem' }}>
-                {harvests.slice(0, 3).map((item, idx) => (
-                  <div key={idx} style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '0.75rem 1rem' }}>
-                    <strong style={{ fontSize: '0.95rem', color: '#0f172a', display: 'block' }}>{item.crop_name}</strong>
-                    <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.25rem' }}>
-                      <span>📦 {item.quantity} {item.unit || 'kg'}</span> • <span style={{ color: '#10b981', fontWeight: 700 }}>₹{item.price}/{item.unit}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Section 1: BEST OPPORTUNITY FOR YOUR HARVEST */}
-          <OpportunityCard
-            data={oppResult || {
-              crop: 'Potato',
-              quantity: '500',
-              unit: 'kg',
-              best_opportunity: {
-                market: 'Birbhum APMC',
-                price: 2400,
-                distance: '198 km',
-                travel_time: '2h 41m',
-                freight: 3958,
-                gross_revenue: 12000,
-                net_return: 8042
-              }
-            }}
-            onViewClick={() => setActiveTab('opportunities')}
-          />
-
-          {/* Section 2: MARKET COMPARISON GRID matching screenshot */}
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '20px', padding: '1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
-              <span style={{ fontSize: '1.2rem' }}>📈</span>
-              <div>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>{t('home.feature2Title')}</h3>
-                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>{t('home.feature2Desc')}</span>
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
-              <MarketCard
-                market={{ market: 'Kolkata APMC', recommendation: 'Good', price: 2100, distance: '120 km', freight: 2800, net_return: 7700 }}
-                isBest={false}
-                onViewDetails={() => setActiveTab('opportunities')}
-              />
-              <MarketCard
-                market={{ market: 'Birbhum APMC', recommendation: 'Best Option', price: 2400, distance: '198 km', freight: 3958, net_return: 8042 }}
-                isBest={true}
-                onViewDetails={() => setActiveTab('opportunities')}
-              />
-              <MarketCard
-                market={{ market: 'Burdwan APMC', recommendation: 'Good', price: 2250, distance: '198 km', freight: 3200, net_return: 8050 }}
-                isBest={false}
-                onViewDetails={() => setActiveTab('opportunities')}
-              />
-            </div>
-          </div>
-
-          {/* Section 5: POTENTIAL BUYERS matching screenshot */}
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '20px', padding: '1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <span style={{ fontSize: '1.2rem' }}>🤝</span>
-                <div>
-                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>{t('opportunity.potentialBuyersTitle')}</h3>
-                  <span style={{ fontSize: '0.8rem', color: '#64748b' }}>{t('opportunity.potentialBuyersSubtitle')}</span>
-                </div>
-              </div>
-              <button onClick={() => setActiveTab('buyers')} style={{ background: 'none', border: 'none', color: '#10b981', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}>
-                {t('common.viewAll')}
-              </button>
-            </div>
-
-            {buyersLoading ? (
-              <LoadingState message={t('common.loading')} />
-            ) : (
-              <PotentialBuyersCard buyers={potentialBuyers} />
-            )}
+      {/* 5. CROP REGISTRATION SECTION */}
+      <div style={{
+        backgroundColor: '#ffffff',
+        border: '1px solid #e2e8f0',
+        borderRadius: '20px',
+        padding: '1.75rem',
+        marginBottom: '2rem',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.03)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
+          <span style={{ fontSize: '1.3rem' }}>🌱</span>
+          <div>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+              Register Harvest Produce
+            </h3>
+            <span style={{ fontSize: '0.84rem', color: '#64748b' }}>
+              Add details to receive market opportunities and buyer matches.
+            </span>
           </div>
         </div>
 
-        {/* Right Sidebar Column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-
-          {/* Section 3: QUICK ACTIONS 2x2 Grid matching screenshot */}
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '20px', padding: '1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
-              <span style={{ fontSize: '1.2rem' }}>⚡</span>
-              <div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>{t('farmer.quickActions')}</h3>
-                <span style={{ fontSize: '0.78rem', color: '#64748b' }}>{t('common.actions')}</span>
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
-              <QuickActionCard
-                icon="🌱"
-                title={t('farmer.postNewHarvest')}
-                description={t('farmer.addHarvestDesc')}
-                color="emerald"
-                onClick={() => setActiveTab('harvests')}
-              />
-              <QuickActionCard
-                icon="📊"
-                title={t('nav.mandiPrices')}
-                description={t('farmer.marketRatesDesc')}
-                color="blue"
-                onClick={() => setActiveTab('opportunities')}
-              />
-              <QuickActionCard
-                icon="🤝"
-                title={t('directory.tabBuyers')}
-                description={t('farmer.connectBuyersDesc')}
-                color="amber"
-                onClick={() => setActiveTab('buyers')}
-              />
-              <QuickActionCard
-                icon="💬"
-                title={t('assistant.askAssistant')}
-                description={t('farmer.getSmartAdvice')}
-                color="purple"
-                onClick={() => window.location.href = '/assistant'}
-              />
-            </div>
+        {/* Crop Input Form */}
+        <form onSubmit={handleAddSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '1.25rem' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#334155', marginBottom: '0.4rem' }}>
+              Commodity / Crop *
+            </label>
+            <select
+              name="crop_name"
+              value={formData.crop_name}
+              onChange={handleInputChange}
+              style={{ width: '100%', padding: '0.65rem', borderRadius: '10px', border: '1px solid #cbd5e1', backgroundColor: '#f8fafc', fontWeight: 600 }}
+              required
+            >
+              <option value="Potato">Potato (आलू / আলু)</option>
+              <option value="Rice">Rice / Paddy (चावल / ধান)</option>
+              <option value="Wheat">Wheat (गेहूं / গম)</option>
+              <option value="Onion">Onion (प्याज / পেঁয়াজ)</option>
+              <option value="Tomato">Tomato (टमाटर / টমেটো)</option>
+              <option value="Mustard">Mustard (सरसों / সরষে)</option>
+            </select>
           </div>
 
-          {/* Section 4: WEATHER WIDGET matching screenshot */}
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '20px', padding: '1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
-              <span style={{ fontSize: '1.2rem' }}>🌤️</span>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>{t('nav.weather')}</h3>
-            </div>
-
-            {weatherLoading ? (
-              <LoadingState message={t('weather.loadingForecast')} />
-            ) : (
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <div>
-                    <span style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0f172a', display: 'block' }}>Kolkata</span>
-                    <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Partly Cloudy</span>
-                  </div>
-                  <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0f172a' }}>
-                    29°C
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.8rem', color: '#475569', backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '12px', marginBottom: '1rem' }}>
-                  <div>💧 {t('weather.humidity')}: <strong>72%</strong></div>
-                  <div>🌬️ {t('weather.windSpeed')}: <strong>12 km/h</strong></div>
-                </div>
-
-                {/* 7-day Mini Forecast Row */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.2rem', textAlign: 'center', fontSize: '0.72rem', color: '#64748b' }}>
-                  <div><div>Today</div><div style={{ fontSize: '1rem', margin: '2px 0' }}>🌤️</div><strong style={{ color: '#0f172a' }}>29°/24°</strong></div>
-                  <div><div>Tue</div><div style={{ fontSize: '1rem', margin: '2px 0' }}>☀️</div><strong style={{ color: '#0f172a' }}>30°/25°</strong></div>
-                  <div><div>Wed</div><div style={{ fontSize: '1rem', margin: '2px 0' }}>🌦️</div><strong style={{ color: '#0f172a' }}>31°/26°</strong></div>
-                  <div><div>Thu</div><div style={{ fontSize: '1rem', margin: '2px 0' }}>☀️</div><strong style={{ color: '#0f172a' }}>32°/26°</strong></div>
-                  <div><div>Fri</div><div style={{ fontSize: '1rem', margin: '2px 0' }}>🌤️</div><strong style={{ color: '#0f172a' }}>31°/25°</strong></div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Section 6: FARM PROFILE CARD matching screenshot */}
-          <FarmProfileCard user={user || { name: 'Sujit Kumar', role: 'farmer', location: 'Kolkata, West Bengal', farm_size: '2.5 acres', crops_grown: 'Potato, Tomato, Brinjal', verification_status: 'verified' }} />
-
-        </div>
-      </div>
-
-      {/* Tabbed Modal Sections for Detail Views */}
-      {activeTab === 'harvests' && (
-        <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '20px', padding: '1.75rem', marginTop: '1.5rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a' }}>{t('farmer.manageHarvests')}</h3>
-            <button onClick={() => setActiveTab('overview')} style={{ padding: '0.4rem 0.85rem', backgroundColor: '#f1f5f9', color: '#475569', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 700 }}>{t('common.closeView')}</button>
-          </div>
-
-          {/* Add Harvest Form */}
-          <form onSubmit={handleAddSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem', backgroundColor: '#f8fafc', padding: '1.25rem', borderRadius: '16px' }}>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>{t('farmer.cropName')}</label>
-              <input type="text" name="crop_name" placeholder="Basmati Rice, Potato" value={formData.crop_name} onChange={handleInputChange} style={{ width: '100%', padding: '0.55rem', borderRadius: '8px', border: '1px solid #cbd5e1' }} required />
-            </div>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>{t('common.quantity')} *</label>
-              <input type="number" name="quantity" placeholder="500" value={formData.quantity} onChange={handleInputChange} style={{ width: '100%', padding: '0.55rem', borderRadius: '8px', border: '1px solid #cbd5e1' }} required />
-            </div>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>{t('farmer.unit')}</label>
-              <select name="unit" value={formData.unit} onChange={handleInputChange} style={{ width: '100%', padding: '0.55rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#334155', marginBottom: '0.4rem' }}>
+              Quantity & Unit *
+            </label>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <input
+                type="number"
+                name="quantity"
+                placeholder="2000"
+                value={formData.quantity}
+                onChange={handleInputChange}
+                style={{ flex: 1, padding: '0.65rem', borderRadius: '10px', border: '1px solid #cbd5e1', backgroundColor: '#f8fafc' }}
+                required
+              />
+              <select
+                name="unit"
+                value={formData.unit}
+                onChange={handleInputChange}
+                style={{ padding: '0.65rem', borderRadius: '10px', border: '1px solid #cbd5e1', backgroundColor: '#f8fafc', fontWeight: 600 }}
+              >
                 <option value="kg">kg</option>
                 <option value="quintal">quintal</option>
                 <option value="ton">ton</option>
               </select>
             </div>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>{t('farmer.pricePerUnit')}</label>
-              <input type="number" name="price" placeholder="35" value={formData.price} onChange={handleInputChange} style={{ width: '100%', padding: '0.55rem', borderRadius: '8px', border: '1px solid #cbd5e1' }} required />
-            </div>
-            <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-              <button type="submit" disabled={submitting} style={{ width: '100%', padding: '0.65rem', backgroundColor: '#10b981', color: '#ffffff', fontWeight: 800, borderRadius: '8px' }}>
-                {submitting ? t('farmer.posting') : t('farmer.postHarvestBtn')}
-              </button>
-            </div>
-          </form>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#334155', marginBottom: '0.4rem' }}>
+              Quality / Grade *
+            </label>
+            <select
+              name="grade"
+              value={formData.grade}
+              onChange={handleInputChange}
+              style={{ width: '100%', padding: '0.65rem', borderRadius: '10px', border: '1px solid #cbd5e1', backgroundColor: '#f8fafc', fontWeight: 600 }}
+            >
+              <option value="FAQ Grade">FAQ Grade (Fair Average Quality)</option>
+              <option value="Super Grade">Super Grade (Premium Market Fit)</option>
+              <option value="Grade A">Grade A (Export / Processing Quality)</option>
+              <option value="Standard Grade">Standard Grade</option>
+            </select>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#334155', marginBottom: '0.4rem' }}>
+              Expected Price (₹ / unit)
+            </label>
+            <input
+              type="number"
+              name="price"
+              placeholder="1850"
+              value={formData.price}
+              onChange={handleInputChange}
+              style={{ width: '100%', padding: '0.65rem', borderRadius: '10px', border: '1px solid #cbd5e1', backgroundColor: '#f8fafc' }}
+            />
+          </div>
+
+          <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end' }}>
+            <button
+              type="submit"
+              disabled={submitting}
+              style={{
+                padding: '0.75rem 1.75rem',
+                backgroundColor: '#10b981',
+                color: '#ffffff',
+                fontWeight: 800,
+                fontSize: '0.92rem',
+                borderRadius: '12px',
+                border: 'none',
+                boxShadow: '0 4px 14px rgba(16, 185, 129, 0.25)',
+                cursor: 'pointer'
+              }}
+            >
+              {submitting ? 'Posting...' : '🌾 Save & Register Produce'}
+            </button>
+          </div>
+        </form>
+
+        {/* "Why quality matters" Explanation Box */}
+        <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '14px', padding: '1rem 1.25rem', fontSize: '0.85rem', color: '#166534', display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+          <span style={{ fontSize: '1.2rem' }}>💡</span>
+          <div>
+            <strong style={{ display: 'block', marginBottom: '0.2rem', color: '#15803d' }}>
+              {t('farmer.whyQualityMatters')}
+            </strong>
+            <span>{t('farmer.qualityExplanation')}</span>
+          </div>
         </div>
-      )}
+      </div>
 
       <style>{`
-        @media (max-width: 960px) {
+        @media (max-width: 768px) {
           .farmer-dashboard-split {
             grid-template-columns: 1fr !important;
           }

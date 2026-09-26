@@ -100,9 +100,23 @@
     "locationMatch": "✓ কাছাকাছি অবস্থান",
     "dateMatch": "✓ সরবরাহের সময় মিলছে"
   },
+  "analytics": {
+    "understandMarket": "আপনার বাজার বিশ্লেষণ করুন",
+    "whereEarnMore": "কোথায় আপনার আয় বেশি হতে পারে?",
+    "priceTrendTitle": "বাজার দর প্রবণতা",
+    "priceTrendSubtitle": "নির্বাচিত ফসলের ঐতিহাসিক দর পরিবর্তন",
+    "priceTrendEmpty": "ঐতিহাসিক মন্ডির তথ্য উপলব্ধ হলে দর প্রবণতা দেখানো হবে।",
+    "netReturnTitle": "মন্ডি অনুযায়ী নিট আয়",
+    "netReturnSubtitle": "পরিবহন খরচ বাদ দেওয়ার পর সম্ভাব্য নিট লাভের তুলনা",
+    "sellingVsTransportTitle": "বিক্রয় মূল্য বনাম পরিবহন খরচ",
+    "sellingVsTransportSubtitle": "মোট আয় ও যাতায়াত খরচের বিশ্লেষণ",
+    "demandVsSupplyTitle": "ক্রেতার চাহিদা বনাম সরবরাহ",
+    "demandVsSupplySubtitle": "কৃষকের সরবরাহ ও আঞ্চলিক ক্রেতার চাহিদার তুলনা",
+    "demandVsSupplyEmpty": "আঞ্চলিক ক্রেতার চাহিদা সক্রিয় হলে বিস্তারিত দেখানো হবে।"
+  },
   "market": {
-    "title": "সরকারি মন্ডি বাজার দর",
-    "subtitle": "ভারত সরকারের Agmarknet ভিত্তিক লাইভ দর",
+    "title": "বাজার বিশ্লেষণ",
+    "subtitle": "বিক্রির আগে দাম, পরিবহন খরচ ও সম্ভাব্য আয়ের তুলনা করুন।",
     "modalPrice": "গড় দর (Modal Price)",
     "minPrice": "সর্বনিম্ন দর",
     "maxPrice": "সর্বোচ্চ দর",
@@ -114,9 +128,16 @@
   },
   "opportunity": {
     "title": "বিক্রির সেরা সুযোগ",
+    "yourOpportunity": "আপনার বিক্রির সুযোগ",
     "subtitle": "দাম, পরিবহন খরচ ও দূরত্বের সমন্বয়ে সেরা বাজার",
     "bestOppHeader": "সেরা বিক্রির বাজার",
     "estNetReturn": "সম্ভাব্য নিট আয়",
+    "whyThisOpp": "কেন এই সুযোগটি সেরা?",
+    "reasonGoodPrice": "উন্নত মন্ডির সরকারি গড় দর",
+    "reasonLowerTransport": "কম পরিবহন ও সাশ্রয়ী খরচ",
+    "reasonQuantityMatch": "ফসলের পরিমাণ চাহিদার উপযোগী",
+    "reasonGradeMatch": "গুণমান ও গ্রেড ক্রেতার পছন্দসই",
+    "reasonBuyerDemand": "যাচাইকৃত ক্রেতার চাহিদা রয়েছে",
     "potentialBuyersTitle": "সম্ভাব্য যাচাইকৃত ক্রেতা",
     "potentialBuyersSubtitle": "আপনার ফসলের সাথে মিলে যাওয়া ক্রেতাসমূহ"
   },
