@@ -105,11 +105,11 @@ export const MarketComparison = ({ data }) => {
             {hasFreight ? t('opportunity.estNetReturn') : t('opportunity.estGrossValue')}
           </span>
           <span style={{ fontSize: '1.35rem', fontWeight: 800, color: hasFreight ? '#34d399' : '#fbbf24' }}>
-            ₹{Number(hasFreight ? rec.computed_net_return : rec.estimated_gross_value).toLocaleString()}
+            ₹{Number(hasFreight ? rec.computed_net_return : rec.estimated_gross_value).toLocaleString()} <span style={{ fontSize: '0.75rem', color: '#8b949e' }}>(Est.)</span>
           </span>
           {hasFreight && (
             <span style={{ display: 'block', fontSize: '0.72rem', color: '#8b949e' }}>
-              Gross: ₹{Number(rec.estimated_gross_value).toLocaleString()}
+              Selling Value: ₹{Number(rec.estimated_gross_value).toLocaleString()} - Transport: ₹{Number(rec.computed_freight).toLocaleString()}
             </span>
           )}
         </div>

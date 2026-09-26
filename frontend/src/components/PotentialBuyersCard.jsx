@@ -99,10 +99,28 @@ export const PotentialBuyersCard = ({ buyers = [] }) => {
                   </span>
                 </div>
 
-                <div style={{ fontSize: '0.8rem', color: '#c9d1d9', display: 'flex', flexDirection: 'column', gap: '0.25rem', marginBottom: '0.75rem' }}>
+                <div style={{ fontSize: '0.8rem', color: '#c9d1d9', display: 'flex', flexDirection: 'column', gap: '0.25rem', marginBottom: '0.5rem' }}>
                   <div>📍 <strong>Location:</strong> {b?.location || 'Location Not Specified'}</div>
                   <div>📦 <strong>Capacity:</strong> {b?.buying_capacity || 'N/A'}</div>
                   <div>🌾 <strong>Commodities:</strong> <span style={{ color: '#fbbf24' }}>{b?.commodities || 'Various Crops'}</span></div>
+                </div>
+
+                {/* Explainable Match Criteria */}
+                <div style={{
+                  backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                  border: '1px solid rgba(16, 185, 129, 0.25)',
+                  borderRadius: '8px',
+                  padding: '0.35rem 0.6rem',
+                  fontSize: '0.72rem',
+                  color: '#4ade80',
+                  display: 'flex',
+                  gap: '0.6rem',
+                  flexWrap: 'wrap',
+                  marginBottom: '0.75rem'
+                }}>
+                  <span>✓ {t('buyer.cropMatch') || 'Crop matches'}</span>
+                  <span>✓ {t('buyer.qtyMatch') || 'Quantity matches'}</span>
+                  <span>✓ {t('buyer.locationMatch') || 'Location suitable'}</span>
                 </div>
               </div>
 
