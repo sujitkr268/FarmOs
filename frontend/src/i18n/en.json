@@ -195,7 +195,9 @@
     "noPricesFound": "No active market price records found.",
     "showingRecords": "Showing {{count}} mandi market records",
     "pricesInQuintal": "Prices in ₹/quintal (100 kg)",
-    "benchmarkRate": "Benchmark Rate"
+    "benchmarkRate": "Benchmark Rate",
+    "fallbackNotice": "Market price source: Agmarknet mandi records",
+    "fallbackNoticeDetail": "Live government price service is temporarily unavailable. Showing latest available mandi record."
   },
   "opportunity": {
     "title": "Market Opportunity Engine",
