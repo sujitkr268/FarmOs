@@ -5,7 +5,7 @@ import { useLanguage } from '../context/LanguageContext'
 
 export const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth()
-  const { language, setLanguage } = useLanguage()
+  const { language, setLanguage, t } = useLanguage()
   const navigate = useNavigate()
   const location = useLocation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -28,12 +28,12 @@ export const Navbar = () => {
   }
 
   const publicNavLinks = [
-    { label: 'Home', path: '/' },
-    { label: 'Market Prices', path: '/market-prices' },
-    { label: 'Opportunities', path: '/marketplace' },
-    { label: 'Traders', path: '/traders' },
-    { label: 'Weather', path: '/weather' },
-    { label: 'Assistant', path: '/assistant' }
+    { label: t('nav.home'), path: '/' },
+    { label: t('nav.mandiPrices'), path: '/market-prices' },
+    { label: t('nav.opportunities'), path: '/opportunities' },
+    { label: t('nav.traderDirectory'), path: '/traders' },
+    { label: t('nav.weather'), path: '/weather' },
+    { label: t('nav.assistant'), path: '/assistant' }
   ]
 
   return (
@@ -97,7 +97,7 @@ export const Navbar = () => {
               </svg>
               <input
                 type="text"
-                placeholder="Search mandi prices, crops, buyers..."
+                placeholder={t('nav.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
@@ -198,7 +198,7 @@ export const Navbar = () => {
                   boxShadow: '0 4px 12px rgba(11, 61, 46, 0.2)'
                 }}
               >
-                Dashboard
+                {t('nav.dashboard')}
               </button>
               <div
                 onClick={() => navigate('/profile')}
@@ -247,7 +247,7 @@ export const Navbar = () => {
                   textDecoration: 'none'
                 }}
               >
-                Login
+                {t('nav.login')}
               </Link>
               <Link
                 to="/register"
@@ -262,7 +262,7 @@ export const Navbar = () => {
                   boxShadow: '0 4px 14px rgba(11, 61, 46, 0.25)'
                 }}
               >
-                Register
+                {t('nav.register')}
               </Link>
             </div>
           )}

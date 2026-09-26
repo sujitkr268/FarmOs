@@ -129,7 +129,7 @@ const ProfilePage = () => {
   if (!user && loading) {
     return (
       <div style={{ textAlign: 'center', padding: '5rem 0', color: '#9ca3af' }}>
-        Loading profile...
+        {t('common.loading')}
       </div>
     )
   }
@@ -199,14 +199,14 @@ const ProfilePage = () => {
                 onClick={() => setShowEditModal(true)}
                 style={{ padding: '0.6rem 1.25rem', backgroundColor: '#10b981', color: '#ffffff', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem', cursor: 'pointer' }}
               >
-                ✏️ Edit Profile
+                ✏️ {t('profile.editProfile')}
               </button>
               {(user?.role === 'farmer' || user?.role === 'buyer') && user?.verification_status !== 'verified' && (
                 <button
                   onClick={() => setShowVerifyModal(true)}
                   style={{ padding: '0.6rem 1.25rem', backgroundColor: '#f59e0b', color: '#0f172a', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem', cursor: 'pointer' }}
                 >
-                  🛡️ Submit Verification
+                  🛡️ {t('profile.submitVerification')}
                 </button>
               )}
             </div>
@@ -214,16 +214,16 @@ const ProfilePage = () => {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', pt: '1rem', borderTop: '1px solid #f1f5f9', fontSize: '0.85rem' }}>
             <div>
-              <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem' }}>Email Address</span>
+              <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem' }}>{t('profile.emailAddr')}</span>
               <span style={{ color: '#0f172a', fontWeight: 600 }}>{user?.email}</span>
             </div>
             <div>
-              <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem' }}>Phone Number</span>
-              <span style={{ color: '#0f172a', fontWeight: 600 }}>{user?.phone || 'Not provided'}</span>
+              <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem' }}>{t('profile.phoneNum')}</span>
+              <span style={{ color: '#0f172a', fontWeight: 600 }}>{user?.phone || t('common.na')}</span>
             </div>
             <div>
-              <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem' }}>Location / State</span>
-              <span style={{ color: '#10b981', fontWeight: 600 }}>📍 {user?.location || 'Not provided'}</span>
+              <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem' }}>{t('profile.locationState')}</span>
+              <span style={{ color: '#10b981', fontWeight: 600 }}>📍 {user?.location || t('common.na')}</span>
             </div>
           </div>
         </div>
@@ -237,9 +237,9 @@ const ProfilePage = () => {
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '18px', padding: '1.5rem', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
               <div>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a' }}>Public Contact Information</h3>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a' }}>{t('profile.publicContact')}</h3>
                 <p style={{ fontSize: '0.82rem', color: '#64748b', marginTop: '0.2rem' }}>
-                  Display phone number and email publicly on trade directory listings.
+                  {t('profile.publicContactSub')}
                 </p>
               </div>
               <label style={{ position: 'relative', display: 'inline-block', width: '48px', height: '26px', flexShrink: 0 }}>
@@ -272,29 +272,29 @@ const ProfilePage = () => {
               </label>
             </div>
             <div style={{ marginTop: '0.75rem', fontSize: '0.78rem', color: '#64748b', fontWeight: 500 }}>
-              State: {user?.show_contact_publicly ? '🟢 Publicly Visible' : '🔒 Hidden from directory search'}
+              State: {user?.show_contact_publicly ? t('profile.publicVisible') : t('profile.hiddenDirectory')}
             </div>
           </div>
 
           {/* Farmer Role Details */}
           {user?.role === 'farmer' && (
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '18px', padding: '1.5rem', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>🌾 Agriculture Details</h3>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>🌾 {t('profile.farmerDetails')}</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', fontSize: '0.85rem' }}>
                 <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Farm Size</span>
-                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{user?.farm_size || 'Not specified'}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>{t('profile.farmSize')}</span>
+                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{user?.farm_size || t('common.na')}</span>
                 </div>
                 <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Crops Grown</span>
-                  <span style={{ fontWeight: 700, color: '#10b981' }}>{user?.crops_grown || 'Not specified'}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>{t('profile.cropsGrown')}</span>
+                  <span style={{ fontWeight: 700, color: '#10b981' }}>{user?.crops_grown || t('common.na')}</span>
                 </div>
                 <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Village / Panchayat</span>
-                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{user?.village || user?.location || 'Not specified'}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>{t('profile.village')}</span>
+                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{user?.village || user?.location || t('common.na')}</span>
                 </div>
                 <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>FPO / Cooperative</span>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>{t('profile.fpoInfo')}</span>
                   <span style={{ fontWeight: 700, color: '#0f172a' }}>{user?.fpo_info || 'Independent Farmer'}</span>
                 </div>
               </div>
@@ -304,15 +304,15 @@ const ProfilePage = () => {
           {/* Buyer Role Details */}
           {user?.role === 'buyer' && (
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '18px', padding: '1.5rem', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>🏢 Business Information</h3>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>🏢 {t('profile.buyerDetails')}</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', fontSize: '0.85rem' }}>
                 <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Firm Name</span>
-                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{user?.business_name || 'Not specified'}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>{t('profile.firmName')}</span>
+                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{user?.business_name || t('common.na')}</span>
                 </div>
                 <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Primary Mandi</span>
-                  <span style={{ fontWeight: 700, color: '#10b981' }}>{user?.mandi || 'Not specified'}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>{t('profile.primaryMandi')}</span>
+                  <span style={{ fontWeight: 700, color: '#10b981' }}>{user?.mandi || t('common.na')}</span>
                 </div>
               </div>
             </div>
@@ -322,19 +322,19 @@ const ProfilePage = () => {
         {/* Right Column: Verification Status Card */}
         <div>
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '18px', padding: '1.5rem', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.85rem' }}>🛡️ Trust Verification</h3>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.85rem' }}>{t('profile.trustVerification')}</h3>
             <div style={{ marginBottom: '1rem' }}>
               <TrustBadge status={user?.verification_status} role={user?.role} size="lg" />
             </div>
-            <p style={{ fontSize: '0.82rem', color: '#9ca3af', lineHeight: 1.5, marginBottom: '1.25rem' }}>
-              Earn the FarmOS Verified badge to build instant trust with farmers and buyers.
+            <p style={{ fontSize: '0.82rem', color: '#64748b', lineHeight: 1.5, marginBottom: '1.25rem' }}>
+              {t('profile.earnBadgeDesc')}
             </p>
             {user?.verification_status !== 'verified' && (
               <button
                 onClick={() => setShowVerifyModal(true)}
-                style={{ width: '100%', padding: '0.65rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 800, borderRadius: '10px', fontSize: '0.85rem', cursor: 'pointer' }}
+                style={{ width: '100%', padding: '0.65rem', backgroundColor: '#10b981', color: '#ffffff', fontWeight: 800, borderRadius: '10px', fontSize: '0.85rem', cursor: 'pointer' }}
               >
-                Submit Verification Docs
+                {t('profile.submitDocsBtn')}
               </button>
             )}
           </div>
@@ -344,20 +344,20 @@ const ProfilePage = () => {
       {/* Edit Profile Modal */}
       {showEditModal && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 100, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '20px', maxWidth: '500px', width: '100%', padding: '1.5rem' }}>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '1rem' }}>Edit Profile</h3>
+          <div style={{ backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '20px', maxWidth: '500px', width: '100%', padding: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>{t('profile.editProfile')}</h3>
             <form onSubmit={handleSaveProfile} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>Full Name</label>
-                <input type="text" name="name" value={formData.name} onChange={handleInputChange} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.55rem', color: '#f3f4f6' }} required />
+                <label style={{ display: 'block', fontSize: '0.78rem', color: '#64748b', marginBottom: '0.3rem' }}>{t('profile.fullName')}</label>
+                <input type="text" name="name" value={formData.name} onChange={handleInputChange} style={{ width: '100%', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0.55rem', color: '#0f172a' }} required />
               </div>
               <div>
-                <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>Phone Number</label>
-                <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.55rem', color: '#f3f4f6' }} required />
+                <label style={{ display: 'block', fontSize: '0.78rem', color: '#64748b', marginBottom: '0.3rem' }}>{t('profile.phoneNum')}</label>
+                <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} style={{ width: '100%', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0.55rem', color: '#0f172a' }} required />
               </div>
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-                <button type="button" onClick={() => setShowEditModal(false)} style={{ padding: '0.55rem 1.1rem', backgroundColor: '#16261d', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#9ca3af', borderRadius: '8px', fontSize: '0.85rem' }}>Cancel</button>
-                <button type="submit" disabled={saving} style={{ padding: '0.55rem 1.25rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '8px', fontSize: '0.85rem' }}>{saving ? 'Saving...' : 'Save Changes'}</button>
+                <button type="button" onClick={() => setShowEditModal(false)} style={{ padding: '0.55rem 1.1rem', backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', color: '#475569', borderRadius: '8px', fontSize: '0.85rem' }}>{t('common.cancel')}</button>
+                <button type="submit" disabled={saving} style={{ padding: '0.55rem 1.25rem', backgroundColor: '#10b981', color: '#ffffff', fontWeight: 700, borderRadius: '8px', fontSize: '0.85rem' }}>{saving ? t('common.loading') : t('common.save')}</button>
               </div>
             </form>
           </div>
@@ -367,17 +367,17 @@ const ProfilePage = () => {
       {/* Verification Modal */}
       {showVerifyModal && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 100, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '20px', maxWidth: '500px', width: '100%', padding: '1.5rem' }}>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '0.5rem' }}>🛡️ Verification Details</h3>
-            <p style={{ fontSize: '0.82rem', color: '#9ca3af', marginBottom: '1rem' }}>Enter government credentials or references for admin review.</p>
+          <div style={{ backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '20px', maxWidth: '500px', width: '100%', padding: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.5rem' }}>{t('profile.trustVerification')}</h3>
+            <p style={{ fontSize: '0.82rem', color: '#64748b', marginBottom: '1rem' }}>Enter government credentials or references for admin review.</p>
             <form onSubmit={handleSaveProfile} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>Govt Reference ID</label>
-                <input type="text" name={user?.role === 'farmer' ? 'farmer_reference' : 'enam_reference'} value={user?.role === 'farmer' ? formData.farmer_reference : formData.enam_reference} onChange={handleInputChange} style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.55rem', color: '#f3f4f6' }} />
+                <label style={{ display: 'block', fontSize: '0.78rem', color: '#64748b', marginBottom: '0.3rem' }}>Govt Reference ID</label>
+                <input type="text" name={user?.role === 'farmer' ? 'farmer_reference' : 'enam_reference'} value={user?.role === 'farmer' ? formData.farmer_reference : formData.enam_reference} onChange={handleInputChange} style={{ width: '100%', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0.55rem', color: '#0f172a' }} />
               </div>
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-                <button type="button" onClick={() => setShowVerifyModal(false)} style={{ padding: '0.55rem 1.1rem', backgroundColor: '#16261d', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#9ca3af', borderRadius: '8px', fontSize: '0.85rem' }}>Cancel</button>
-                <button type="submit" disabled={saving} style={{ padding: '0.55rem 1.25rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '8px', fontSize: '0.85rem' }}>Submit</button>
+                <button type="button" onClick={() => setShowVerifyModal(false)} style={{ padding: '0.55rem 1.1rem', backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', color: '#475569', borderRadius: '8px', fontSize: '0.85rem' }}>{t('common.cancel')}</button>
+                <button type="submit" disabled={saving} style={{ padding: '0.55rem 1.25rem', backgroundColor: '#10b981', color: '#ffffff', fontWeight: 700, borderRadius: '8px', fontSize: '0.85rem' }}>{t('common.submit')}</button>
               </div>
             </form>
           </div>

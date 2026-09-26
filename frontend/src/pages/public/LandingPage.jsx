@@ -32,58 +32,58 @@ export const LandingPage = () => {
 
   const handleDemoSubmit = (e) => {
     e.preventDefault()
-    navigate(`/marketplace?crop=${encodeURIComponent(demoCrop)}&quantity=${encodeURIComponent(demoQty)}&location=${encodeURIComponent(demoLocation)}`)
+    navigate(`/opportunities?crop=${encodeURIComponent(demoCrop)}&quantity=${encodeURIComponent(demoQty)}&location=${encodeURIComponent(demoLocation)}`)
   }
 
   const workflowSteps = [
-    { step: '01', title: '1. Harvest', desc: 'Track details', icon: '🌾' },
-    { step: '02', title: '2. Market Prices', desc: 'Get real-time mandi prices', icon: '📈' },
-    { step: '03', title: '3. Market Comparison', desc: 'Compare markets', icon: '⚖️' },
-    { step: '04', title: '4. Logistics', desc: 'Estimate costs & routes', icon: '🚚' },
-    { step: '05', title: '5. Net Return', desc: 'Calculate final profit', icon: '💰' },
-    { step: '06', title: '6. Best Opportunity', desc: 'Find right market & buyer', icon: '🏆' }
+    { step: '01', title: t('home.step1'), desc: t('home.step1Desc'), icon: '🌾' },
+    { step: '02', title: t('home.step2'), desc: t('home.step2Desc'), icon: '📈' },
+    { step: '03', title: t('home.step3'), desc: t('home.step3Desc'), icon: '⚖️' },
+    { step: '04', title: t('home.step4'), desc: t('home.step4Desc'), icon: '🚚' },
+    { step: '05', title: t('home.step5'), desc: t('home.step5Desc'), icon: '💰' },
+    { step: '06', title: t('home.step6'), desc: t('home.step6Desc'), icon: '🏆' }
   ]
 
   const featureCards = [
     {
       id: 'mandi',
       icon: '📊',
-      title: 'Live Mandi Market Prices',
-      subtitle: 'Real-time data',
+      title: t('home.feature1Title'),
+      subtitle: t('market.title'),
       badge: 'Agmarknet Integration',
-      description: 'Official Government of India Agmarknet feeds. Filter by state, district, market, commodity, and grade with min, max, and modal prices per quintal.'
+      description: t('home.feature1Desc')
     },
     {
       id: 'comparison',
       icon: '⚖️',
-      title: 'Smart Market Comparison',
-      subtitle: 'Comparison analysis',
+      title: t('home.feature2Title'),
+      subtitle: t('opportunity.title'),
       badge: 'Deterministic Ranking',
-      description: 'Ranks regional APMCs simultaneously by estimated gross return, distance, transport cost, and FarmOS Opportunity Score (0–100).'
+      description: t('home.feature2Desc')
     },
     {
       id: 'logistics',
       icon: '🚚',
-      title: 'Smart Freight Logistics',
-      subtitle: 'Distance, vehicle select',
+      title: t('home.feature3Title'),
+      subtitle: t('opportunity.logisticsTitle'),
       badge: 'OpenRouteService API',
-      description: 'Calculates real road driving distances and travel times. Auto-selects vehicle types (Mini Truck, Canter, Multi-Axle) and exact freight cost.'
+      description: t('home.feature3Desc')
     },
     {
       id: 'buyers',
       icon: '🤝',
-      title: 'Potential Buyer Discovery',
-      subtitle: 'Traders & buyers',
+      title: t('home.feature4Title'),
+      subtitle: t('opportunity.potentialBuyersTitle'),
       badge: 'Verified Directory',
-      description: 'Connect with wholesalers, millers, and verified FarmOS registered buyers matching your commodity specs and volume.'
+      description: t('home.feature4Desc')
     },
     {
       id: 'assistant',
       icon: '🤖',
-      title: 'AI Farm Assistant',
-      subtitle: 'Agricultural guidance with Gemini AI',
+      title: t('home.feature5Title'),
+      subtitle: t('assistant.title'),
       badge: 'Powered by Gemini AI',
-      description: 'Conversational assistant explaining market trends, logistics calculations, and weather advisories in simple language.'
+      description: t('home.feature5Desc')
     }
   ]
 
@@ -101,32 +101,32 @@ export const LandingPage = () => {
               variants={staggerContainer}
             >
               <motion.div variants={fadeInUp} className="ag-badge ag-badge-emerald" style={{ marginBottom: '1rem' }}>
-                "Smart Agriculture • Better Markets • Higher Returns"
+                "{t('home.heroBadge')}"
               </motion.div>
 
               <motion.h1 variants={fadeInUp} className="ag-heading-xl ag-hero-headline">
-                Connecting Every Harvest <br />
-                <span style={{ color: '#0b3d2e' }}>to Its Best Opportunity</span>
+                {t('home.heroTitleLine1')} <br />
+                <span style={{ color: '#0b3d2e' }}>{t('home.heroTitleLine2')}</span>
               </motion.h1>
 
               <motion.p variants={fadeInUp} className="ag-body-lg ag-hero-subtext">
-                FarmOS helps farmers discover better market opportunities by combining real mandi prices, logistics costs, weather intelligence and buyer discovery.
+                {t('home.heroDesc')}
               </motion.p>
 
               <motion.div variants={fadeInUp} className="ag-hero-actions">
-                <Link to="/marketplace" className="ag-btn-primary">
-                  <span>Explore Opportunities</span>
+                <Link to="/opportunities" className="ag-btn-primary">
+                  <span>{t('home.exploreMarketplace')}</span>
                   <span>➔</span>
                 </Link>
                 <Link to="/market-prices" className="ag-btn-secondary">
-                  <span>View Market Prices</span>
+                  <span>{t('home.getStartedFree')}</span>
                 </Link>
               </motion.div>
 
               <motion.div variants={fadeInUp} className="ag-hero-trust-bar">
-                <span>☑ Real Market Data</span>
-                <span>☑ Smart Logistics</span>
-                <span>☑ AI Powered Assistant</span>
+                <span>{t('home.trustData')}</span>
+                <span>{t('home.trustLogistics')}</span>
+                <span>{t('home.trustAI')}</span>
               </motion.div>
             </motion.div>
 
@@ -145,26 +145,26 @@ export const LandingPage = () => {
                     <strong style={{ fontSize: '0.95rem', color: '#0b3d2e' }}>FarmOS</strong>
                   </div>
                   <div style={{ fontSize: '1rem', fontWeight: 800, color: '#10231b' }}>
-                    Good morning, Ramesh! 👋
+                    {t('home.goodMorning', { name: 'Ramesh' })}
                   </div>
                 </div>
 
                 {/* Summary Stats Row */}
                 <div className="ag-mock-stats-row">
                   <div className="ag-mock-stat-pill">
-                    <span style={{ fontSize: '0.7rem', color: '#647d70', display: 'block' }}>Total Harvests</span>
+                    <span style={{ fontSize: '0.7rem', color: '#647d70', display: 'block' }}>{t('home.totalHarvests')}</span>
                     <strong style={{ fontSize: '1.05rem', color: '#10231b' }}>4</strong>
                   </div>
                   <div className="ag-mock-stat-pill">
-                    <span style={{ fontSize: '0.7rem', color: '#647d70', display: 'block' }}>Active Orders</span>
+                    <span style={{ fontSize: '0.7rem', color: '#647d70', display: 'block' }}>{t('home.activeOrders')}</span>
                     <strong style={{ fontSize: '1.05rem', color: '#10231b' }}>2</strong>
                   </div>
                   <div className="ag-mock-stat-pill">
-                    <span style={{ fontSize: '0.7rem', color: '#647d70', display: 'block' }}>Selling Opps</span>
+                    <span style={{ fontSize: '0.7rem', color: '#647d70', display: 'block' }}>{t('home.sellingOpps')}</span>
                     <strong style={{ fontSize: '1.05rem', color: '#10231b' }}>3</strong>
                   </div>
                   <div className="ag-mock-stat-pill" style={{ backgroundColor: '#dcfce7', borderColor: '#a7f3d0' }}>
-                    <span style={{ fontSize: '0.68rem', color: '#166534', display: 'block' }}>Est. Net Return</span>
+                    <span style={{ fontSize: '0.68rem', color: '#166534', display: 'block' }}>{t('home.estNetReturn')}</span>
                     <strong style={{ fontSize: '1rem', color: '#0b3d2e' }}>₹24,680</strong>
                   </div>
                 </div>
@@ -172,7 +172,7 @@ export const LandingPage = () => {
                 {/* Best Market Opportunity Highlight Card */}
                 <div className="ag-mock-opp-card">
                   <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#166534', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.4rem' }}>
-                    •••••••• BEST MARKET OPPORTUNITY ••••••••
+                    •••••••• {t('home.bestOppHeader')} ••••••••
                   </div>
                   <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#0b3d2e', margin: '0 0 0.2rem 0' }}>
                     Birbhum APMC
@@ -180,21 +180,21 @@ export const LandingPage = () => {
                   <div style={{ fontSize: '0.82rem', color: '#647d70', marginBottom: '0.75rem' }}>Potato</div>
 
                   <div style={{ fontSize: '1.45rem', fontWeight: 800, color: '#10231b', marginBottom: '0.85rem' }}>
-                    ₹2,400 <span style={{ fontSize: '0.85rem', color: '#647d70', fontWeight: 500 }}>/ quintal</span>
+                    ₹2,400 <span style={{ fontSize: '0.85rem', color: '#647d70', fontWeight: 500 }}>{t('home.perQuintal')}</span>
                   </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem', backgroundColor: '#f4f8f5', padding: '0.65rem', borderRadius: '12px', fontSize: '0.78rem' }}>
                     <div>
                       <strong style={{ display: 'block', color: '#166534', fontSize: '0.95rem' }}>₹8,042</strong>
-                      <span style={{ color: '#647d70', fontSize: '0.7rem' }}>Est. Net Return</span>
+                      <span style={{ color: '#647d70', fontSize: '0.7rem' }}>{t('home.estNetReturn')}</span>
                     </div>
                     <div>
                       <strong style={{ display: 'block', color: '#0b3d2e', fontSize: '0.95rem' }}>94/100</strong>
-                      <span style={{ color: '#647d70', fontSize: '0.7rem' }}>Opp Score</span>
+                      <span style={{ color: '#647d70', fontSize: '0.7rem' }}>{t('home.colScore')}</span>
                     </div>
                     <div>
                       <strong style={{ display: 'block', color: '#10231b', fontSize: '0.95rem' }}>198 km</strong>
-                      <span style={{ color: '#647d70', fontSize: '0.7rem' }}>Distance</span>
+                      <span style={{ color: '#647d70', fontSize: '0.7rem' }}>{t('home.distance')}</span>
                     </div>
                   </div>
                 </div>
@@ -221,26 +221,26 @@ export const LandingPage = () => {
         <div className="ag-container">
           <div className="ag-decision-container">
             <h2 className="ag-heading-lg" style={{ marginBottom: '0.5rem' }}>
-              One Decision. Multiple Factors.
+              {t('home.oneDecisionTitle')}
             </h2>
             <p className="ag-body-md" style={{ maxWidth: '680px', margin: '0 auto 1.5rem auto' }}>
-              FarmOS combines multiple real-world factors to help farmers evaluate where their harvest may create the best opportunity.
+              {t('home.oneDecisionDesc')}
             </p>
 
             <div className="ag-decision-flow-flex">
-              <div className="ag-decision-item">🏷️ Market Price</div>
+              <div className="ag-decision-item">{t('home.decPrice')}</div>
               <span className="ag-decision-operator">+</span>
-              <div className="ag-decision-item">📍 Distance</div>
+              <div className="ag-decision-item">{t('home.decDistance')}</div>
               <span className="ag-decision-operator">+</span>
-              <div className="ag-decision-item">🚚 Freight Cost</div>
+              <div className="ag-decision-item">{t('home.decFreight')}</div>
               <span className="ag-decision-operator">+</span>
-              <div className="ag-decision-item">🌤️ Weather</div>
+              <div className="ag-decision-item">{t('home.decWeather')}</div>
               <span className="ag-decision-operator">+</span>
-              <div className="ag-decision-item">🤝 Buyer Availability</div>
+              <div className="ag-decision-item">{t('home.decBuyer')}</div>
               <span className="ag-decision-operator">↓</span>
-              <div className="ag-decision-item highlight-net">💰 NET RETURN</div>
+              <div className="ag-decision-item highlight-net">{t('home.decNet')}</div>
               <span className="ag-decision-operator">↓</span>
-              <div className="ag-decision-item highlight-best">🏆 BEST OPPORTUNITY</div>
+              <div className="ag-decision-item highlight-best">{t('home.decBest')}</div>
             </div>
           </div>
         </div>
@@ -250,9 +250,9 @@ export const LandingPage = () => {
       <section className="ag-workflow-section">
         <div className="ag-container">
           <div className="ag-workflow-header">
-            <h2 className="ag-heading-lg">From Harvest to Opportunity</h2>
+            <h2 className="ag-heading-lg">{t('home.workflowTitle')}</h2>
             <p className="ag-body-md" style={{ marginTop: '0.5rem' }}>
-              A complete ecosystem to help farmers make better selling decisions.
+              {t('home.workflowSub')}
             </p>
           </div>
 
@@ -272,12 +272,12 @@ export const LandingPage = () => {
       <section className="ag-engine-centerpiece-section">
         <div className="ag-container">
           <div style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto' }}>
-            <span className="ag-badge ag-badge-emerald">Core Decision Engine</span>
+            <span className="ag-badge ag-badge-emerald">{t('home.coreEngineTitle')}</span>
             <h2 className="ag-heading-lg" style={{ marginTop: '0.5rem' }}>
-              Find Where Your Harvest Can Earn More.
+              {t('home.coreEngineSub')}
             </h2>
             <p className="ag-body-lg" style={{ marginTop: '0.5rem' }}>
-              Compare market prices, logistics costs and estimated net returns in one place.
+              {t('home.oneDecisionDesc')}
             </p>
           </div>
 
@@ -285,11 +285,11 @@ export const LandingPage = () => {
             {/* Input Form Card */}
             <div className="ag-engine-input-card">
               <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0b3d2e', marginBottom: '1.25rem' }}>
-                Calculate Opportunities
+                {t('home.calculateOpps')}
               </h3>
               <form onSubmit={handleDemoSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '0.35rem' }}>Commodity</label>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '0.35rem' }}>{t('common.commodity')}</label>
                   <select value={demoCrop} onChange={(e) => setDemoCrop(e.target.value)} style={{ width: '100%', padding: '0.65rem', borderRadius: '10px', border: '1px solid #d6e4db', backgroundColor: '#f7faf8' }}>
                     <option value="Potato">Potato</option>
                     <option value="Onion">Onion</option>
@@ -299,17 +299,17 @@ export const LandingPage = () => {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '0.35rem' }}>Quantity (kg)</label>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '0.35rem' }}>{t('common.quantity')} (kg)</label>
                   <input type="number" value={demoQty} onChange={(e) => setDemoQty(e.target.value)} style={{ width: '100%', padding: '0.65rem', borderRadius: '10px', border: '1px solid #d6e4db', backgroundColor: '#f7faf8' }} />
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '0.35rem' }}>Your Location</label>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '0.35rem' }}>{t('home.yourLocation')}</label>
                   <input type="text" value={demoLocation} onChange={(e) => setDemoLocation(e.target.value)} style={{ width: '100%', padding: '0.65rem', borderRadius: '10px', border: '1px solid #d6e4db', backgroundColor: '#f7faf8' }} />
                 </div>
 
                 <button type="submit" className="ag-btn-primary" style={{ width: '100%', marginTop: '0.5rem' }}>
-                  Find Opportunities
+                  {t('home.findOppsBtn')}
                 </button>
               </form>
             </div>
@@ -318,29 +318,29 @@ export const LandingPage = () => {
             <div className="ag-engine-table-card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                 <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0b3d2e', margin: 0 }}>
-                  Multimarket Comparison Result
+                  {t('home.demoResultTitle')}
                 </h3>
-                <span style={{ fontSize: '0.78rem', color: '#647d70', fontStyle: 'italic' }}>Demonstration Comparison</span>
+                <span style={{ fontSize: '0.78rem', color: '#647d70', fontStyle: 'italic' }}>{t('home.demoResultSub')}</span>
               </div>
 
               <div className="table-responsive">
                 <table className="ag-table">
                   <thead>
                     <tr>
-                      <th>Market</th>
-                      <th>Modal Price</th>
-                      <th>Distance</th>
-                      <th>Freight</th>
-                      <th>Gross Value</th>
-                      <th>Net Return</th>
-                      <th>Score</th>
+                      <th>{t('home.colMarket')}</th>
+                      <th>{t('home.colModalPrice')}</th>
+                      <th>{t('home.colDistance')}</th>
+                      <th>{t('home.colFreight')}</th>
+                      <th>{t('home.colGrossValue')}</th>
+                      <th>{t('home.colNetReturn')}</th>
+                      <th>{t('home.colScore')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr className="best-row">
                       <td>
                         <strong style={{ color: '#0b3d2e', display: 'block' }}>1. Birbhum APMC</strong>
-                        <span className="ag-badge ag-badge-emerald" style={{ fontSize: '0.68rem', padding: '0.15rem 0.45rem' }}>Best Opportunity</span>
+                        <span className="ag-badge ag-badge-emerald" style={{ fontSize: '0.68rem', padding: '0.15rem 0.45rem' }}>{t('home.bestOppBadge')}</span>
                       </td>
                       <td>₹2,400</td>
                       <td>198 km</td>
@@ -379,7 +379,7 @@ export const LandingPage = () => {
       <section className="ag-features-section">
         <div className="ag-container">
           <div style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto' }}>
-            <h2 className="ag-heading-lg">Everything Farmers Need to Make Better Decisions</h2>
+            <h2 className="ag-heading-lg">{t('home.featuresHeadline')}</h2>
           </div>
 
           <div className="ag-features-5grid">
@@ -408,27 +408,27 @@ export const LandingPage = () => {
         <div className="ag-container">
           <div style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 3rem auto' }}>
             <span className="ag-badge ag-badge-light">Cross-Platform Responsive</span>
-            <h2 className="ag-heading-lg" style={{ marginTop: '0.5rem' }}>FarmOS Anywhere</h2>
+            <h2 className="ag-heading-lg" style={{ marginTop: '0.5rem' }}>{t('home.farmosAnywhereTitle')}</h2>
             <p className="ag-body-lg" style={{ marginTop: '0.5rem' }}>
-              Access your farm, markets and opportunities from any device.
+              {t('home.farmosAnywhereSub')}
             </p>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '4rem' }}>
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '20px', padding: '1.5rem', textAlign: 'center' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>💻</div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0b3d2e' }}>Desktop Experience</h3>
-              <p style={{ fontSize: '0.85rem', color: '#647d70', marginTop: '0.35rem' }}>Full analytical dashboard with multi-market side-by-side table comparisons.</p>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0b3d2e' }}>{t('home.desktopExpTitle')}</h3>
+              <p style={{ fontSize: '0.85rem', color: '#647d70', marginTop: '0.35rem' }}>{t('home.desktopExpDesc')}</p>
             </div>
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '20px', padding: '1.5rem', textAlign: 'center' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>📱</div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0b3d2e' }}>Mobile & Field Ready</h3>
-              <p style={{ fontSize: '0.85rem', color: '#647d70', marginTop: '0.35rem' }}>Touch-optimized cards for fast mandi price checks right from the farm field.</p>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0b3d2e' }}>{t('home.mobileReadyTitle')}</h3>
+              <p style={{ fontSize: '0.85rem', color: '#647d70', marginTop: '0.35rem' }}>{t('home.mobileReadyDesc')}</p>
             </div>
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '20px', padding: '1.5rem', textAlign: 'center' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🤖</div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0b3d2e' }}>AI Assistant Interface</h3>
-              <p style={{ fontSize: '0.85rem', color: '#647d70', marginTop: '0.35rem' }}>Ask Gemini AI about market trends, transport costs, and weather forecasts anytime.</p>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0b3d2e' }}>{t('home.aiInterfaceTitle')}</h3>
+              <p style={{ fontSize: '0.85rem', color: '#647d70', marginTop: '0.35rem' }}>{t('home.aiInterfaceDesc')}</p>
             </div>
           </div>
         </div>
@@ -437,13 +437,13 @@ export const LandingPage = () => {
         <div className="ag-footer-banner">
           <div className="ag-container">
             <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', fontWeight: 800, color: '#ffffff', marginBottom: '0.75rem', letterSpacing: '-0.025em' }}>
-              "Smarter Decisions. Better Harvests."
+              "{t('home.tagline')}"
             </h2>
             <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#34d399' }}>
               🌿 FarmOS
             </div>
             <p style={{ fontSize: '1rem', color: '#cde0d5', marginTop: '0.5rem' }}>
-              "Connecting Every Harvest to Its Best Opportunity"
+              "{t('home.taglineSub')}"
             </p>
           </div>
         </div>

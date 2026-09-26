@@ -20,10 +20,10 @@ const SettingsPage = () => {
       const res = await updateProfileApi({ show_contact_publicly: updatedConsent })
       if (res && res.user) {
         updateUser(res.user)
-        setConsentMsg('Privacy preference updated successfully.')
+        setConsentMsg(t('common.success'))
       }
     } catch (err) {
-      setConsentMsg('Failed to update privacy preference.')
+      setConsentMsg(t('common.error'))
     } finally {
       setSavingConsent(false)
     }
@@ -38,16 +38,16 @@ const SettingsPage = () => {
     <div className="max-w-3xl mx-auto px-4 py-8">
       {/* Page Title */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">{t('settings.title', 'Settings & Preferences')}</h1>
-        <p className="text-gray-600 mt-1">{t('settings.subtitle', 'Manage language preferences, privacy settings, and account options.')}</p>
+        <h1 className="text-3xl font-bold text-gray-900">{t('settings.title')}</h1>
+        <p className="text-gray-600 mt-1">{t('settings.subtitle')}</p>
       </div>
 
       <div className="space-y-6">
         
         {/* Language Card */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-          <h2 className="text-lg font-bold text-gray-900 mb-2">🌐 Language / भाषा</h2>
-          <p className="text-sm text-gray-600 mb-4">Choose your preferred application display language.</p>
+          <h2 className="text-lg font-bold text-gray-900 mb-2">🌐 {t('settings.language')}</h2>
+          <p className="text-sm text-gray-600 mb-4">{t('settings.subtitle')}</p>
           
           <div className="grid grid-cols-2 gap-4">
             <button
@@ -60,7 +60,7 @@ const SettingsPage = () => {
             >
               <div>
                 <span className="block text-base">English</span>
-                <span className="text-xs font-normal text-gray-500">Default Language</span>
+                <span className="text-xs font-normal text-gray-500">English Language</span>
               </div>
               {language === 'en' && <span className="text-emerald-600 font-bold">✓</span>}
             </button>
@@ -84,16 +84,16 @@ const SettingsPage = () => {
 
         {/* Privacy & Contact Consent Card */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-          <h2 className="text-lg font-bold text-gray-900 mb-2">🔒 Privacy & Public Contact Consent</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-2">🔒 {t('settings.privacy')}</h2>
           <p className="text-sm text-gray-600 mb-4">
-            By default, your phone number and email are kept private. Enable this option if you want potential buyers or farmers to contact you directly via the directory.
+            {t('settings.privacySub')}
           </p>
 
           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
             <div>
-              <span className="font-semibold text-gray-900 text-sm block">Show Phone & Email Publicly</span>
+              <span className="font-semibold text-gray-900 text-sm block">{t('settings.showContactLabel')}</span>
               <span className="text-xs text-gray-500">
-                {user?.show_contact_publicly ? 'Enabled - Public users can view your contact details' : 'Disabled - Contact details hidden'}
+                {user?.show_contact_publicly ? t('settings.enabledContact') : t('settings.disabledContact')}
               </span>
             </div>
             <label className="relative inline-flex items-center cursor-pointer shrink-0">
@@ -112,14 +112,14 @@ const SettingsPage = () => {
 
         {/* Account Details & Logout Card */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-          <h2 className="text-lg font-bold text-gray-900 mb-2">👤 Account Overview</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-2">{t('settings.accountOverview')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mb-6">
             <div className="p-3 bg-gray-50 rounded-xl">
-              <span className="text-xs text-gray-500 block">Logged in as</span>
+              <span className="text-xs text-gray-500 block">{t('settings.loggedInAs')}</span>
               <span className="font-semibold text-gray-900">{user?.name}</span>
             </div>
             <div className="p-3 bg-gray-50 rounded-xl">
-              <span className="text-xs text-gray-500 block">Role</span>
+              <span className="text-xs text-gray-500 block">{t('settings.role')}</span>
               <span className="font-semibold text-gray-900 capitalize">{user?.role}</span>
             </div>
           </div>
@@ -129,7 +129,7 @@ const SettingsPage = () => {
               onClick={handleLogout}
               className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl text-sm transition-colors shadow-xs"
             >
-              Sign Out of FarmOS
+              {t('settings.signOut')}
             </button>
           </div>
         </div>

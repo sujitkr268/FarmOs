@@ -162,33 +162,33 @@ export const MarketComparison = ({ data }) => {
             fontSize: '0.8rem'
           }}>
             <div style={{ backgroundColor: 'rgba(15, 23, 42, 0.6)', padding: '0.5rem 0.75rem', borderRadius: '8px' }}>
-              <span style={{ color: '#94a3b8', fontSize: '0.72rem', display: 'block' }}>Route Distance</span>
+              <span style={{ color: '#94a3b8', fontSize: '0.72rem', display: 'block' }}>{t('opportunity.routeDistance')}</span>
               <strong style={{ color: '#f1f5f9', fontSize: '0.9rem' }}>{rec.estimated_distance}</strong>
             </div>
 
             <div style={{ backgroundColor: 'rgba(15, 23, 42, 0.6)', padding: '0.5rem 0.75rem', borderRadius: '8px' }}>
-              <span style={{ color: '#94a3b8', fontSize: '0.72rem', display: 'block' }}>Travel Time</span>
+              <span style={{ color: '#94a3b8', fontSize: '0.72rem', display: 'block' }}>{t('opportunity.travelTime')}</span>
               <strong style={{ color: '#f1f5f9', fontSize: '0.9rem' }}>
                 {rec.travel_time_mins ? `~${rec.travel_time_mins} mins` : 'N/A'}
               </strong>
             </div>
 
             <div style={{ backgroundColor: 'rgba(15, 23, 42, 0.6)', padding: '0.5rem 0.75rem', borderRadius: '8px' }}>
-              <span style={{ color: '#94a3b8', fontSize: '0.72rem', display: 'block' }}>Vehicles Needed</span>
+              <span style={{ color: '#94a3b8', fontSize: '0.72rem', display: 'block' }}>{t('opportunity.vehiclesNeeded')}</span>
               <strong style={{ color: '#f1f5f9', fontSize: '0.9rem' }}>
                 {vehiclesRequired} x {vehicleConfig.name.split(' ')[0]}
               </strong>
             </div>
 
             <div style={{ backgroundColor: 'rgba(15, 23, 42, 0.6)', padding: '0.5rem 0.75rem', borderRadius: '8px' }}>
-              <span style={{ color: '#94a3b8', fontSize: '0.72rem', display: 'block' }}>Est. Freight Cost</span>
+              <span style={{ color: '#94a3b8', fontSize: '0.72rem', display: 'block' }}>{t('opportunity.estFreightCost')}</span>
               <strong style={{ color: '#ef4444', fontSize: '0.9rem' }}>
                 ₹{rec.computed_freight !== null ? rec.computed_freight.toLocaleString() : 'N/A'}
               </strong>
             </div>
 
             <div style={{ backgroundColor: 'rgba(15, 23, 42, 0.6)', padding: '0.5rem 0.75rem', borderRadius: '8px' }}>
-              <span style={{ color: '#94a3b8', fontSize: '0.72rem', display: 'block' }}>Est. Net Return</span>
+              <span style={{ color: '#94a3b8', fontSize: '0.72rem', display: 'block' }}>{t('opportunity.estNetReturn')}</span>
               <strong style={{ color: '#10b981', fontSize: '0.95rem' }}>
                 ₹{rec.computed_net_return !== null ? rec.computed_net_return.toLocaleString() : 'N/A'}
               </strong>
@@ -207,7 +207,7 @@ export const MarketComparison = ({ data }) => {
           fontSize: '0.85rem'
         }}>
           <strong style={{ color: 'var(--text-primary, #f0f6fc)', display: 'block', marginBottom: '0.3rem' }}>
-            Why FarmOS Recommends This Market:
+            {t('opportunity.whyRecommend')}
           </strong>
           {rec.why.map((bullet, i) => (
             <div key={i} style={{ color: '#c9d1d9', marginBottom: '0.2rem', display: 'flex', gap: '0.4rem' }}>
@@ -228,13 +228,13 @@ export const MarketComparison = ({ data }) => {
         }}>
           <thead>
             <tr style={{ backgroundColor: 'rgba(255, 255, 255, 0.04)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-              <th style={{ padding: '0.6rem 0.75rem', color: '#8b949e' }}>Mandi Market</th>
-              <th style={{ padding: '0.6rem 0.75rem', color: '#8b949e' }}>Modal Price</th>
-              <th style={{ padding: '0.6rem 0.75rem', color: '#8b949e' }}>Est. Gross</th>
-              <th style={{ padding: '0.6rem 0.75rem', color: '#8b949e' }}>Distance</th>
-              <th style={{ padding: '0.6rem 0.75rem', color: '#8b949e' }}>Est. Freight</th>
-              <th style={{ padding: '0.6rem 0.75rem', color: '#8b949e' }}>Est. Net Return</th>
-              <th style={{ padding: '0.6rem 0.75rem', color: '#8b949e' }}>FarmOS Score</th>
+              <th style={{ padding: '0.6rem 0.75rem', color: '#8b949e' }}>{t('opportunity.mandiMarket')}</th>
+              <th style={{ padding: '0.6rem 0.75rem', color: '#8b949e' }}>{t('market.modalPrice')}</th>
+              <th style={{ padding: '0.6rem 0.75rem', color: '#8b949e' }}>{t('opportunity.estGrossValue')}</th>
+              <th style={{ padding: '0.6rem 0.75rem', color: '#8b949e' }}>{t('home.distance')}</th>
+              <th style={{ padding: '0.6rem 0.75rem', color: '#8b949e' }}>{t('opportunity.estFreightCost')}</th>
+              <th style={{ padding: '0.6rem 0.75rem', color: '#8b949e' }}>{t('opportunity.estNetReturn')}</th>
+              <th style={{ padding: '0.6rem 0.75rem', color: '#8b949e' }}>{t('opportunity.opportunityScore')}</th>
             </tr>
           </thead>
           <tbody>
@@ -259,7 +259,7 @@ export const MarketComparison = ({ data }) => {
                     {item.estimated_distance}
                   </td>
                   <td style={{ padding: '0.6rem 0.75rem', color: item.computed_freight ? '#f87171' : '#8b949e' }}>
-                    {item.computed_freight !== null ? `₹${item.computed_freight.toLocaleString()}` : 'Not available'}
+                    {item.computed_freight !== null ? `₹${item.computed_freight.toLocaleString()}` : t('common.na')}
                   </td>
                   <td style={{ padding: '0.6rem 0.75rem', color: '#34d399', fontWeight: 700 }}>
                     ₹{Number(item.computed_net_return).toLocaleString()}
@@ -298,7 +298,7 @@ export const MarketComparison = ({ data }) => {
             textDecoration: 'underline'
           }}
         >
-          {showDetails ? '▲ Show Top 5 Only' : `▼ View All ${comparisonList.length} Mandi Markets`}
+          {showDetails ? t('opportunity.showTop5') : t('opportunity.viewAll', { count: comparisonList.length })}
         </button>
       )}
 

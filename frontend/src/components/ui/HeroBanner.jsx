@@ -1,7 +1,10 @@
 import React from 'react'
 import TrustBadge from '../TrustBadge'
+import { useLanguage } from '../../context/LanguageContext'
 
 export const HeroBanner = ({ userName, location, verificationStatus, role = 'farmer' }) => {
+  const { t } = useLanguage()
+
   return (
     <div style={{
       position: 'relative',
@@ -19,10 +22,10 @@ export const HeroBanner = ({ userName, location, verificationStatus, role = 'far
     }}>
       <div style={{ color: '#ffffff', maxWidth: '650px', zIndex: 2 }}>
         <h1 style={{ fontSize: '1.95rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', marginBottom: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          Good morning, {userName || 'Farmer'} 🌱
+          {t('home.goodMorning', { name: userName || (role === 'farmer' ? 'Farmer' : 'Buyer') })} 🌱
         </h1>
         <p style={{ fontSize: '0.95rem', color: '#e2e8f0', marginBottom: '1rem', fontWeight: 500 }}>
-          Let's find the best opportunity for your harvest today.
+          {t('home.heroDesc')}
         </p>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
@@ -66,7 +69,7 @@ export const HeroBanner = ({ userName, location, verificationStatus, role = 'far
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
           <span style={{ fontSize: '1.3rem' }}>🌱</span>
           <p style={{ fontSize: '0.82rem', fontWeight: 600, lineHeight: 1.4, margin: 0 }}>
-            Better decisions today. Bigger harvests tomorrow.
+            {t('home.tagline')}
           </p>
         </div>
       </div>

@@ -312,33 +312,33 @@ const FarmerDashboard = () => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', marginBottom: '1.75rem' }}>
         <MetricCard
           icon="🌾"
-          title="Total Harvests"
+          title={t('farmer.totalListings')}
           value={totalListings}
-          subtitle="Crops harvested"
+          subtitle={t('farmer.cropsHarvested')}
           color="emerald"
           onClick={() => setActiveTab('harvests')}
         />
         <MetricCard
           icon="📋"
-          title="Active Orders"
+          title={t('buyer.myOrders')}
           value={activeOrdersCount}
-          subtitle="Orders in progress"
+          subtitle={t('farmer.ordersInProgress')}
           color="blue"
           onClick={() => setActiveTab('orders')}
         />
         <MetricCard
           icon="🎯"
-          title="Selling Opportunities"
+          title={t('opportunity.title')}
           value={opportunitiesCount}
-          subtitle="Available markets"
+          subtitle={t('farmer.availableMarkets')}
           color="amber"
           onClick={() => setActiveTab('opportunities')}
         />
         <MetricCard
           icon="₹"
-          title="Estimated Net Returns"
+          title={t('opportunity.estNetReturn')}
           value={estimatedReturns}
-          subtitle="Total potential profit"
+          subtitle={t('farmer.totalProfit')}
           color="purple"
           onClick={() => setActiveTab('opportunities')}
         />
@@ -373,8 +373,8 @@ const FarmerDashboard = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
               <span style={{ fontSize: '1.2rem' }}>📈</span>
               <div>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>Market Comparison</h3>
-                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Compare prices and choose the best market for your harvest</span>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>{t('home.feature2Title')}</h3>
+                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>{t('home.feature2Desc')}</span>
               </div>
             </div>
 
@@ -403,17 +403,17 @@ const FarmerDashboard = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <span style={{ fontSize: '1.2rem' }}>🤝</span>
                 <div>
-                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>Potential Buyers</h3>
-                  <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Trusted buyers looking for your produce</span>
+                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>{t('opportunity.potentialBuyersTitle')}</h3>
+                  <span style={{ fontSize: '0.8rem', color: '#64748b' }}>{t('opportunity.potentialBuyersSubtitle')}</span>
                 </div>
               </div>
               <button onClick={() => setActiveTab('buyers')} style={{ background: 'none', border: 'none', color: '#10b981', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}>
-                View All →
+                {t('common.viewAll')}
               </button>
             </div>
 
             {buyersLoading ? (
-              <LoadingState message="Fetching verified buyers..." />
+              <LoadingState message={t('common.loading')} />
             ) : (
               <PotentialBuyersCard buyers={potentialBuyers.length > 0 ? potentialBuyers : [
                 { id: 1, business_name: 'AgriTrade Foods', verification_status: 'verified', badge_label: '🟢 FarmOS Verified Business', location: 'Kolkata, West Bengal', commodities: 'Potato, Onion', buying_capacity: '10,000 kg', show_contact_publicly: true, public_phone: '+91 98765 43210' },
@@ -432,37 +432,37 @@ const FarmerDashboard = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
               <span style={{ fontSize: '1.2rem' }}>⚡</span>
               <div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>Quick Actions</h3>
-                <span style={{ fontSize: '0.78rem', color: '#64748b' }}>Get things done, faster</span>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>{t('farmer.quickActions')}</h3>
+                <span style={{ fontSize: '0.78rem', color: '#64748b' }}>{t('common.actions')}</span>
               </div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
               <QuickActionCard
                 icon="🌱"
-                title="Add Harvest"
-                description="Register crop"
+                title={t('farmer.postNewHarvest')}
+                description={t('farmer.addHarvestDesc')}
                 color="emerald"
                 onClick={() => setActiveTab('harvests')}
               />
               <QuickActionCard
                 icon="📊"
-                title="Market Prices"
-                description="Live mandi rates"
+                title={t('nav.mandiPrices')}
+                description={t('farmer.marketRatesDesc')}
                 color="blue"
                 onClick={() => setActiveTab('opportunities')}
               />
               <QuickActionCard
                 icon="🤝"
-                title="Find Buyers"
-                description="Connect buyers"
+                title={t('directory.tabBuyers')}
+                description={t('farmer.connectBuyersDesc')}
                 color="amber"
                 onClick={() => setActiveTab('buyers')}
               />
               <QuickActionCard
                 icon="💬"
-                title="Ask FarmOS AI"
-                description="Get smart advice"
+                title={t('assistant.askAssistant')}
+                description={t('farmer.getSmartAdvice')}
                 color="purple"
                 onClick={() => window.location.href = '/assistant'}
               />
@@ -473,11 +473,11 @@ const FarmerDashboard = () => {
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '20px', padding: '1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
               <span style={{ fontSize: '1.2rem' }}>🌤️</span>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>Weather</h3>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>{t('nav.weather')}</h3>
             </div>
 
             {weatherLoading ? (
-              <LoadingState message="Loading weather forecast..." />
+              <LoadingState message={t('weather.loadingForecast')} />
             ) : (
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -491,8 +491,8 @@ const FarmerDashboard = () => {
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.8rem', color: '#475569', backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '12px', marginBottom: '1rem' }}>
-                  <div>💧 Humidity: <strong>72%</strong></div>
-                  <div>🌬️ Wind: <strong>12 km/h</strong></div>
+                  <div>💧 {t('weather.humidity')}: <strong>72%</strong></div>
+                  <div>🌬️ {t('weather.windSpeed')}: <strong>12 km/h</strong></div>
                 </div>
 
                 {/* 7-day Mini Forecast Row */}
@@ -517,22 +517,22 @@ const FarmerDashboard = () => {
       {activeTab === 'harvests' && (
         <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '20px', padding: '1.75rem', marginTop: '1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a' }}>📋 Post & Manage Your Harvests</h3>
-            <button onClick={() => setActiveTab('overview')} style={{ padding: '0.4rem 0.85rem', backgroundColor: '#f1f5f9', color: '#475569', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 700 }}>Close View</button>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a' }}>{t('farmer.manageHarvests')}</h3>
+            <button onClick={() => setActiveTab('overview')} style={{ padding: '0.4rem 0.85rem', backgroundColor: '#f1f5f9', color: '#475569', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 700 }}>{t('common.closeView')}</button>
           </div>
 
           {/* Add Harvest Form */}
           <form onSubmit={handleAddSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem', backgroundColor: '#f8fafc', padding: '1.25rem', borderRadius: '16px' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>Crop Name *</label>
+              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>{t('farmer.cropName')}</label>
               <input type="text" name="crop_name" placeholder="Basmati Rice, Potato" value={formData.crop_name} onChange={handleInputChange} style={{ width: '100%', padding: '0.55rem', borderRadius: '8px', border: '1px solid #cbd5e1' }} required />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>Quantity *</label>
+              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>{t('common.quantity')} *</label>
               <input type="number" name="quantity" placeholder="500" value={formData.quantity} onChange={handleInputChange} style={{ width: '100%', padding: '0.55rem', borderRadius: '8px', border: '1px solid #cbd5e1' }} required />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>Unit *</label>
+              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>{t('farmer.unit')}</label>
               <select name="unit" value={formData.unit} onChange={handleInputChange} style={{ width: '100%', padding: '0.55rem', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                 <option value="kg">kg</option>
                 <option value="quintal">quintal</option>
@@ -540,12 +540,12 @@ const FarmerDashboard = () => {
               </select>
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>Price (₹) *</label>
+              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: '#475569', marginBottom: '0.3rem' }}>{t('farmer.pricePerUnit')}</label>
               <input type="number" name="price" placeholder="35" value={formData.price} onChange={handleInputChange} style={{ width: '100%', padding: '0.55rem', borderRadius: '8px', border: '1px solid #cbd5e1' }} required />
             </div>
             <div style={{ display: 'flex', alignItems: 'flex-end' }}>
               <button type="submit" disabled={submitting} style={{ width: '100%', padding: '0.65rem', backgroundColor: '#10b981', color: '#ffffff', fontWeight: 800, borderRadius: '8px' }}>
-                {submitting ? 'Posting...' : 'Post Harvest Listing'}
+                {submitting ? t('farmer.posting') : t('farmer.postHarvestBtn')}
               </button>
             </div>
           </form>

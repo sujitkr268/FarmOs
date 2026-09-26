@@ -1,9 +1,11 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { useLanguage } from '../../context/LanguageContext'
 
 export const MobileBottomNav = () => {
   const { user, isAuthenticated } = useAuth()
+  const { t } = useLanguage()
   const location = useLocation()
 
   if (!isAuthenticated || !user) return null
@@ -16,10 +18,10 @@ export const MobileBottomNav = () => {
   }
 
   const items = [
-    { label: 'Home', path: getDashboardPath(), icon: '🏠' },
-    { label: 'Market', path: '/market-prices', icon: '📈' },
-    { label: 'Orders', path: '/orders', icon: '📦' },
-    { label: 'Profile', path: '/profile', icon: '👤' }
+    { label: t('nav.home'), path: getDashboardPath(), icon: '🏠' },
+    { label: t('nav.mandiPrices'), path: '/market-prices', icon: '📈' },
+    { label: t('nav.orders'), path: '/orders', icon: '📦' },
+    { label: t('nav.profile'), path: '/profile', icon: '👤' }
   ]
 
   return (

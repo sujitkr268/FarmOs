@@ -164,7 +164,7 @@ const BuyerDashboard = () => {
               gap: '0.5rem'
             }}
           >
-            <span>🏢</span> Business Profile
+            <span>🏢</span> {t('profile.title')}
           </a>
         </div>
       </div>
@@ -181,40 +181,40 @@ const BuyerDashboard = () => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', marginBottom: '1.75rem' }}>
         <div style={{ backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 2px 10px rgba(11, 35, 25, 0.03)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.8rem', color: '#647d70', fontWeight: 600, textTransform: 'uppercase' }}>Orders Placed</span>
+            <span style={{ fontSize: '0.8rem', color: '#647d70', fontWeight: 600, textTransform: 'uppercase' }}>{t('buyer.myOrders')}</span>
             <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: '#ebf3ed', color: '#0b3d2e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
               📦
             </div>
           </div>
           <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#10231b', lineHeight: 1.1 }}>{totalOrdersCount}</div>
-          <div style={{ fontSize: '0.78rem', color: '#0b3d2e', fontWeight: 600, marginTop: '0.6rem' }}>Total Direct Procurement</div>
+          <div style={{ fontSize: '0.78rem', color: '#0b3d2e', fontWeight: 600, marginTop: '0.6rem' }}>{t('buyer.directProcurement')}</div>
         </div>
 
         <div style={{ backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 2px 10px rgba(11, 35, 25, 0.03)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.8rem', color: '#647d70', fontWeight: 600, textTransform: 'uppercase' }}>Pending Approval</span>
+            <span style={{ fontSize: '0.8rem', color: '#647d70', fontWeight: 600, textTransform: 'uppercase' }}>{t('buyer.awaitingConfirmation')}</span>
             <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: '#fef3c7', color: '#d97706', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
               ⏳
             </div>
           </div>
           <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#d97706', lineHeight: 1.1 }}>{pendingOrdersCount}</div>
-          <div style={{ fontSize: '0.78rem', color: '#d97706', fontWeight: 600, marginTop: '0.6rem' }}>Awaiting Farmer Confirmation</div>
+          <div style={{ fontSize: '0.78rem', color: '#d97706', fontWeight: 600, marginTop: '0.6rem' }}>{t('buyer.awaitingConfirmation')}</div>
         </div>
 
         <div style={{ backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 2px 10px rgba(11, 35, 25, 0.03)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.8rem', color: '#647d70', fontWeight: 600, textTransform: 'uppercase' }}>Accepted Orders</span>
+            <span style={{ fontSize: '0.8rem', color: '#647d70', fontWeight: 600, textTransform: 'uppercase' }}>{t('buyer.readyFulfillment')}</span>
             <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: '#dcfce7', color: '#166534', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
               ✅
             </div>
           </div>
           <div style={{ fontSize: '2.1rem', fontWeight: 800, color: '#166534', lineHeight: 1.1 }}>{acceptedOrdersCount}</div>
-          <div style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 600, marginTop: '0.6rem' }}>Ready for Fulfillment</div>
+          <div style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 600, marginTop: '0.6rem' }}>{t('buyer.readyFulfillment')}</div>
         </div>
 
         <div style={{ backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 2px 10px rgba(11, 35, 25, 0.03)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.8rem', color: '#647d70', fontWeight: 600, textTransform: 'uppercase' }}>Verification Status</span>
+            <span style={{ fontSize: '0.8rem', color: '#647d70', fontWeight: 600, textTransform: 'uppercase' }}>{t('profile.trustVerification')}</span>
             <div style={{ width: '36px', height: '36px', borderRadius: '10px', backgroundColor: '#ebf3ed', color: '#0b3d2e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
               🛡️
             </div>
@@ -222,7 +222,7 @@ const BuyerDashboard = () => {
           <div style={{ marginTop: '0.2rem' }}>
             <TrustBadge status={user?.verification_status} role="buyer" size="sm" />
           </div>
-          <div style={{ fontSize: '0.78rem', color: '#0b3d2e', fontWeight: 600, marginTop: '0.6rem' }}>Buyer Account Trust Level</div>
+          <div style={{ fontSize: '0.78rem', color: '#0b3d2e', fontWeight: 600, marginTop: '0.6rem' }}>{t('buyer.buyerTrustLevel')}</div>
         </div>
       </div>
 
@@ -250,7 +250,7 @@ const BuyerDashboard = () => {
             whiteSpace: 'nowrap'
           }}
         >
-          📦 My Orders ({orders.length})
+          📦 {t('buyer.myOrders')} ({orders.length})
         </button>
 
         <button
@@ -266,7 +266,7 @@ const BuyerDashboard = () => {
             whiteSpace: 'nowrap'
           }}
         >
-          🌾 Browse Produce
+          {t('buyer.browseProduce')}
         </button>
 
         <button
@@ -282,7 +282,7 @@ const BuyerDashboard = () => {
             whiteSpace: 'nowrap'
           }}
         >
-          📈 Mandi Price Directory
+          {t('buyer.mandiDirectory')}
         </button>
 
         <button
@@ -298,50 +298,50 @@ const BuyerDashboard = () => {
             whiteSpace: 'nowrap'
           }}
         >
-          🛡️ Verification Credentials
+          {t('buyer.verificationCredentials')}
         </button>
       </div>
 
       {/* TAB 1: MY ORDERS */}
       {activeTab === 'orders' && (
-        <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
+        <div style={{ backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '18px', padding: '1.5rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6' }}>📦 Purchase Orders Placed</h2>
-            <button onClick={fetchOrders} style={{ padding: '0.35rem 0.75rem', backgroundColor: '#16261d', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#9ca3af', borderRadius: '8px', fontSize: '0.78rem', cursor: 'pointer' }}>
-              🔄 Refresh
+            <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a' }}>{t('buyer.purchaseOrdersPlaced')}</h2>
+            <button onClick={fetchOrders} style={{ padding: '0.35rem 0.75rem', backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', color: '#475569', borderRadius: '8px', fontSize: '0.78rem', cursor: 'pointer' }}>
+              🔄 {t('common.refresh')}
             </button>
           </div>
 
           {ordersLoading ? (
-            <div style={{ textAlign: 'center', padding: '3rem', color: '#9ca3af' }}>{t('common.loading')}</div>
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>{t('common.loading')}</div>
           ) : orders.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '3rem', color: '#9ca3af' }}>
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🛒</div>
-              <p style={{ fontWeight: 600, color: '#f3f4f6' }}>No purchase orders placed yet.</p>
+              <p style={{ fontWeight: 600, color: '#0f172a' }}>{t('buyer.noOrdersPlaced')}</p>
               <button
                 onClick={() => setActiveTab('marketplace')}
-                style={{ marginTop: '0.75rem', padding: '0.65rem 1.25rem', backgroundColor: '#10b981', color: '#080e0a', fontSize: '0.85rem', fontWeight: 700, borderRadius: '10px' }}
+                style={{ marginTop: '0.75rem', padding: '0.65rem 1.25rem', backgroundColor: '#10b981', color: '#ffffff', fontSize: '0.85rem', fontWeight: 700, borderRadius: '10px' }}
               >
-                Browse Produce Marketplace
+                {t('buyer.browseMarketplace')}
               </button>
             </div>
           ) : (
             <div className="table-responsive">
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(31, 56, 42, 0.8)', color: '#9ca3af', fontSize: '0.75rem', textTransform: 'uppercase' }}>
+                  <tr style={{ borderBottom: '1px solid #e2e8f0', color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase' }}>
                     <th style={{ padding: '0.75rem' }}>Order ID</th>
-                    <th style={{ padding: '0.75rem' }}>Crop</th>
-                    <th style={{ padding: '0.75rem' }}>Quantity</th>
-                    <th style={{ padding: '0.75rem' }}>Total Cost</th>
-                    <th style={{ padding: '0.75rem' }}>Farmer</th>
-                    <th style={{ padding: '0.75rem' }}>Location</th>
-                    <th style={{ padding: '0.75rem' }}>Status</th>
+                    <th style={{ padding: '0.75rem' }}>{t('common.commodity')}</th>
+                    <th style={{ padding: '0.75rem' }}>{t('common.quantity')}</th>
+                    <th style={{ padding: '0.75rem' }}>{t('buyer.orderTotal')}</th>
+                    <th style={{ padding: '0.75rem' }}>{t('buyer.farmer')}</th>
+                    <th style={{ padding: '0.75rem' }}>{t('common.location')}</th>
+                    <th style={{ padding: '0.75rem' }}>{t('buyer.orderStatus')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {orders.map((o) => (
-                    <tr key={o.id} style={{ borderBottom: '1px solid rgba(31, 56, 42, 0.4)', color: '#f3f4f6' }}>
+                    <tr key={o.id} style={{ borderBottom: '1px solid #f1f5f9', color: '#0f172a' }}>
                       <td style={{ padding: '0.75rem', fontWeight: 700, fontFamily: 'monospace' }}>#{o.id}</td>
                       <td style={{ padding: '0.75rem', fontWeight: 600 }}>{o.crop_name}</td>
                       <td style={{ padding: '0.75rem' }}>{o.quantity} {o.unit}</td>
@@ -355,7 +355,7 @@ const BuyerDashboard = () => {
                           fontSize: '0.72rem',
                           fontWeight: 700,
                           backgroundColor: o.status === 'accepted' ? 'rgba(16, 185, 129, 0.15)' : o.status === 'rejected' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                          color: o.status === 'accepted' ? '#10b981' : o.status === 'rejected' ? '#ef4444' : '#f59e0b'
+                          color: o.status === 'accepted' ? '#166534' : o.status === 'rejected' ? '#dc2626' : '#d97706'
                         }}>
                           {o.status}
                         </span>
@@ -372,56 +372,56 @@ const BuyerDashboard = () => {
       {/* TAB 2: BROWSE MARKETPLACE */}
       {activeTab === 'marketplace' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          <div style={{ backgroundColor: '#111b15', padding: '1rem', borderRadius: '14px', border: '1px solid rgba(31, 56, 42, 0.8)', display: 'flex', gap: '1rem' }}>
+          <div style={{ backgroundColor: '#ffffff', padding: '1rem', borderRadius: '14px', border: '1px solid #d6e4db', display: 'flex', gap: '1rem' }}>
             <input
               type="text"
-              placeholder="Search produce by crop name, location..."
+              placeholder={t('buyer.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ flex: 1, backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '10px', padding: '0.6rem 0.85rem', color: '#f3f4f6', fontSize: '0.85rem' }}
+              style={{ flex: 1, backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '0.6rem 0.85rem', color: '#0f172a', fontSize: '0.85rem' }}
             />
             <button
               onClick={fetchMarketplace}
-              style={{ padding: '0.6rem 1.25rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem' }}
+              style={{ padding: '0.6rem 1.25rem', backgroundColor: '#10b981', color: '#ffffff', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem' }}
             >
-              Search
+              {t('common.search')}
             </button>
           </div>
 
           {harvestsLoading ? (
-            <div style={{ textAlign: 'center', padding: '3rem', color: '#9ca3af' }}>{t('common.loading')}</div>
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>{t('common.loading')}</div>
           ) : filteredHarvests.length === 0 ? (
-            <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '3rem', textAlign: 'center', color: '#9ca3af' }}>
+            <div style={{ backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '18px', padding: '3rem', textAlign: 'center', color: '#64748b' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🌾</div>
               <p>No available produce listings found matching your search.</p>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.25rem' }}>
               {filteredHarvests.map((h) => (
-                <div key={h.id} className="farm-card" style={{ display: 'flex', flexDirection: 'column', justifyBetween: 'space-between' }}>
+                <div key={h.id} className="farm-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '14px', padding: '1.25rem' }}>
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                      <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6' }}>{h.crop_name}</h4>
-                      <span style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', color: '#10b981', padding: '0.2rem 0.6rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700 }}>
-                        Available
+                      <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a' }}>{h.crop_name}</h4>
+                      <span style={{ backgroundColor: 'rgba(16, 185, 129, 0.15)', color: '#166534', padding: '0.2rem 0.6rem', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 700 }}>
+                        {t('buyer.available')}
                       </span>
                     </div>
 
-                    <div style={{ fontSize: '0.85rem', color: '#9ca3af', display: 'flex', flexDirection: 'column', gap: '0.35rem', marginBottom: '0.75rem' }}>
-                      <div>Stock: <strong style={{ color: '#f3f4f6' }}>{h.quantity} {h.unit}</strong></div>
-                      <div>Price: <strong style={{ color: '#10b981', fontSize: '1.05rem' }}>₹{h.price} / {h.unit}</strong></div>
-                      <div>Farmer: <span style={{ color: '#f3f4f6', fontWeight: 600 }}>{h.farmer_name || 'Verified Farmer'}</span></div>
-                      <div>Location: 📍 {h.location}</div>
+                    <div style={{ fontSize: '0.85rem', color: '#475569', display: 'flex', flexDirection: 'column', gap: '0.35rem', marginBottom: '0.75rem' }}>
+                      <div>{t('buyer.stock')}: <strong style={{ color: '#0f172a' }}>{h.quantity} {h.unit}</strong></div>
+                      <div>{t('common.price')}: <strong style={{ color: '#10b981', fontSize: '1.05rem' }}>₹{h.price} / {h.unit}</strong></div>
+                      <div>{t('buyer.farmer')}: <span style={{ color: '#0f172a', fontWeight: 600 }}>{h.farmer_name || 'Verified Farmer'}</span></div>
+                      <div>{t('common.location')}: 📍 {h.location}</div>
                     </div>
 
-                    {h.description && <p style={{ fontSize: '0.78rem', color: '#9ca3af', backgroundColor: '#0c140e', padding: '0.5rem 0.75rem', borderRadius: '8px', marginBottom: '0.75rem' }}>{h.description}</p>}
+                    {h.description && <p style={{ fontSize: '0.78rem', color: '#475569', backgroundColor: '#f8fafc', padding: '0.5rem 0.75rem', borderRadius: '8px', marginBottom: '0.75rem' }}>{h.description}</p>}
                   </div>
 
                   <button
                     onClick={() => handleOpenOrderModal(h)}
-                    style={{ width: '100%', padding: '0.6rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem' }}
+                    style={{ width: '100%', padding: '0.6rem', backgroundColor: '#10b981', color: '#ffffff', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem' }}
                   >
-                    🛒 Place Order
+                    🛒 {t('buyer.placeOrder')}
                   </button>
                 </div>
               ))}
@@ -432,17 +432,17 @@ const BuyerDashboard = () => {
 
       {/* TAB 3: MANDI PRICES */}
       {activeTab === 'prices' && (
-        <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem' }}>
+        <div style={{ backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '18px', padding: '1.5rem' }}>
           <MandiPrices />
         </div>
       )}
 
       {/* TAB 4: VERIFICATION CREDENTIALS */}
       {activeTab === 'verification' && (
-        <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '18px', padding: '1.5rem', maxWidth: '700px' }}>
-          <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '0.5rem' }}>🛡️ Buyer Verification Credentials</h2>
-          <p style={{ fontSize: '0.85rem', color: '#9ca3af', marginBottom: '1.25rem' }}>
-            FarmOS verified buyers receive lower platform fees, direct contact access with farmers, and trusted buyer badges.
+        <div style={{ backgroundColor: '#ffffff', border: '1px solid #d6e4db', borderRadius: '18px', padding: '1.5rem', maxWidth: '700px' }}>
+          <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.5rem' }}>{t('buyer.verificationCredentials')}</h2>
+          <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1.25rem' }}>
+            {t('profile.earnBadgeDesc')}
           </p>
 
           <div style={{ marginBottom: '1.25rem' }}>
@@ -450,22 +450,22 @@ const BuyerDashboard = () => {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
-            <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
-              <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>e-NAM Reference ID</span>
-              <span style={{ fontWeight: 700, color: '#f3f4f6', fontFamily: 'monospace' }}>{user?.enam_reference || 'Not provided'}</span>
+            <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+              <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>e-NAM Reference ID</span>
+              <span style={{ fontWeight: 700, color: '#0f172a', fontFamily: 'monospace' }}>{user?.enam_reference || t('common.na')}</span>
             </div>
-            <div style={{ backgroundColor: '#0c140e', padding: '0.75rem', borderRadius: '10px', border: '1px solid rgba(31, 56, 42, 0.6)' }}>
-              <span style={{ fontSize: '0.75rem', color: '#9ca3af', display: 'block' }}>Udyam Registration</span>
-              <span style={{ fontWeight: 700, color: '#f3f4f6', fontFamily: 'monospace' }}>{user?.udyam_reference || 'Not provided'}</span>
+            <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+              <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Udyam Registration</span>
+              <span style={{ fontWeight: 700, color: '#0f172a', fontFamily: 'monospace' }}>{user?.udyam_reference || t('common.na')}</span>
             </div>
           </div>
 
-          <div style={{ pt: '1rem', borderTop: '1px solid rgba(31, 56, 42, 0.8)' }}>
+          <div style={{ paddingTop: '1rem', borderTop: '1px solid #e2e8f0' }}>
             <button
               onClick={() => navigate('/profile')}
-              style={{ padding: '0.65rem 1.25rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem' }}
+              style={{ padding: '0.65rem 1.25rem', backgroundColor: '#10b981', color: '#ffffff', fontWeight: 700, borderRadius: '10px', fontSize: '0.85rem' }}
             >
-              ✏️ Update Verification Credentials
+              ✏️ {t('profile.submitVerification')}
             </button>
           </div>
         </div>
@@ -474,27 +474,27 @@ const BuyerDashboard = () => {
       {/* Modal: Place Order */}
       {selectedHarvest && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 100, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ backgroundColor: '#111b15', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '20px', maxWidth: '480px', width: '100%', padding: '1.5rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid rgba(31, 56, 42, 0.8)', paddingBottom: '0.75rem' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f3f4f6' }}>🛒 Order Produce: {selectedHarvest.crop_name}</h3>
-              <button onClick={() => setSelectedHarvest(null)} style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '1.2rem', cursor: 'pointer' }}>✕</button>
+          <div style={{ backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '20px', maxWidth: '480px', width: '100%', padding: '1.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.75rem' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a' }}>🛒 {t('buyer.placeOrder')}: {selectedHarvest.crop_name}</h3>
+              <button onClick={() => setSelectedHarvest(null)} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '1.2rem', cursor: 'pointer' }}>✕</button>
             </div>
 
             {orderError && (
-              <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#ef4444', padding: '0.75rem', borderRadius: '10px', fontSize: '0.8rem', marginBottom: '1rem' }}>{orderError}</div>
+              <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', padding: '0.75rem', borderRadius: '10px', fontSize: '0.8rem', marginBottom: '1rem' }}>{orderError}</div>
             )}
 
             <form onSubmit={handlePlaceOrderSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ backgroundColor: '#0c140e', padding: '0.85rem', borderRadius: '10px', fontSize: '0.82rem', color: '#9ca3af', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                <div>Farmer: <strong style={{ color: '#f3f4f6' }}>{selectedHarvest.farmer_name || 'Verified Farmer'}</strong></div>
-                <div>Location: 📍 {selectedHarvest.location}</div>
-                <div>Price: <strong style={{ color: '#10b981' }}>₹{selectedHarvest.price} / {selectedHarvest.unit}</strong></div>
-                <div>Available: <strong style={{ color: '#f3f4f6' }}>{selectedHarvest.quantity} {selectedHarvest.unit}</strong></div>
+              <div style={{ backgroundColor: '#f8fafc', padding: '0.85rem', borderRadius: '10px', fontSize: '0.82rem', color: '#475569', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                <div>{t('buyer.farmer')}: <strong style={{ color: '#0f172a' }}>{selectedHarvest.farmer_name || 'Verified Farmer'}</strong></div>
+                <div>{t('common.location')}: 📍 {selectedHarvest.location}</div>
+                <div>{t('common.price')}: <strong style={{ color: '#10b981' }}>₹{selectedHarvest.price} / {selectedHarvest.unit}</strong></div>
+                <div>{t('buyer.available')}: <strong style={{ color: '#0f172a' }}>{selectedHarvest.quantity} {selectedHarvest.unit}</strong></div>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.78rem', color: '#9ca3af', marginBottom: '0.3rem' }}>
-                  Order Quantity ({selectedHarvest.unit}) *
+                <label style={{ display: 'block', fontSize: '0.78rem', color: '#475569', marginBottom: '0.3rem' }}>
+                  {t('buyer.orderQuantity')} ({selectedHarvest.unit}) *
                 </label>
                 <input
                   type="number"
@@ -503,20 +503,20 @@ const BuyerDashboard = () => {
                   max={selectedHarvest.quantity}
                   value={orderQuantity}
                   onChange={(e) => setOrderQuantity(e.target.value)}
-                  style={{ width: '100%', backgroundColor: '#0c140e', border: '1px solid rgba(31, 56, 42, 0.8)', borderRadius: '8px', padding: '0.6rem 0.85rem', color: '#f3f4f6' }}
+                  style={{ width: '100%', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '0.6rem 0.85rem', color: '#0f172a' }}
                   required
                 />
               </div>
 
-              <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.25)', padding: '0.85rem', borderRadius: '10px', fontSize: '0.9rem', display: 'flex', justifyContent: 'space-between', fontWeight: 700, color: '#10b981' }}>
-                <span>Estimated Total:</span>
+              <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', padding: '0.85rem', borderRadius: '10px', fontSize: '0.9rem', display: 'flex', justifyContent: 'space-between', fontWeight: 700, color: '#166534' }}>
+                <span>{t('buyer.orderTotalEst')}</span>
                 <span>₹{(Number(orderQuantity || 0) * Number(selectedHarvest.price || 0)).toLocaleString()}</span>
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-                <button type="button" onClick={() => setSelectedHarvest(null)} style={{ padding: '0.55rem 1.1rem', backgroundColor: '#16261d', border: '1px solid rgba(31, 56, 42, 0.8)', color: '#9ca3af', borderRadius: '8px', fontSize: '0.85rem' }}>Cancel</button>
-                <button type="submit" disabled={orderSubmitting} style={{ padding: '0.55rem 1.25rem', backgroundColor: '#10b981', color: '#080e0a', fontWeight: 700, borderRadius: '8px', fontSize: '0.85rem' }}>
-                  {orderSubmitting ? 'Placing Order...' : 'Confirm Order'}
+                <button type="button" onClick={() => setSelectedHarvest(null)} style={{ padding: '0.55rem 1.1rem', backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', color: '#475569', borderRadius: '8px', fontSize: '0.85rem' }}>{t('buyer.cancel')}</button>
+                <button type="submit" disabled={orderSubmitting} style={{ padding: '0.55rem 1.25rem', backgroundColor: '#10b981', color: '#ffffff', fontWeight: 700, borderRadius: '8px', fontSize: '0.85rem' }}>
+                  {orderSubmitting ? t('common.loading') : t('buyer.confirmOrder')}
                 </button>
               </div>
             </form>

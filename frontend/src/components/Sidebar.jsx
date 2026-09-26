@@ -19,7 +19,7 @@ export const Sidebar = () => {
 
   const sidebarLinks = [
     {
-      label: 'Dashboard',
+      label: t('nav.dashboard'),
       path: getDashboardPath(),
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -29,7 +29,7 @@ export const Sidebar = () => {
       )
     },
     {
-      label: 'Market Prices',
+      label: t('nav.mandiPrices'),
       path: '/market-prices',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -39,7 +39,7 @@ export const Sidebar = () => {
       )
     },
     {
-      label: 'Marketplace',
+      label: t('nav.marketplace'),
       path: '/marketplace',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -50,7 +50,7 @@ export const Sidebar = () => {
       )
     },
     {
-      label: 'My Harvests',
+      label: t('nav.myHarvests'),
       path: user.role === 'farmer' ? '/farmer/dashboard' : '/marketplace',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -59,7 +59,7 @@ export const Sidebar = () => {
       )
     },
     {
-      label: 'Orders',
+      label: t('nav.orders'),
       path: '/orders',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -68,7 +68,7 @@ export const Sidebar = () => {
       )
     },
     {
-      label: 'Market Opportunities',
+      label: t('nav.opportunities'),
       path: '/opportunities',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -78,7 +78,7 @@ export const Sidebar = () => {
       )
     },
     {
-      label: 'Weather',
+      label: t('nav.weather'),
       path: '/weather',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -87,7 +87,7 @@ export const Sidebar = () => {
       )
     },
     {
-      label: 'Trader Directory',
+      label: t('nav.traderDirectory'),
       path: '/traders',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -97,7 +97,7 @@ export const Sidebar = () => {
       )
     },
     {
-      label: 'AI Assistant',
+      label: t('nav.assistant'),
       path: '/assistant',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -107,7 +107,7 @@ export const Sidebar = () => {
       )
     },
     {
-      label: 'Profile',
+      label: t('nav.profile'),
       path: '/profile',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -117,7 +117,7 @@ export const Sidebar = () => {
       )
     },
     {
-      label: 'Settings',
+      label: t('nav.settings'),
       path: '/settings',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -227,7 +227,7 @@ export const Sidebar = () => {
           <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#ffffff' }}>FarmOS</span>
         </div>
         <p style={{ fontSize: '0.78rem', color: '#cbd5e1', lineHeight: 1.45, margin: 0, fontWeight: 500 }}>
-          Better Farmers<br />Better Markets<br />A Brighter Future
+          {t('nav.sidebarTagline')}
         </p>
       </div>
     </aside>

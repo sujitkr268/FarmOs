@@ -116,11 +116,11 @@ export const OpportunitiesPage = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.35rem' }}>
           <span style={{ fontSize: '1.8rem' }}>🎯</span>
           <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0b3d2e', margin: 0, letterSpacing: '-0.02em' }}>
-            Market Opportunities & Comparison
+            {t('opportunity.title')}
           </h1>
         </div>
         <p style={{ color: '#647d70', fontSize: '0.92rem', margin: 0 }}>
-          Evaluate mandi prices, road driving distance, freight logistics, and estimated net returns to find the best market for your harvest.
+          {t('home.heroDesc')}
         </p>
       </div>
 
@@ -143,7 +143,7 @@ export const OpportunitiesPage = () => {
         {harvests.length > 0 && (
           <div style={{ marginBottom: '1.25rem', paddingBottom: '1rem', borderBottom: '1px solid #e4eee7' }}>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#0b3d2e', marginBottom: '0.4rem' }}>
-              📋 Select Your Registered Harvest:
+              {t('opportunity.selectHarvestLabel')}
             </label>
             <select
               value={selectedHarvestId}
@@ -159,7 +159,7 @@ export const OpportunitiesPage = () => {
                 fontWeight: 600
               }}
             >
-              <option value="">-- Choose from your listed harvests --</option>
+              <option value="">{t('opportunity.selectHarvestDefault')}</option>
               {harvests.map(h => (
                 <option key={h.id} value={h.id}>
                   🌾 {h.crop_name} ({h.quantity} {h.unit}) • ₹{h.price}/unit • 📍 {h.location}
@@ -171,7 +171,7 @@ export const OpportunitiesPage = () => {
 
         <form onSubmit={handleFormSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', alignItems: 'flex-end' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '0.35rem' }}>Commodity / Crop</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '0.35rem' }}>{t('common.commodity')}</label>
             <input
               type="text"
               value={crop}
@@ -183,7 +183,7 @@ export const OpportunitiesPage = () => {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '0.35rem' }}>Quantity</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '0.35rem' }}>{t('common.quantity')}</label>
             <input
               type="number"
               value={quantity}
@@ -195,7 +195,7 @@ export const OpportunitiesPage = () => {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '0.35rem' }}>Unit</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '0.35rem' }}>{t('farmer.unit')}</label>
             <select value={unit} onChange={(e) => setUnit(e.target.value)} style={{ width: '100%', padding: '0.6rem 0.85rem', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '0.9rem' }}>
               <option value="kg">kg</option>
               <option value="quintal">quintal</option>
@@ -204,7 +204,7 @@ export const OpportunitiesPage = () => {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '0.35rem' }}>Farmer Location</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: '#475569', marginBottom: '0.35rem' }}>{t('home.yourLocation')}</label>
             <input
               type="text"
               value={location}
@@ -232,7 +232,7 @@ export const OpportunitiesPage = () => {
                 boxShadow: '0 4px 12px rgba(11, 61, 46, 0.2)'
               }}
             >
-              {loading ? 'Evaluating...' : '🔍 Compare Markets'}
+              {loading ? t('common.loading') : t('home.findOppsBtn')}
             </button>
           </div>
         </form>
@@ -240,7 +240,7 @@ export const OpportunitiesPage = () => {
 
       {/* 2. Loading State */}
       {loading ? (
-        <LoadingState message="Finding the best market opportunity..." />
+        <LoadingState message={t('common.loading')} />
       ) : (
         <div>
           {/* Opportunity Card Preview */}
@@ -270,12 +270,12 @@ export const OpportunitiesPage = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <span style={{ fontSize: '1.2rem' }}>🤝</span>
                 <div>
-                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0b3d2e', margin: 0 }}>Matching Verified Buyers</h3>
-                  <span style={{ fontSize: '0.8rem', color: '#647d70' }}>Connect with buyers looking for {crop}</span>
+                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0b3d2e', margin: 0 }}>{t('opportunity.matchingBuyersTitle')}</h3>
+                  <span style={{ fontSize: '0.8rem', color: '#647d70' }}>{t('opportunity.matchingBuyersSub', { crop })}</span>
                 </div>
               </div>
               <Link to="/traders" style={{ color: '#166534', fontWeight: 700, fontSize: '0.88rem', textDecoration: 'none' }}>
-                View All Traders →
+                {t('opportunity.viewAllTraders')}
               </Link>
             </div>
 

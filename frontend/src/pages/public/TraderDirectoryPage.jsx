@@ -94,11 +94,11 @@ export const TraderDirectoryPage = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
           <span style={{ fontSize: '2rem' }}>🏛️</span>
           <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0b2319', margin: 0 }}>
-            Verified Agricultural Businesses & Directory
+            {t('directory.title')}
           </h1>
         </div>
         <p style={{ color: '#475569', fontSize: '0.95rem', maxWidth: '850px', lineHeight: '1.5', margin: '0.5rem 0 0 0' }}>
-          Discover legitimate agricultural traders, wholesalers, rice millers, APMC market functionaries, and voluntary FarmOS-registered buyers. Every external business is tied strictly to official government, APEDA, WBSAMB, or business website source evidence.
+          {t('directory.subtitle')}
         </p>
       </div>
 
@@ -125,7 +125,7 @@ export const TraderDirectoryPage = () => {
             transition: 'all 0.2s'
           }}
         >
-          🏬 Public Trader Directory ({activeTab === 'traders' ? traders.length : '...'})
+          🏬 {t('directory.tabTraders')} ({activeTab === 'traders' ? traders.length : '...'})
         </button>
 
         <button
@@ -142,7 +142,7 @@ export const TraderDirectoryPage = () => {
             transition: 'all 0.2s'
           }}
         >
-          🔵 FarmOS Registered Buyers ({activeTab === 'buyers' ? buyers.length : '...'})
+          🔵 {t('directory.tabBuyers')} ({activeTab === 'buyers' ? buyers.length : '...'})
         </button>
       </div>
 
@@ -162,10 +162,10 @@ export const TraderDirectoryPage = () => {
           marginBottom: '1rem'
         }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>Search Business / Name</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>{t('directory.searchLabel')}</label>
             <input
               type="text"
-              placeholder="e.g. Bardhaman Agro, Rice, Potato..."
+              placeholder={t('directory.searchPlaceholder')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{
@@ -181,7 +181,7 @@ export const TraderDirectoryPage = () => {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>State</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>{t('common.state')}</label>
             <input
               type="text"
               placeholder="e.g. West Bengal"
@@ -200,7 +200,7 @@ export const TraderDirectoryPage = () => {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>District</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>{t('common.district')}</label>
             <input
               type="text"
               placeholder="e.g. Hooghly, Bardhaman, Kolkata..."
@@ -219,7 +219,7 @@ export const TraderDirectoryPage = () => {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>Mandi / APMC</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>{t('common.mandi')}</label>
             <input
               type="text"
               placeholder="e.g. Sheoraphuli APMC..."
@@ -238,7 +238,7 @@ export const TraderDirectoryPage = () => {
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>Commodity</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>{t('common.commodity')}</label>
             <input
               type="text"
               placeholder="e.g. Potato, Rice, Wheat..."
@@ -258,7 +258,7 @@ export const TraderDirectoryPage = () => {
 
           {activeTab === 'traders' && (
             <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>Verification Level</label>
+              <label style={{ display: 'block', fontSize: '0.8rem', color: '#475569', fontWeight: 600, marginBottom: '0.3rem' }}>{t('directory.verificationLevel')}</label>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
@@ -272,11 +272,11 @@ export const TraderDirectoryPage = () => {
                   fontSize: '0.88rem'
                 }}
               >
-                <option value="">All Verification Levels</option>
-                <option value="source_verified">🟢 FarmOS Verified Business (Govt Evidence)</option>
-                <option value="website_verified">🌐 Public Business Info (Official Website)</option>
-                <option value="unverified">🏢 Public Business Listing</option>
-                <option value="needs_review">⚠️ Needs Review</option>
+                <option value="">{t('directory.allVerificationLevels')}</option>
+                <option value="source_verified">{t('badges.sourceVerified')}</option>
+                <option value="website_verified">{t('badges.websiteVerified')}</option>
+                <option value="unverified">{t('badges.unverified')}</option>
+                <option value="needs_review">{t('badges.needsReview')}</option>
               </select>
             </div>
           )}
@@ -296,7 +296,7 @@ export const TraderDirectoryPage = () => {
               cursor: 'pointer'
             }}
           >
-            🔍 Search Directory
+            {t('directory.searchDirectoryBtn')}
           </button>
           <button
             type="button"
@@ -305,14 +305,14 @@ export const TraderDirectoryPage = () => {
               padding: '0.5rem 1rem',
               borderRadius: '8px',
               backgroundColor: 'rgba(255, 255, 255, 0.08)',
-              color: '#c9d1d9',
+              color: '#64748b',
               fontWeight: 600,
               fontSize: '0.88rem',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
+              border: '1px solid #cbd5e1',
               cursor: 'pointer'
             }}
           >
-            Reset Filters
+            {t('common.resetFilters')}
           </button>
         </div>
       </form>
@@ -322,7 +322,7 @@ export const TraderDirectoryPage = () => {
         <div style={{
           backgroundColor: 'rgba(239, 68, 68, 0.15)',
           border: '1px solid #ef4444',
-          color: '#fca5a5',
+          color: '#ef4444',
           padding: '0.75rem 1rem',
           borderRadius: '8px',
           marginBottom: '1.5rem',
@@ -333,14 +333,14 @@ export const TraderDirectoryPage = () => {
       )}
 
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '4rem', color: '#8b949e' }}>
-          Loading directory records...
+        <div style={{ textAlign: 'center', padding: '4rem', color: '#64748b' }}>
+          {t('common.loading')}
         </div>
       ) : activeTab === 'traders' ? (
         // PUBLIC TRADER DIRECTORY LIST
         traders.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '3rem', color: '#8b949e' }}>
-            No external business records found matching the specified filters.
+          <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
+            {t('directory.noTradersFound')}
           </div>
         ) : (
           <div style={{
@@ -348,130 +348,130 @@ export const TraderDirectoryPage = () => {
             gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
             gap: '1.25rem'
           }}>
-            {traders.map((t) => (
+            {traders.map((tItem) => (
               <div
-                key={t.id}
+                key={tItem.id}
                 style={{
-                  backgroundColor: 'rgba(22, 27, 34, 0.8)',
-                  border: t.verification_status === 'source_verified'
-                    ? '1px solid rgba(34, 197, 94, 0.5)'
-                    : t.verification_status === 'website_verified'
-                      ? '1px solid rgba(59, 130, 246, 0.5)'
-                      : '1px solid rgba(255, 255, 255, 0.12)',
+                  backgroundColor: '#ffffff',
+                  border: tItem.verification_status === 'source_verified'
+                    ? '1px solid #22c55e'
+                    : tItem.verification_status === 'website_verified'
+                      ? '1px solid #3b82f6'
+                      : '1px solid #e2e8f0',
                   borderRadius: '14px',
                   padding: '1.25rem',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.25)'
+                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)'
                 }}
               >
                 <div>
                   {/* Card Header & Badge */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                    <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#f0f6fc', margin: 0, lineHeight: '1.3' }}>
-                      {t.business_name}
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: 0, lineHeight: '1.3' }}>
+                      {tItem.business_name}
                     </h3>
                   </div>
 
                   {/* Verification Badge */}
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.85rem' }}>
-                    {t.verification_status === 'source_verified' && (
+                    {tItem.verification_status === 'source_verified' && (
                       <span style={{
                         backgroundColor: 'rgba(34, 197, 94, 0.15)',
                         border: '1px solid #22c55e',
-                        color: '#4ade80',
+                        color: '#166534',
                         fontSize: '0.72rem',
                         fontWeight: 700,
                         padding: '0.2rem 0.55rem',
                         borderRadius: '12px'
                       }}>
-                        🟢 FarmOS Verified Business
+                        {t('badges.sourceVerified')}
                       </span>
                     )}
 
-                    {t.verification_status === 'website_verified' && (
+                    {tItem.verification_status === 'website_verified' && (
                       <span style={{
                         backgroundColor: 'rgba(59, 130, 246, 0.15)',
                         border: '1px solid #3b82f6',
-                        color: '#60a5fa',
+                        color: '#1d4ed8',
                         fontSize: '0.72rem',
                         fontWeight: 700,
                         padding: '0.2rem 0.55rem',
                         borderRadius: '12px'
                       }}>
-                        🌐 Public Business Info
+                        {t('badges.websiteVerified')}
                       </span>
                     )}
 
-                    {(t.verification_status === 'unverified' || t.verification_status === 'needs_review') && (
+                    {(tItem.verification_status === 'unverified' || tItem.verification_status === 'needs_review') && (
                       <span style={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                        border: '1px solid #8b949e',
-                        color: '#9ca3af',
+                        backgroundColor: '#f1f5f9',
+                        border: '1px solid #cbd5e1',
+                        color: '#475569',
                         fontSize: '0.72rem',
                         fontWeight: 700,
                         padding: '0.2rem 0.55rem',
                         borderRadius: '12px'
                       }}>
-                        🏢 Public Listing ({t.verification_status})
+                        {t('badges.unverified')}
                       </span>
                     )}
 
-                    {t.official_website && (
+                    {tItem.official_website && (
                       <span style={{
                         backgroundColor: 'rgba(168, 85, 247, 0.15)',
                         border: '1px solid #a855f7',
-                        color: '#c084fc',
+                        color: '#7e22ce',
                         fontSize: '0.72rem',
                         fontWeight: 700,
                         padding: '0.2rem 0.55rem',
                         borderRadius: '12px'
                       }}>
-                        🌐 Website Verified
+                        {t('badges.websiteVerified')}
                       </span>
                     )}
                   </div>
 
                   {/* Business Meta Details */}
-                  <div style={{ fontSize: '0.83rem', color: '#c9d1d9', display: 'flex', flexDirection: 'column', gap: '0.35rem', marginBottom: '1rem' }}>
+                  <div style={{ fontSize: '0.83rem', color: '#334155', display: 'flex', flexDirection: 'column', gap: '0.35rem', marginBottom: '1rem' }}>
                     <div>
-                      <strong style={{ color: '#8b949e' }}>Type:</strong> {t.business_type}
+                      <strong style={{ color: '#64748b' }}>{t('directory.typeLabel')}</strong> {tItem.business_type}
                     </div>
                     <div>
-                      <strong style={{ color: '#8b949e' }}>Location:</strong> 📍 {t.city || t.district}, {t.state} {t.mandi ? `(Mandi: ${t.mandi})` : ''}
+                      <strong style={{ color: '#64748b' }}>{t('directory.locationLabel')}</strong> 📍 {tItem.city || tItem.district}, {tItem.state} {tItem.mandi ? `(${t('common.mandi')}: ${tItem.mandi})` : ''}
                     </div>
                     <div>
-                      <strong style={{ color: '#8b949e' }}>Commodities:</strong> <span style={{ color: '#fbbf24', fontWeight: 600 }}>{t.commodities}</span>
+                      <strong style={{ color: '#64748b' }}>{t('directory.commoditiesLabel')}</strong> <span style={{ color: '#d97706', fontWeight: 600 }}>{tItem.commodities}</span>
                     </div>
-                    {t.buying_capacity && (
+                    {tItem.buying_capacity && (
                       <div>
-                        <strong style={{ color: '#8b949e' }}>Buying Capacity:</strong> {t.buying_capacity}
+                        <strong style={{ color: '#64748b' }}>{t('directory.buyingCapacity')}:</strong> {tItem.buying_capacity}
                       </div>
                     )}
                   </div>
 
                   {/* Source Attribution & Proof */}
                   <div style={{
-                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                    backgroundColor: '#f8fafc',
                     borderRadius: '8px',
                     padding: '0.6rem 0.75rem',
                     fontSize: '0.75rem',
-                    color: '#8b949e',
+                    color: '#64748b',
                     marginBottom: '1rem',
                     borderLeft: '3px solid #f59e0b'
                   }}>
-                    <div><strong>Evidence Source:</strong> {t.verification_source} ({t.source_type})</div>
-                    <div><strong>Last Verified:</strong> {t.last_verified ? new Date(t.last_verified).toLocaleDateString() : 'Recent'}</div>
-                    {t.source_url && (
+                    <div><strong>{t('directory.evidenceSource')}:</strong> {tItem.verification_source} ({tItem.source_type})</div>
+                    <div><strong>{t('directory.lastVerified')}:</strong> {tItem.last_verified ? new Date(tItem.last_verified).toLocaleDateString() : 'Recent'}</div>
+                    {tItem.source_url && (
                       <div style={{ marginTop: '0.2rem' }}>
                         <a
-                          href={t.source_url}
+                          href={tItem.source_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{ color: '#60a5fa', textDecoration: 'underline', wordBreak: 'break-all' }}
+                          style={{ color: '#2563eb', textDecoration: 'underline', wordBreak: 'break-all' }}
                         >
-                          🔗 View Source Evidence
+                          🔗 {t('directory.viewEvidence')}
                         </a>
                       </div>
                     )}
@@ -479,10 +479,10 @@ export const TraderDirectoryPage = () => {
                 </div>
 
                 {/* Verified Public Contact Actions */}
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', paddingTop: '0.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                  {t.official_website && (
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', paddingTop: '0.5rem', borderTop: '1px solid #e2e8f0' }}>
+                  {tItem.official_website && (
                     <a
-                      href={t.official_website}
+                      href={tItem.official_website}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
@@ -490,19 +490,19 @@ export const TraderDirectoryPage = () => {
                         borderRadius: '8px',
                         backgroundColor: 'rgba(59, 130, 246, 0.15)',
                         border: '1px solid #3b82f6',
-                        color: '#60a5fa',
+                        color: '#1d4ed8',
                         fontSize: '0.78rem',
                         fontWeight: 700,
                         textDecoration: 'none'
                       }}
                     >
-                      🌐 Official Website
+                      {t('directory.officialWebsite')}
                     </a>
                   )}
 
-                  {t.official_contact_url && (
+                  {tItem.official_contact_url && (
                     <a
-                      href={t.official_contact_url}
+                      href={tItem.official_contact_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
@@ -510,31 +510,31 @@ export const TraderDirectoryPage = () => {
                         borderRadius: '8px',
                         backgroundColor: 'rgba(168, 85, 247, 0.15)',
                         border: '1px solid #a855f7',
-                        color: '#c084fc',
+                        color: '#7e22ce',
                         fontSize: '0.78rem',
                         fontWeight: 700,
                         textDecoration: 'none'
                       }}
                     >
-                      ✉ Official Contact
+                      {t('directory.officialContact')}
                     </a>
                   )}
 
-                  {t.public_phone && (
+                  {tItem.public_phone && (
                     <a
-                      href={`tel:${t.public_phone}`}
+                      href={`tel:${tItem.public_phone}`}
                       style={{
                         padding: '0.45rem 0.85rem',
                         borderRadius: '8px',
                         backgroundColor: 'rgba(34, 197, 94, 0.15)',
                         border: '1px solid #22c55e',
-                        color: '#4ade80',
+                        color: '#166534',
                         fontSize: '0.78rem',
                         fontWeight: 700,
                         textDecoration: 'none'
                       }}
                     >
-                      📞 Call {t.public_phone}
+                      📞 {t('common.call')} {tItem.public_phone}
                     </a>
                   )}
                 </div>
@@ -545,8 +545,8 @@ export const TraderDirectoryPage = () => {
       ) : (
         // REGISTERED FARMOS BUYERS LIST
         buyers.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '3rem', color: '#8b949e' }}>
-            No verified FarmOS registered buyers found matching the specified filters.
+          <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
+            {t('directory.noBuyersFound')}
           </div>
         ) : (
           <div style={{
@@ -558,23 +558,23 @@ export const TraderDirectoryPage = () => {
               <div
                 key={b.id}
                 style={{
-                  backgroundColor: 'rgba(22, 27, 34, 0.8)',
-                  border: '1px solid rgba(59, 130, 246, 0.5)',
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #3b82f6',
                   borderRadius: '14px',
                   padding: '1.25rem',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.25)'
+                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)'
                 }}
               >
                 <div>
                   <div style={{ marginBottom: '0.75rem' }}>
-                    <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#f0f6fc', margin: 0 }}>
+                    <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
                       {b.business_name}
                     </h3>
-                    <span style={{ fontSize: '0.82rem', color: '#8b949e' }}>
-                      Contact Person: <strong>{b.contact_person}</strong>
+                    <span style={{ fontSize: '0.82rem', color: '#64748b' }}>
+                      {t('directory.contactPerson')}: <strong>{b.contact_person}</strong>
                     </span>
                   </div>
 
@@ -583,38 +583,38 @@ export const TraderDirectoryPage = () => {
                     <span style={{
                       backgroundColor: 'rgba(59, 130, 246, 0.15)',
                       border: '1px solid #3b82f6',
-                      color: '#60a5fa',
+                      color: '#1d4ed8',
                       fontSize: '0.72rem',
                       fontWeight: 700,
                       padding: '0.2rem 0.55rem',
                       borderRadius: '12px'
                     }}>
-                      🔵 FarmOS Registered Buyer
+                      {t('badges.registeredBuyer')}
                     </span>
 
                     <span style={{
                       backgroundColor: 'rgba(34, 197, 94, 0.15)',
                       border: '1px solid #22c55e',
-                      color: '#4ade80',
+                      color: '#166534',
                       fontSize: '0.72rem',
                       fontWeight: 700,
                       padding: '0.2rem 0.55rem',
                       borderRadius: '12px'
                     }}>
-                      🟢 Verified Account
+                      {t('badges.verifiedAccount')}
                     </span>
 
                     {b.has_enam_ref && (
                       <span style={{
                         backgroundColor: 'rgba(168, 85, 247, 0.15)',
                         border: '1px solid #a855f7',
-                        color: '#c084fc',
+                        color: '#7e22ce',
                         fontSize: '0.72rem',
                         fontWeight: 700,
                         padding: '0.2rem 0.55rem',
                         borderRadius: '12px'
                       }}>
-                        🟣 e-NAM Reference Provided
+                        {t('badges.enamRef')}
                       </span>
                     )}
 
@@ -622,49 +622,49 @@ export const TraderDirectoryPage = () => {
                       <span style={{
                         backgroundColor: 'rgba(234, 179, 8, 0.15)',
                         border: '1px solid #eab308',
-                        color: '#facc15',
+                        color: '#a16207',
                         fontSize: '0.72rem',
                         fontWeight: 700,
                         padding: '0.2rem 0.55rem',
                         borderRadius: '12px'
                       }}>
-                        📜 Udyam MSME Ref Provided
+                        {t('badges.udyamRef')}
                       </span>
                     )}
                   </div>
 
                   {/* Details */}
-                  <div style={{ fontSize: '0.83rem', color: '#c9d1d9', display: 'flex', flexDirection: 'column', gap: '0.35rem', marginBottom: '1rem' }}>
+                  <div style={{ fontSize: '0.83rem', color: '#334155', display: 'flex', flexDirection: 'column', gap: '0.35rem', marginBottom: '1rem' }}>
                     <div>
-                      <strong style={{ color: '#8b949e' }}>Location:</strong> 📍 {b.district || b.location}, {b.state || ''} {b.mandi ? `(Mandi: ${b.mandi})` : ''}
+                      <strong style={{ color: '#64748b' }}>{t('directory.locationLabel')}</strong> 📍 {b.district || b.location}, {b.state || ''} {b.mandi ? `(${t('common.mandi')}: ${b.mandi})` : ''}
                     </div>
                     <div>
-                      <strong style={{ color: '#8b949e' }}>Commodities Purchased:</strong> <span style={{ color: '#fbbf24', fontWeight: 600 }}>{b.commodities || 'Various Agricultural Commodities'}</span>
+                      <strong style={{ color: '#64748b' }}>{t('directory.commoditiesPurchased')}:</strong> <span style={{ color: '#d97706', fontWeight: 600 }}>{b.commodities || 'Various Agricultural Commodities'}</span>
                     </div>
                     <div>
-                      <strong style={{ color: '#8b949e' }}>Buying Capacity:</strong> {b.buying_capacity}
+                      <strong style={{ color: '#64748b' }}>{t('directory.buyingCapacity')}:</strong> {b.buying_capacity}
                     </div>
                   </div>
 
                   {/* Verification Checklist */}
                   <div style={{
-                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                    backgroundColor: '#f8fafc',
                     borderRadius: '8px',
                     padding: '0.6rem 0.75rem',
                     fontSize: '0.75rem',
-                    color: '#8b949e',
+                    color: '#64748b',
                     marginBottom: '1rem'
                   }}>
-                    <div style={{ color: '#4ade80' }}>✓ FarmOS Account & Phone Registered</div>
-                    <div style={{ color: '#4ade80' }}>✓ Business profile reviewed by Admin</div>
-                    <div style={{ color: '#8b949e' }}>
-                      Consent to display contact: <strong>{b.show_contact_publicly ? 'Explicitly Granted' : 'Private'}</strong>
+                    <div style={{ color: '#166534', fontWeight: 600 }}>✓ FarmOS Account & Phone Registered</div>
+                    <div style={{ color: '#166534', fontWeight: 600 }}>✓ Business profile reviewed by Admin</div>
+                    <div style={{ color: '#64748b' }}>
+                      Consent to display contact: <strong>{b.show_contact_publicly ? t('badges.explicitlyGranted') : t('badges.privateContact')}</strong>
                     </div>
                   </div>
                 </div>
 
                 {/* Contact Actions (Only rendered if show_contact_publicly is true and phone exists) */}
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', paddingTop: '0.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', paddingTop: '0.5rem', borderTop: '1px solid #e2e8f0' }}>
                   {b.show_contact_publicly && b.phone ? (
                     <>
                       <a
@@ -674,13 +674,13 @@ export const TraderDirectoryPage = () => {
                           borderRadius: '8px',
                           backgroundColor: 'rgba(34, 197, 94, 0.15)',
                           border: '1px solid #22c55e',
-                          color: '#4ade80',
+                          color: '#166534',
                           fontSize: '0.78rem',
                           fontWeight: 700,
                           textDecoration: 'none'
                         }}
                       >
-                        📞 Call {b.phone}
+                        📞 {t('common.call')} {b.phone}
                       </a>
                       <a
                         href={`https://wa.me/${b.phone.replace(/[^0-9]/g, '')}`}
@@ -691,18 +691,18 @@ export const TraderDirectoryPage = () => {
                           borderRadius: '8px',
                           backgroundColor: 'rgba(16, 185, 129, 0.15)',
                           border: '1px solid #10b981',
-                          color: '#34d399',
+                          color: '#047857',
                           fontSize: '0.78rem',
                           fontWeight: 700,
                           textDecoration: 'none'
                         }}
                       >
-                        💬 WhatsApp
+                        💬 {t('common.whatsapp')}
                       </a>
                     </>
                   ) : (
                     <span style={{ fontSize: '0.78rem', color: '#6b7280', fontStyle: 'italic' }}>
-                      🔒 Contact information kept private per buyer request
+                      🔒 {t('directory.contactPrivate')}
                     </span>
                   )}
                 </div>
