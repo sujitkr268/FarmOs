@@ -35,8 +35,10 @@ export const MarketComparison = ({ data }) => {
       calculatedFreight = Math.round(tripCost * vehiclesRequired)
       netReturn = Math.max(0, item.estimated_gross_value - calculatedFreight)
     } else if (item.estimated_freight_cost !== null && item.estimated_freight_cost !== undefined) {
-      calculatedFreight = item.estimated_freight_cost
-      netReturn = item.estimated_net_return || (item.estimated_gross_value - calculatedFreight)
+      calculatedFreight = Number(item.estimated_freight_cost)
+      const gross = Number(item.estimated_gross_value || 0)
+      const freight = Number(calculatedFreight || 0)
+      netReturn = (gross > 0 && freight > 0) ? (gross - freight) : Number(item.estimated_net_return || gross)
     }
 
     return {

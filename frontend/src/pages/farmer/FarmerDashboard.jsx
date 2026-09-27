@@ -237,10 +237,10 @@ const FarmerDashboard = () => {
     market: 'Hooghly Mandi',
     modal_price: 1850,
     estimated_gross_value: 37000,
-    estimated_freight_cost: 2400,
-    estimated_net_return: 34600,
-    estimated_distance: '45 km',
-    travel_time_mins: 72
+    estimated_freight_cost: null,
+    estimated_net_return: 37000,
+    estimated_distance: null,
+    travel_time_mins: null
   }
 
   const activeHarvest = harvests[0] || {

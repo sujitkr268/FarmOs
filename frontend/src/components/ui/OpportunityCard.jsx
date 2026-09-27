@@ -18,10 +18,10 @@ export const OpportunityCard = ({ data, onViewClick }) => {
     market: 'Hooghly Mandi',
     modal_price: 1850,
     estimated_gross_value: 37000,
-    estimated_freight_cost: 2400,
-    estimated_net_return: 34600,
-    estimated_distance: '45 km',
-    travel_time_mins: 72,
+    estimated_freight_cost: null,
+    estimated_net_return: 37000,
+    estimated_distance: null,
+    travel_time_mins: null,
     grade: 'FAQ Grade'
   }
 
@@ -30,33 +30,58 @@ export const OpportunityCard = ({ data, onViewClick }) => {
   const cropUnit = data.unit || 'kg'
   const cropGrade = bestMarket.grade || 'FAQ Grade'
 
-  const grossVal = Number(bestMarket.estimated_gross_value || bestMarket.gross_revenue || (data ? 0 : 37000))
+  // Gross Value
+  const grossVal = Number(bestMarket.estimated_gross_value || bestMarket.gross_revenue || bestMarket.gross_value || 0)
 
-  const hasFreight = (bestMarket.estimated_freight_cost !== null && bestMarket.estimated_freight_cost !== undefined) ||
-                     (bestMarket.freight !== null && bestMarket.freight !== undefined) ||
-                     (bestMarket.estimated_transport_cost !== null && bestMarket.estimated_transport_cost !== undefined && bestMarket.estimated_transport_cost !== 'Not available')
+  // Freight / Transport Cost Evaluation
+  const rawFreightCandidate = bestMarket.estimated_freight_cost ??
+                              bestMarket.freight_cost ??
+                              bestMarket.freight ??
+                              (bestMarket.estimated_transport_cost !== 'Not available' ? bestMarket.estimated_transport_cost : null)
 
-  const rawFreight = bestMarket.estimated_freight_cost ?? bestMarket.freight ?? (bestMarket.estimated_transport_cost !== 'Not available' ? bestMarket.estimated_transport_cost : null)
-  const freightCost = (hasFreight && rawFreight !== null) ? Number(rawFreight) : (data ? 0 : 2400)
+  const parsedFreight = (rawFreightCandidate !== null && rawFreightCandidate !== undefined && rawFreightCandidate !== '')
+    ? Number(rawFreightCandidate)
+    : NaN
 
-  const netReturn = grossVal > 0 ? (grossVal - freightCost) : Number(bestMarket.estimated_net_return || bestMarket.net_return || 0)
+  const hasFreightCost = !isNaN(parsedFreight) && parsedFreight > 0
+  const freightCost = hasFreightCost ? parsedFreight : 0
 
-  const distanceNum = typeof bestMarket.distance_km === 'number'
-    ? bestMarket.distance_km
-    : parseFloat(bestMarket.estimated_distance)
+  // Net Return Evaluation
+  const backendNetReturn = Number(bestMarket.estimated_net_return ?? bestMarket.net_return ?? bestMarket.estimated_net_value ?? NaN)
 
-  const hasValidDistance = !isNaN(distanceNum) && distanceNum > 0
+  let netReturn
+  if (hasFreightCost && grossVal > 0) {
+    if (!isNaN(backendNetReturn) && backendNetReturn === grossVal - freightCost) {
+      netReturn = backendNetReturn
+    } else {
+      netReturn = grossVal - freightCost
+    }
+  } else if (grossVal > 0) {
+    netReturn = grossVal
+  } else {
+    netReturn = !isNaN(backendNetReturn) ? backendNetReturn : 0
+  }
 
+  // Distance Evaluation
+  const distanceCandidate = bestMarket.distance_km ?? bestMarket.estimated_distance ?? bestMarket.distance
+  const parsedDistance = typeof distanceCandidate === 'number'
+    ? distanceCandidate
+    : parseFloat(distanceCandidate)
+
+  const hasValidDistance = !isNaN(parsedDistance) && parsedDistance > 0
   const distanceText = hasValidDistance
-    ? `${distanceNum} km away`
+    ? `${parsedDistance} km away`
     : 'Distance unavailable'
 
-  const travelMins = typeof bestMarket.travel_time_mins === 'number' && bestMarket.travel_time_mins > 0
-    ? bestMarket.travel_time_mins
-    : null
+  // Travel Time Evaluation
+  const travelMinsCandidate = bestMarket.travel_time_mins ?? bestMarket.travel_time
+  const parsedTravelMins = typeof travelMinsCandidate === 'number'
+    ? travelMinsCandidate
+    : parseFloat(travelMinsCandidate)
 
-  const travelTimeText = travelMins
-    ? `⏱️ ~${Math.round((travelMins / 60) * 10) / 10} hours`
+  const hasValidTravelTime = !isNaN(parsedTravelMins) && parsedTravelMins > 0
+  const travelTimeText = hasValidTravelTime
+    ? `⏱️ ~${Math.round((parsedTravelMins / 60) * 10) / 10} hours`
     : null
 
   const distanceInfo = travelTimeText
@@ -145,8 +170,8 @@ export const OpportunityCard = ({ data, onViewClick }) => {
 
           <div>
             <span style={{ fontSize: '0.75rem', color: '#dc2626', fontWeight: 600, display: 'block' }}>Freight Transport Cost</span>
-            <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#dc2626' }}>
-              −₹{freightCost.toLocaleString()}
+            <span style={{ fontSize: '1.1rem', fontWeight: 700, color: hasFreightCost ? '#dc2626' : '#64748b' }}>
+              {hasFreightCost ? `−₹${freightCost.toLocaleString()}` : 'Data unavailable'}
             </span>
           </div>
 
