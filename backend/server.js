@@ -101,18 +101,31 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-// Initialize Database & Seed
-const initDB = async () => {
-  await connectDB();
-  await User.createUsersTable();
-  await createPublicTradersTable();
-  await seedPublicTraders();
+let dbInitialized = false;
+const ensureDBInit = async () => {
+  if (!dbInitialized) {
+    try {
+      await connectDB();
+      await User.createUsersTable();
+      await createPublicTradersTable();
+      await seedPublicTraders();
+      dbInitialized = true;
+    } catch (err) {
+      console.error("Database initialization failed:", err.message);
+    }
+  }
 };
 
-initDB().then(() => {
+// Middleware to ensure DB is initialized on requests
+app.use(async (req, res, next) => {
+  await ensureDBInit();
+  next();
+});
+
+if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
-}).catch((err) => {
-  console.error("Database initialization failed:", err.message);
-});
+}
+
+module.exports = app;
