@@ -149,3 +149,27 @@ export const getMarketPriceHistory = async (params = {}) => {
     }
   }
 }
+
+/**
+ * Fetch Regional Demand & Supply from FarmOS Backend API
+ * @param {string} commodity - Crop/commodity name
+ */
+export const getMarketDemandSupply = async (commodity) => {
+  try {
+    const response = await API.get('/market/demand-supply', { params: { commodity } })
+    if (response && response.data) {
+      return response.data
+    }
+    throw new Error('Invalid backend response format')
+  } catch (err) {
+    console.warn('Backend demand/supply API request error:', err.message)
+    return {
+      success: false,
+      commodity: commodity || '',
+      supply_kg: 0,
+      demand_kg: 0,
+      active_harvests_count: 0,
+      active_buyers_count: 0
+    }
+  }
+}

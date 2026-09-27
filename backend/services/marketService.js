@@ -161,9 +161,9 @@ const fetchMandiPrices = async (queryParams = {}) => {
       if (varVal && typeof varVal === "string") url.searchParams.append("filters[variety]", varVal);
       if (grdVal && typeof grdVal === "string") url.searchParams.append("filters[grade]", grdVal);
 
-      // Fast-fail fetch with 600ms timeout
+      // Resilient fetch with 4000ms timeout for government API responses
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 600);
+      const timer = setTimeout(() => controller.abort(), 4000);
 
       try {
         const response = await fetch(url.toString(), {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
-import { getMarketPriceHistory } from '../../api/marketApi'
+import { getMarketPriceHistory, getMarketDemandSupply } from '../../api/marketApi'
 
 const COMMODITY_OPTIONS = [
   'Potato', 'Tomato', 'Rice', 'Wheat', 'Onion', 'Brinjal', 'Jute', 'Tea', 'Groundnut', 'Cotton', 'Maize', 'Soyabean', 'Mustard'
@@ -25,6 +25,10 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
   const [historyLoading, setHistoryLoading] = useState(false)
   const [historyError, setHistoryError] = useState(null)
   const [hoveredPoint, setHoveredPoint] = useState(null)
+
+  // Demand & Supply state
+  const [demandSupplyData, setDemandSupplyData] = useState(null)
+  const [demandLoading, setDemandLoading] = useState(false)
 
   // Sync selectedCommodity with prop cropName if provided
   useEffect(() => {
@@ -101,18 +105,47 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
     }
   }, [activeTab, selectedCommodity, selectedState, selectedMarket, dateRange])
 
+  // Fetch real demand vs supply metrics from PostgreSQL DB when Demand tab is active
+  useEffect(() => {
+    if (activeTab !== 'demand') return
+    const targetCrop = selectedCommodity || cropName || 'Potato'
+    let isMounted = true
+    setDemandLoading(true)
+
+    getMarketDemandSupply(targetCrop)
+      .then((res) => {
+        if (isMounted) {
+          setDemandSupplyData(res)
+          setDemandLoading(false)
+        }
+      })
+      .catch((err) => {
+        if (isMounted) {
+          console.error("Demand & Supply fetch error:", err)
+          setDemandSupplyData({ success: false, demand_kg: 0, supply_kg: 0, active_buyers_count: 0, active_harvests_count: 0 })
+          setDemandLoading(false)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [activeTab, selectedCommodity, cropName])
+
   const opportunities = opportunityData?.opportunities || opportunityData?.comparison || []
   const hasOpportunities = opportunities.length > 0
   const topOpp = opportunities[0] || {}
 
   // 1. Prepare data for Net Return Comparison Chart (Horizontal Bar Chart)
+  // Single source of truth: backend opportunityData calculations
   const netReturnItems = opportunities.slice(0, 5).map((item) => {
     const name = item.market || item.mandiName || 'Mandi'
     const gross = Number(item.estimated_gross_value || item.grossValue || 0)
-    const net = Number(item.estimated_net_return || item.netReturn || gross)
-    const freight = Number(item.estimated_freight_cost || item.freightCost || 0)
+    const hasFreight = item.estimated_freight_cost !== null && item.estimated_freight_cost !== undefined
+    const freight = hasFreight ? Number(item.estimated_freight_cost || item.freightCost || 0) : null
+    const net = hasFreight ? (gross - freight) : Number(item.estimated_net_return || item.netReturn || gross)
     const modalPrice = Number(item.modal_price || item.modalPrice || 0)
-    return { name, gross, net, freight, modalPrice, isTop: item === topOpp }
+    return { name, gross, net, freight, hasFreight, modalPrice, isTop: item === topOpp }
   })
 
   const maxNetReturn = Math.max(...netReturnItems.map(i => i.net), 1)
@@ -122,6 +155,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
     name: i.name,
     gross: i.gross,
     freight: i.freight,
+    hasFreight: i.hasFreight,
     net: i.net
   }))
 
@@ -256,7 +290,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
               🎯 {t('analytics.whereEarnMore') || 'Highest Net Earning Mandis'}
             </h3>
             <p style={{ fontSize: '0.83rem', color: '#64748b', margin: 0 }}>
-              {t('analytics.netReturnSubtitle') || 'Estimated net payout after deducting transport freight from gross value'}
+              {t('analytics.netReturnSubtitle') || 'Estimated net payout after deducting transport freight from gross value (1 quintal = 100 kg)'}
             </p>
           </div>
 
@@ -295,7 +329,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
                           ₹{item.net.toLocaleString()}
                         </strong>
                         <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
-                          Gross: ₹{item.gross.toLocaleString()} | Freight: −₹{item.freight.toLocaleString()}
+                          Gross: ₹{item.gross.toLocaleString()} | Freight: {item.hasFreight ? `−₹${item.freight.toLocaleString()}` : 'N/A (Origin required)'}
                         </span>
                       </div>
                     </div>
@@ -315,7 +349,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
 
               <div style={{ backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '12px', padding: '0.75rem 1rem', fontSize: '0.82rem', color: '#1e40af', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span>💡</span>
-                <span><strong>Key Insight:</strong> Highest market rate does not always equal highest net return. FarmOS automatically subtracts freight logistics cost so you know your actual take-home earning.</span>
+                <span><strong>Key Insight:</strong> Highest market rate does not always equal highest net return. FarmOS automatically converts units (1 quintal = 100 kg) and subtracts freight logistics cost so you know your actual take-home earning.</span>
               </div>
             </div>
           )}
@@ -344,8 +378,10 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               {logisticsItems.map((item, idx) => {
-                const netPct = Math.round((item.net / Math.max(item.gross, 1)) * 100)
+                const hasValidFreight = item.hasFreight && item.gross > 0
+                const netPct = hasValidFreight ? Math.min(100, Math.max(0, Math.round((item.net / item.gross) * 100))) : 100
                 const freightPct = 100 - netPct
+
                 return (
                   <div key={idx} style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1rem 1.25rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
@@ -353,15 +389,23 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
                       <span style={{ fontSize: '0.85rem', color: '#334155', fontWeight: 600 }}>Gross Value: <strong>₹{item.gross.toLocaleString()}</strong></span>
                     </div>
 
-                    <div style={{ width: '100%', height: '14px', backgroundColor: '#e2e8f0', borderRadius: '8px', overflow: 'hidden', display: 'flex', marginBottom: '0.6rem' }}>
-                      <div style={{ width: `${netPct}%`, backgroundColor: '#10b981', height: '100%' }} title="Net Return" />
-                      <div style={{ width: `${freightPct}%`, backgroundColor: '#ef4444', height: '100%' }} title="Transport Freight" />
-                    </div>
+                    {hasValidFreight ? (
+                      <>
+                        <div style={{ width: '100%', height: '14px', backgroundColor: '#e2e8f0', borderRadius: '8px', overflow: 'hidden', display: 'flex', marginBottom: '0.6rem' }}>
+                          <div style={{ width: `${netPct}%`, backgroundColor: '#10b981', height: '100%' }} title="Net Return" />
+                          <div style={{ width: `${freightPct}%`, backgroundColor: '#ef4444', height: '100%' }} title="Transport Freight" />
+                        </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#64748b' }}>
-                      <span style={{ color: '#059669', fontWeight: 700 }}>🟢 Net Return: ₹{item.net.toLocaleString()} ({netPct}%)</span>
-                      <span style={{ color: '#dc2626', fontWeight: 700 }}>🔴 Freight Cost: −₹{item.freight.toLocaleString()} ({freightPct}%)</span>
-                    </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#64748b' }}>
+                          <span style={{ color: '#059669', fontWeight: 700 }}>🟢 Net Return: ₹{item.net.toLocaleString()} ({netPct}%)</span>
+                          <span style={{ color: '#dc2626', fontWeight: 700 }}>🔴 Freight Cost: −₹{item.freight.toLocaleString()} ({freightPct}%)</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div style={{ backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '10px', padding: '0.65rem 0.9rem', fontSize: '0.82rem', color: '#1e40af' }}>
+                        ℹ️ Transport cost calculation unavailable for this route. Enter origin location to calculate freight logistics.
+                      </div>
+                    )}
                   </div>
                 )
               })}
@@ -723,33 +767,51 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
-            {/* Farmer Supply Card */}
-            <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '16px', padding: '1.25rem' }}>
-              <span style={{ fontSize: '0.8rem', color: '#166534', fontWeight: 700, textTransform: 'uppercase', display: 'block', marginBottom: '0.3rem' }}>
-                🌾 Available Harvest Supply
-              </span>
-              <strong style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', display: 'block', marginBottom: '0.2rem' }}>
-                {Number(quantity).toLocaleString()} {unit}
-              </strong>
-              <span style={{ fontSize: '0.82rem', color: '#334155' }}>
-                Listed quantity by farmer for current season sale
+          {demandLoading ? (
+            <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '2rem', textAlign: 'center' }}>
+              <span style={{ fontSize: '1rem', color: '#059669', fontWeight: 600 }}>
+                ⏳ Calculating real-time demand and harvest supply from database...
               </span>
             </div>
+          ) : !demandSupplyData || demandSupplyData.demand_kg === 0 || demandSupplyData.active_buyers_count === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem 1.5rem', backgroundColor: '#f8fafc', borderRadius: '14px', border: '1px dashed #cbd5e1' }}>
+              <span style={{ fontSize: '2.2rem', display: 'block', marginBottom: '0.6rem' }}>🏢</span>
+              <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#334155', marginBottom: '0.3rem' }}>
+                No active buyer demand found for {selectedCommodity || cropName || 'this commodity'}.
+              </h4>
+              <p style={{ fontSize: '0.84rem', color: '#64748b', margin: 0 }}>
+                There are currently no active buyer procurement listings for this crop in the database.
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
+              {/* Farmer Supply Card */}
+              <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '16px', padding: '1.25rem' }}>
+                <span style={{ fontSize: '0.8rem', color: '#166534', fontWeight: 700, textTransform: 'uppercase', display: 'block', marginBottom: '0.3rem' }}>
+                  🌾 Available Harvest Supply
+                </span>
+                <strong style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', display: 'block', marginBottom: '0.2rem' }}>
+                  {(demandSupplyData.supply_kg || Number(quantity) || 0).toLocaleString()} kg
+                </strong>
+                <span style={{ fontSize: '0.82rem', color: '#334155' }}>
+                  Active listed harvest quantity in database ({demandSupplyData.active_harvests_count || 1} listings)
+                </span>
+              </div>
 
-            {/* Regional Buyer Demand Card */}
-            <div style={{ backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '16px', padding: '1.25rem' }}>
-              <span style={{ fontSize: '0.8rem', color: '#1e40af', fontWeight: 700, textTransform: 'uppercase', display: 'block', marginBottom: '0.3rem' }}>
-                🏢 Regional Procurement Demand
-              </span>
-              <strong style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', display: 'block', marginBottom: '0.2rem' }}>
-                1,500 {unit}
-              </strong>
-              <span style={{ fontSize: '0.82rem', color: '#334155' }}>
-                Active demand from verified regional wholesalers & processing units
-              </span>
+              {/* Regional Buyer Demand Card */}
+              <div style={{ backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '16px', padding: '1.25rem' }}>
+                <span style={{ fontSize: '0.8rem', color: '#1e40af', fontWeight: 700, textTransform: 'uppercase', display: 'block', marginBottom: '0.3rem' }}>
+                  🏢 Regional Procurement Demand
+                </span>
+                <strong style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', display: 'block', marginBottom: '0.2rem' }}>
+                  {demandSupplyData.demand_kg.toLocaleString()} kg
+                </strong>
+                <span style={{ fontSize: '0.82rem', color: '#334155' }}>
+                  Active procurement demand from {demandSupplyData.active_buyers_count} verified buyers & regional wholesalers
+                </span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
     </div>

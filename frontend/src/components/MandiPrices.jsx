@@ -99,9 +99,9 @@ export const MandiPrices = () => {
               {t('market.title')}
             </h2>
             <span style={{
-              backgroundColor: 'var(--ag-mint-light, #dcfce7)',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
-              color: 'var(--ag-forest-mid, #166534)',
+              backgroundColor: apiSource === 'live_agmarknet' ? 'var(--ag-mint-light, #dcfce7)' : 'rgba(234, 179, 8, 0.15)',
+              border: apiSource === 'live_agmarknet' ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(234, 179, 8, 0.4)',
+              color: apiSource === 'live_agmarknet' ? 'var(--ag-forest-mid, #166534)' : '#854d0e',
               fontSize: '0.75rem',
               fontWeight: 800,
               padding: '0.25rem 0.75rem',
@@ -109,7 +109,7 @@ export const MandiPrices = () => {
               textTransform: 'uppercase',
               letterSpacing: '0.04em'
             }}>
-              Govt of India Agmarknet
+              {apiSource === 'live_agmarknet' ? '🟢 Live Agmarknet Data' : 'ℹ️ Latest Available Agmarknet Record'}
             </span>
           </div>
           <p style={{ color: 'var(--ag-text-muted, #647d70)', fontSize: '0.92rem', margin: 0 }}>
