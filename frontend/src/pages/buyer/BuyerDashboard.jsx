@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import API from '../../api/axios'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
 import TrustBadge from '../../components/TrustBadge'
 import { getBuyerOrdersApi } from '../../api/orderApi'
 import { MandiPrices } from '../../components/MandiPrices'
-import { useNavigate } from 'react-router-dom'
 
 const BuyerDashboard = () => {
   const { user } = useAuth()
   const { t } = useLanguage()
-  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
 
-  const [activeTab, setActiveTab] = useState('marketplace') // 'marketplace' | 'orders' | 'prices'
+  const initialTab = searchParams.get('tab') || 'marketplace'
+  const [activeTab, setActiveTab] = useState(initialTab) // 'marketplace' | 'orders' | 'prices'
 
   // Orders State
   const [orders, setOrders] = useState([])
@@ -29,6 +30,19 @@ const BuyerDashboard = () => {
   const [orderSubmitting, setOrderSubmitting] = useState(false)
   const [orderError, setOrderError] = useState('')
   const [orderSuccess, setOrderSuccess] = useState('')
+
+  // Sync state with URL search param
+  useEffect(() => {
+    const tabParam = searchParams.get('tab')
+    if (tabParam && tabParam !== activeTab) {
+      setActiveTab(tabParam)
+    }
+  }, [searchParams])
+
+  const handleTabChange = (newTab) => {
+    setActiveTab(newTab)
+    setSearchParams({ tab: newTab })
+  }
 
   // Fetch Buyer's placed orders
   const fetchOrders = async () => {
@@ -66,7 +80,8 @@ const BuyerDashboard = () => {
 
   const handleOpenOrderModal = (harvest) => {
     setSelectedHarvest(harvest)
-    setOrderQuantity(String(harvest.quantity || '1000'))
+    const defaultQty = Math.min(Number(harvest.quantity || 1000), 1500)
+    setOrderQuantity(String(defaultQty))
     setOrderError('')
     setOrderSuccess('')
   }
@@ -78,7 +93,7 @@ const BuyerDashboard = () => {
 
     const qty = Number(orderQuantity)
     if (isNaN(qty) || qty <= 0) {
-      setOrderError('Order quantity must be greater than zero.')
+      setOrderError('Order quantity must be a positive number greater than zero.')
       return
     }
 
@@ -97,6 +112,7 @@ const BuyerDashboard = () => {
       setSelectedHarvest(null)
       fetchOrders()
       fetchMarketplace()
+      handleTabChange('orders')
     } catch (err) {
       setOrderError(err.response?.data?.message || 'Failed to place purchase order.')
     } finally {
@@ -104,19 +120,21 @@ const BuyerDashboard = () => {
     }
   }
 
+  const targetCommodity = user?.commodities || 'Potato'
+  const targetQuantity = user?.buying_capacity || '1,500 kg'
+  const targetGrade = user?.required_grade || 'FAQ Grade'
+
+  // Strict crop matching for buyer procurement
   const filteredHarvests = harvests.filter(h => {
-    if (!searchQuery.trim()) return true
+    const matchesCrop = targetCommodity ? (h.crop_name?.toLowerCase().includes(targetCommodity.toLowerCase()) || targetCommodity.toLowerCase().includes(h.crop_name?.toLowerCase())) : true
+    if (!searchQuery.trim()) return matchesCrop
     const q = searchQuery.toLowerCase()
-    return (
+    return matchesCrop && (
       h.crop_name?.toLowerCase().includes(q) ||
       h.location?.toLowerCase().includes(q) ||
       h.description?.toLowerCase().includes(q)
     )
   })
-
-  const targetCommodity = user?.commodities || 'Potato'
-  const targetQuantity = '1,500 kg'
-  const targetGrade = 'FAQ Grade'
 
   return (
     <div style={{ color: '#0f172a' }}>
@@ -156,7 +174,8 @@ const BuyerDashboard = () => {
               border: '1px solid #cbd5e1',
               color: '#334155',
               fontWeight: 700,
-              fontSize: '0.88rem'
+              fontSize: '0.88rem',
+              textDecoration: 'none'
             }}
           >
             🏢 Business Profile
@@ -190,10 +209,9 @@ const BuyerDashboard = () => {
             📋 Current Procurement Requirement
           </span>
           <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', alignItems: 'center', fontSize: '0.95rem' }}>
-            <span>🌾 Crop: <strong style={{ color: '#0f172a' }}>{targetCommodity}</strong></span>
-            <span>📦 Requirement: <strong style={{ color: '#0f172a' }}>{targetQuantity}</strong></span>
-            <span>🏷 Quality: <strong style={{ color: '#15803d' }}>{targetGrade}</strong></span>
-            <span>📅 Required By: <strong style={{ color: '#0f172a' }}>Immediate / Today</strong></span>
+            <span>🌾 Commodity: <strong style={{ color: '#0f172a' }}>{targetCommodity}</strong></span>
+            <span>📦 Capacity: <strong style={{ color: '#0f172a' }}>{targetQuantity}</strong></span>
+            <span>🏷 Required Quality: <strong style={{ color: '#15803d' }}>{targetGrade}</strong></span>
           </div>
         </div>
 
@@ -213,7 +231,7 @@ const BuyerDashboard = () => {
         marginBottom: '1.75rem'
       }}>
         <button
-          onClick={() => setActiveTab('marketplace')}
+          onClick={() => handleTabChange('marketplace')}
           style={{
             padding: '0.6rem 1.2rem',
             borderRadius: '10px',
@@ -221,13 +239,15 @@ const BuyerDashboard = () => {
             fontWeight: activeTab === 'marketplace' ? 700 : 500,
             color: activeTab === 'marketplace' ? '#ffffff' : '#64748b',
             backgroundColor: activeTab === 'marketplace' ? '#10b981' : 'transparent',
+            border: 'none',
+            cursor: 'pointer',
             transition: 'all 0.2s ease'
           }}
         >
-          🌾 Matching Farmers & Harvests ({filteredHarvests.length})
+          🌾 Matching Farmers & Produce ({filteredHarvests.length})
         </button>
         <button
-          onClick={() => setActiveTab('orders')}
+          onClick={() => handleTabChange('orders')}
           style={{
             padding: '0.6rem 1.2rem',
             borderRadius: '10px',
@@ -235,13 +255,15 @@ const BuyerDashboard = () => {
             fontWeight: activeTab === 'orders' ? 700 : 500,
             color: activeTab === 'orders' ? '#ffffff' : '#64748b',
             backgroundColor: activeTab === 'orders' ? '#10b981' : 'transparent',
+            border: 'none',
+            cursor: 'pointer',
             transition: 'all 0.2s ease'
           }}
         >
-          📦 My Orders ({orders.length})
+          📦 My Placed Orders ({orders.length})
         </button>
         <button
-          onClick={() => setActiveTab('prices')}
+          onClick={() => handleTabChange('prices')}
           style={{
             padding: '0.6rem 1.2rem',
             borderRadius: '10px',
@@ -249,6 +271,8 @@ const BuyerDashboard = () => {
             fontWeight: activeTab === 'prices' ? 700 : 500,
             color: activeTab === 'prices' ? '#ffffff' : '#64748b',
             backgroundColor: activeTab === 'prices' ? '#10b981' : 'transparent',
+            border: 'none',
+            cursor: 'pointer',
             transition: 'all 0.2s ease'
           }}
         >
@@ -263,7 +287,7 @@ const BuyerDashboard = () => {
           <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem' }}>
             <input
               type="text"
-              placeholder="Search by crop, location, or quality..."
+              placeholder="Search by location, description, or crop..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
@@ -283,7 +307,7 @@ const BuyerDashboard = () => {
             </div>
           ) : filteredHarvests.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '3rem 1.5rem', backgroundColor: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-              🌾 No matching farmer produce listings found for your search criteria.
+              🌾 No matching farmer produce listings found for your commodity requirement ({targetCommodity}).
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
@@ -299,40 +323,19 @@ const BuyerDashboard = () => {
                   boxShadow: '0 4px 16px rgba(0,0,0,0.03)'
                 }}>
                   <div>
-                    {/* Top Bar: Crop Name & Status */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                      <div>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                          🌾 {item.crop_name}
-                        </h3>
-                        <span style={{ fontSize: '0.82rem', color: '#15803d', fontWeight: 600 }}>
-                          📦 {item.quantity} {item.unit || 'kg'} • 🏷 {item.grade || 'FAQ Grade'}
-                        </span>
-                      </div>
-
-                      <span style={{ backgroundColor: '#f0fdf4', border: '1px solid #a7f3d0', color: '#15803d', fontSize: '0.75rem', fontWeight: 700, padding: '0.2rem 0.55rem', borderRadius: '8px' }}>
-                        ₹{item.price}/{item.unit || 'kg'}
+                      <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                        🌾 {item.crop_name}
+                      </h3>
+                      <span style={{ backgroundColor: '#dcfce7', color: '#15803d', fontSize: '0.72rem', fontWeight: 800, padding: '0.2rem 0.6rem', borderRadius: '10px' }}>
+                        {item.grade || 'FAQ Grade'}
                       </span>
                     </div>
 
-                    {/* Location & Farmer info */}
-                    <div style={{ backgroundColor: '#f8fafc', borderRadius: '10px', padding: '0.65rem 0.85rem', marginBottom: '1rem', fontSize: '0.85rem', color: '#334155' }}>
-                      <div style={{ fontWeight: 600, color: '#0f172a' }}>📍 Location: {item.location || 'West Bengal'}</div>
-                      <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '0.2rem' }}>Supplier ID: Farmer #{item.farmer_id}</div>
-                    </div>
-
-                    {/* SECTION 11: MATCH REASONS CHECKLIST */}
-                    <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '12px', padding: '0.75rem 0.9rem', marginBottom: '1.25rem', fontSize: '0.82rem' }}>
-                      <div style={{ fontWeight: 800, color: '#15803d', marginBottom: '0.4rem' }}>
-                        MATCHING REASONS
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.3rem', color: '#166534' }}>
-                        <div>✓ Crop match</div>
-                        <div>✓ Quantity fit</div>
-                        <div>✓ Grade match</div>
-                        <div>✓ Location suitable</div>
-                        <div>✓ Availability matches</div>
-                      </div>
+                    <div style={{ fontSize: '0.88rem', color: '#475569', display: 'flex', flexDirection: 'column', gap: '0.35rem', marginBottom: '1rem' }}>
+                      <div>📦 Available Stock: <strong>{Number(item.quantity).toLocaleString()} {item.unit || 'kg'}</strong></div>
+                      <div>📍 Location: <strong>{item.location || 'West Bengal'}</strong></div>
+                      <div>🏷 Price: <strong style={{ color: '#10b981', fontSize: '1.05rem' }}>₹{Number(item.price || 0).toLocaleString()}</strong> /{item.unit || 'kg'}</div>
                     </div>
                   </div>
 
@@ -340,18 +343,17 @@ const BuyerDashboard = () => {
                     onClick={() => handleOpenOrderModal(item)}
                     style={{
                       width: '100%',
-                      padding: '0.75rem',
+                      padding: '0.7rem',
                       backgroundColor: '#10b981',
                       color: '#ffffff',
                       fontWeight: 800,
-                      fontSize: '0.9rem',
-                      borderRadius: '12px',
+                      fontSize: '0.88rem',
+                      borderRadius: '10px',
                       border: 'none',
-                      cursor: 'pointer',
-                      boxShadow: '0 4px 12px rgba(16, 185, 129, 0.25)'
+                      cursor: 'pointer'
                     }}
                   >
-                    🤝 Place Purchase Order
+                    🤝 Create Purchase Order
                   </button>
                 </div>
               ))}
@@ -360,95 +362,164 @@ const BuyerDashboard = () => {
         </div>
       )}
 
-      {/* TAB 2: MY ORDERS */}
+      {/* TAB 2: MY PLACED ORDERS */}
       {activeTab === 'orders' && (
-        <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '20px', padding: '1.5rem' }}>
-          <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', marginBottom: '1rem' }}>
-            📦 Placed Purchase Orders ({orders.length})
-          </h3>
+        <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '20px', padding: '1.75rem' }}>
+          <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0f172a', marginBottom: '1.25rem' }}>
+            📦 My Submitted Purchase Orders ({orders.length})
+          </h2>
 
           {ordersLoading ? (
-            <div style={{ textAlign: 'center', padding: '2rem' }}>Loading orders...</div>
+            <div style={{ textAlign: 'center', padding: '2rem' }}>⏳ Loading your orders...</div>
           ) : orders.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '3rem 1.5rem', backgroundColor: '#f8fafc', borderRadius: '14px', color: '#64748b' }}>
-              No purchase orders placed yet. Browse matching farmer produce to place an order.
+            <div style={{ textAlign: 'center', padding: '3rem 1.5rem', backgroundColor: '#f8fafc', borderRadius: '16px' }}>
+              📦 No purchase orders placed yet. Browse matching farmer produce to order.
             </div>
           ) : (
-            <div style={{ display: 'grid', gap: '1rem' }}>
-              {orders.map((o, idx) => (
-                <div key={idx} style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                  <div>
-                    <strong style={{ fontSize: '1rem', color: '#0f172a', display: 'block' }}>
-                      Order #{o.id} — {o.crop_name}
-                    </strong>
-                    <span style={{ fontSize: '0.85rem', color: '#64748b' }}>
-                      Quantity: <strong>{o.quantity} {o.unit || 'kg'}</strong> | Total: <strong>₹{o.total_price}</strong>
-                    </span>
-                  </div>
-                  <span style={{
-                    backgroundColor: o.status === 'accepted' ? '#dcfce7' : o.status === 'rejected' ? '#fef2f2' : '#fef3c7',
-                    color: o.status === 'accepted' ? '#15803d' : o.status === 'rejected' ? '#dc2626' : '#d97706',
-                    fontSize: '0.8rem',
-                    fontWeight: 800,
-                    padding: '0.3rem 0.75rem',
-                    borderRadius: '20px',
-                    textTransform: 'uppercase'
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {orders.map((ord) => {
+                const isPending = ord.status === 'pending'
+                const isAccepted = ord.status === 'accepted'
+
+                return (
+                  <div key={ord.id} style={{
+                    backgroundColor: isPending ? '#fffbebf' : isAccepted ? '#f0fdf4' : '#fef2f2',
+                    border: `1px solid ${isPending ? '#fde68a' : isAccepted ? '#bbf7d0' : '#fecaca'}`,
+                    borderRadius: '16px',
+                    padding: '1.25rem',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '1rem'
                   }}>
-                    {o.status}
-                  </span>
-                </div>
-              ))}
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.3rem' }}>
+                        <strong style={{ fontSize: '1.05rem', color: '#0f172a' }}>
+                          Order #{ord.id} — 🌾 {ord.crop_name || 'Produce'}
+                        </strong>
+                        <span style={{
+                          backgroundColor: isPending ? '#fef3c7' : isAccepted ? '#dcfce7' : '#fee2e2',
+                          color: isPending ? '#d97706' : isAccepted ? '#15803d' : '#b91c1c',
+                          fontSize: '0.72rem',
+                          fontWeight: 800,
+                          padding: '0.2rem 0.65rem',
+                          borderRadius: '12px',
+                          textTransform: 'uppercase'
+                        }}>
+                          {ord.status}
+                        </span>
+                      </div>
+
+                      <div style={{ fontSize: '0.88rem', color: '#334155', display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+                        <span>📦 Quantity: <strong>{Number(ord.quantity).toLocaleString()} {ord.unit || 'kg'}</strong></span>
+                        <span>💰 Total Value: <strong style={{ color: '#10b981' }}>₹{Number(ord.total_price || 0).toLocaleString()}</strong></span>
+                        <span>🌾 Farmer: <strong>{ord.farmer_name || 'Verified Farmer'}</strong></span>
+                        {ord.farmer_phone && <span>📞 Contact: <strong>{ord.farmer_phone}</strong></span>}
+                        <span>📅 Date: {new Date(ord.created_at).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           )}
         </div>
       )}
 
-      {/* TAB 3: LIVE MANDI PRICES */}
+      {/* TAB 3: LIVE MANDI BENCHMARK RATES */}
       {activeTab === 'prices' && (
         <MandiPrices />
       )}
 
       {/* ORDER PLACEMENT MODAL */}
       {selectedHarvest && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
-          <div style={{ backgroundColor: '#ffffff', borderRadius: '20px', padding: '1.75rem', maxWidth: '480px', width: '100%', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem' }}>
-              Place Order for {selectedHarvest.crop_name}
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(15, 23, 42, 0.6)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '1rem'
+        }}>
+          <div style={{
+            backgroundColor: '#ffffff',
+            borderRadius: '20px',
+            padding: '2rem',
+            maxWidth: '500px',
+            width: '100%',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
+          }}>
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#0f172a', margin: '0 0 1rem 0' }}>
+              Create Purchase Order
             </h3>
-            <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1.25rem' }}>
-              Available Stock: <strong>{selectedHarvest.quantity} {selectedHarvest.unit}</strong> @ ₹{selectedHarvest.price}/{selectedHarvest.unit}
-            </p>
 
-            {orderError && <div style={{ backgroundColor: '#fef2f2', color: '#dc2626', padding: '0.75rem', borderRadius: '10px', fontSize: '0.85rem', marginBottom: '1rem' }}>⚠️ {orderError}</div>}
+            <div style={{ backgroundColor: '#f8fafc', padding: '1rem', borderRadius: '12px', marginBottom: '1.25rem', fontSize: '0.9rem' }}>
+              <div>🌾 Commodity: <strong>{selectedHarvest.crop_name}</strong></div>
+              <div>🏷 Quality Grade: <strong>{selectedHarvest.grade || 'FAQ Grade'}</strong></div>
+              <div>📦 Available Stock: <strong>{Number(selectedHarvest.quantity).toLocaleString()} {selectedHarvest.unit || 'kg'}</strong></div>
+              <div>💰 Unit Price: <strong>₹{Number(selectedHarvest.price).toLocaleString()} /{selectedHarvest.unit || 'kg'}</strong></div>
+            </div>
+
+            {orderError && (
+              <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', padding: '0.75rem', borderRadius: '10px', fontSize: '0.85rem', marginBottom: '1rem' }}>
+                ⚠️ {orderError}
+              </div>
+            )}
 
             <form onSubmit={handlePlaceOrderSubmit}>
               <div style={{ marginBottom: '1.25rem' }}>
-                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 700, color: '#334155', marginBottom: '0.4rem' }}>
-                  Order Quantity ({selectedHarvest.unit}) *
+                <label style={{ display: 'block', fontSize: '0.84rem', fontWeight: 700, color: '#334155', marginBottom: '0.4rem' }}>
+                  Requested Quantity ({selectedHarvest.unit || 'kg'}) *
                 </label>
                 <input
                   type="number"
+                  min="1"
+                  max={selectedHarvest.quantity}
                   value={orderQuantity}
                   onChange={(e) => setOrderQuantity(e.target.value)}
-                  style={{ width: '100%', padding: '0.7rem', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '1rem' }}
+                  style={{
+                    width: '100%',
+                    padding: '0.7rem 1rem',
+                    borderRadius: '10px',
+                    border: '1px solid #cbd5e1',
+                    fontSize: '1rem',
+                    fontWeight: 700
+                  }}
                   required
                 />
+                <span style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.3rem', display: 'block' }}>
+                  Max allowed: min({Number(selectedHarvest.quantity).toLocaleString()} {selectedHarvest.unit}, buyer requirement)
+                </span>
+              </div>
+
+              <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', padding: '0.85rem 1rem', borderRadius: '12px', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.84rem', color: '#166534', fontWeight: 700 }}>Estimated Total:</span>
+                <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#10b981' }}>
+                  ₹{(Number(orderQuantity || 0) * Number(selectedHarvest.price || 0)).toLocaleString()}
+                </span>
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
                 <button
                   type="button"
                   onClick={() => setSelectedHarvest(null)}
-                  style={{ padding: '0.65rem 1.25rem', borderRadius: '10px', border: '1px solid #cbd5e1', backgroundColor: '#f8fafc', color: '#475569', fontWeight: 700 }}
+                  style={{ padding: '0.65rem 1.2rem', backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '10px', color: '#334155', fontWeight: 700, cursor: 'pointer' }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={orderSubmitting}
-                  style={{ padding: '0.65rem 1.5rem', borderRadius: '10px', border: 'none', backgroundColor: '#10b981', color: '#ffffff', fontWeight: 800 }}
+                  style={{ padding: '0.65rem 1.4rem', backgroundColor: '#10b981', color: '#ffffff', fontWeight: 800, borderRadius: '10px', border: 'none', cursor: 'pointer' }}
                 >
-                  {orderSubmitting ? 'Placing Order...' : 'Confirm Order'}
+                  {orderSubmitting ? 'Submitting...' : 'Submit Order'}
                 </button>
               </div>
             </form>

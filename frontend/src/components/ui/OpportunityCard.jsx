@@ -141,13 +141,19 @@ export const OpportunityCard = ({ data, onViewClick }) => {
         <h4 style={{ fontSize: '0.88rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.6rem' }}>
           {t('opportunity.whyThisOpp')}
         </h4>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.4rem', fontSize: '0.82rem', color: '#15803d', fontWeight: 600 }}>
-          <div>✓ Price benchmark</div>
-          <div>✓ Distance suitable</div>
-          <div>✓ Logistics cost-effective</div>
-          <div>✓ Quantity fit</div>
-          <div>✓ Buyer demand active</div>
-          <div>✓ Quality grade match</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '0.4rem', fontSize: '0.82rem', color: '#15803d', fontWeight: 600 }}>
+          {((data?.reasons || bestMarket?.reasons || []).length > 0) ? (
+            (data?.reasons || bestMarket?.reasons).map((reason, rIdx) => (
+              <div key={rIdx}>✓ {reason}</div>
+            ))
+          ) : (
+            <>
+              <div>✓ Reported Agmarknet price benchmark</div>
+              <div>✓ Road freight distance evaluated</div>
+              <div>✓ Quality grade compatible</div>
+              <div>✓ Earning net return maximized</div>
+            </>
+          )}
         </div>
       </div>
 

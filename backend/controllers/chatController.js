@@ -9,12 +9,20 @@ const INDIAN_STATES = [
   "Madhya Pradesh", "Odisha", "Kerala", "Andhra Pradesh", "Telangana", "Assam"
 ];
 
-const COMMODITIES = [
-  "Potato", "Onion", "Rice", "Wheat", "Tomato", "Garlic", "Ginger",
-  "Apple", "Banana", "Mango", "Maize", "Cotton", "Mustard", "Soyabean"
-];
+const COMMODITY_MAP = {
+  "potato": "Potato", "आलू": "Potato", "আলু": "Potato",
+  "tomato": "Tomato", "टमाटर": "Tomato", "টমেটো": "Tomato",
+  "rice": "Rice", "paddy": "Rice", "चावल": "Rice", "धान": "Rice", "ধান": "Rice",
+  "wheat": "Wheat", "गेहूं": "Wheat", "গম": "Wheat",
+  "onion": "Onion", "प्याज": "Onion", "পেঁয়াজ": "Onion",
+  "jute": "Jute", "पटसन": "Jute", "পাট": "Jute",
+  "mustard": "Mustard", "सरसों": "Mustard", "সরষে": "Mustard",
+  "tea": "Tea", "चाय": "Tea", "চা": "Tea",
+  "brinjal": "Brinjal", "eggplant": "Brinjal", "बैंगन": "Brinjal", "বেগুন": "Brinjal",
+  "maize": "Maize", "corn": "Maize", "मक्का": "Maize",
+  "mango": "Mango", "आम": "Mango", "আম": "Mango"
+};
 
-// Determine intent: opportunity, market price query, weather, or general
 const detectIntent = (text) => {
   const lower = text.toLowerCase();
 
@@ -22,30 +30,31 @@ const detectIntent = (text) => {
     "where should i sell", "where to sell", "best market", "best selling",
     "best opportunity", "best return", "highest price", "highest return",
     "opportunity", "compare market", "compare prices", "which mandi", "which market",
-    "freight", "transport", "vehicle", "truck", "logistics", "net return", "shipping cost", "delivery cost"
+    "freight", "transport", "vehicle", "truck", "logistics", "net return", "shipping cost", "delivery cost",
+    "कहाँ बेचूँ", "कहाँ बेचना", "मंडी तुलना", "सबसे अच्छी मंडी"
   ];
 
   const marketKeywords = [
     "mandi", "market", "price", "rate", "cost", "modal", "cheapest",
-    "potato", "onion", "rice", "wheat", "tomato", "commodity", "quintal"
+    "potato", "onion", "rice", "wheat", "tomato", "commodity", "quintal",
+    "bhav", "भाव", "कीमत", "मूल्य", "दर", "dam", "দাম", "कया भाव है", "क्या भाव"
   ];
 
   const weatherKeywords = [
     "weather", "rain", "rainfall", "temperature", "forecast", "wind",
-    "humidity", "precipitation", "climate", "kolkata"
+    "humidity", "precipitation", "climate", "kolkata", "मौसम", "बारिश", "तापमान"
   ];
 
   const isOpportunity = opportunityKeywords.some((kw) => lower.includes(kw));
-  const isMarket = marketKeywords.some((kw) => lower.includes(kw));
+  const isMarket = marketKeywords.some((kw) => lower.includes(kw)) || Object.keys(COMMODITY_MAP).some((kw) => lower.includes(kw));
   const isWeather = weatherKeywords.some((kw) => lower.includes(kw));
 
   if (isOpportunity) return "opportunity";
   if (isMarket) return "market";
   if (isWeather) return "weather";
-  return "general";
+  return "market"; // Default to market intent for agricultural queries to ensure context availability
 };
 
-// Extract state and commodity parameters for Mandi search
 const extractMarketParams = (text) => {
   const lower = text.toLowerCase();
 
@@ -58,9 +67,9 @@ const extractMarketParams = (text) => {
   }
 
   let matchedCommodity = "Potato";
-  for (const cmd of COMMODITIES) {
-    if (lower.includes(cmd.toLowerCase())) {
-      matchedCommodity = cmd;
+  for (const [kw, normName] of Object.entries(COMMODITY_MAP)) {
+    if (lower.includes(kw)) {
+      matchedCommodity = normName;
       break;
     }
   }
@@ -68,12 +77,10 @@ const extractMarketParams = (text) => {
   return { state: matchedState, commodity: matchedCommodity };
 };
 
-// Extract crop, quantity, unit, and state for Opportunity Engine comparison
 const extractOpportunityParams = (text) => {
   const lower = text.toLowerCase();
   const base = extractMarketParams(text);
 
-  // Extract numeric quantity if mentioned (e.g., "500 kg", "5 quintal", "10 ton", "1000")
   let quantity = 500;
   let unit = "kg";
 
@@ -96,7 +103,6 @@ const extractOpportunityParams = (text) => {
   };
 };
 
-// ================= POST CHAT MESSAGE =================
 const processChatMessage = async (req, res) => {
   try {
     const { message, language } = req.body;
@@ -105,7 +111,7 @@ const processChatMessage = async (req, res) => {
     if (!message || typeof message !== "string" || !message.trim()) {
       return res.status(400).json({
         success: false,
-        message: 'User message is required. Example payload: { "message": "Where should I sell my 500 kg potato?", "language": "hi" }'
+        message: 'User message is required. Example payload: { "message": "What is the current price of tomato?", "language": "en" }'
       });
     }
 
@@ -123,17 +129,19 @@ const processChatMessage = async (req, res) => {
       }
     }
 
-    // 2. Handle Live Mandi Market Context
-    if (intentType === "market" && !contextData) {
+    // 2. Handle Live Mandi Market Context (Default or Market)
+    if ((intentType === "market" || !contextData) && intentType !== "weather") {
       try {
         const { state, commodity } = extractMarketParams(trimmedMsg);
-        const marketResult = await fetchMandiPrices({ state, commodity, limit: 10 });
+        const marketResult = await fetchMandiPrices({ state, commodity, limit: 12 });
         if (marketResult && marketResult.success) {
           contextData = {
             requested_state: state,
             requested_commodity: commodity,
             total_records: marketResult.total || marketResult.count,
-            records: marketResult.data || []
+            records: marketResult.data || [],
+            source: marketResult.source || "agmarknet_record_store",
+            warning: marketResult.warning || null
           };
         }
       } catch (mErr) {
@@ -144,7 +152,7 @@ const processChatMessage = async (req, res) => {
     // 3. Handle Live Weather Context
     if (intentType === "weather") {
       try {
-        const weatherResult = await fetchWeatherData(22.5726, 88.3639); // Default Kolkata
+        const weatherResult = await fetchWeatherData(22.5726, 88.3639);
         if (weatherResult && weatherResult.success) {
           contextData = weatherResult.data;
         }
