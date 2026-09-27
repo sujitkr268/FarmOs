@@ -10,15 +10,15 @@ const INDIAN_STATES = [
 ];
 
 const COMMODITY_MAP = {
-  "potato": "Potato", "आलू": "Potato", "আলু": "Potato",
-  "tomato": "Tomato", "टमाटर": "Tomato", "টমেটো": "Tomato",
+  "potato": "Potato", "potatoes": "Potato", "आलू": "Potato", "আলু": "Potato",
+  "tomato": "Tomato", "tomatoes": "Tomato", "टमाटर": "Tomato", "টমেটো": "Tomato",
   "rice": "Rice", "paddy": "Rice", "चावल": "Rice", "धान": "Rice", "ধান": "Rice",
   "wheat": "Wheat", "गेहूं": "Wheat", "গম": "Wheat",
-  "onion": "Onion", "प्याज": "Onion", "পেঁয়াজ": "Onion",
+  "onion": "Onion", "onions": "Onion", "प्याज": "Onion", "পেঁয়াজ": "Onion",
   "jute": "Jute", "पटसन": "Jute", "পাট": "Jute",
   "mustard": "Mustard", "सरसों": "Mustard", "সরষে": "Mustard",
   "tea": "Tea", "चाय": "Tea", "চা": "Tea",
-  "brinjal": "Brinjal", "eggplant": "Brinjal", "बैंगन": "Brinjal", "বেগুন": "Brinjal",
+  "brinjal": "Brinjal", "brinjals": "Brinjal", "eggplant": "Brinjal", "eggplants": "Brinjal", "बैंगन": "Brinjal", "বেগুন": "Brinjal",
   "maize": "Maize", "corn": "Maize", "मक्का": "Maize",
   "mango": "Mango", "आम": "Mango", "আম": "Mango"
 };
@@ -58,7 +58,7 @@ const detectIntent = (text) => {
 const extractMarketParams = (text) => {
   const lower = text.toLowerCase();
 
-  let matchedState = "West Bengal";
+  let matchedState = "";
   for (const st of INDIAN_STATES) {
     if (lower.includes(st.toLowerCase())) {
       matchedState = st;
@@ -66,7 +66,7 @@ const extractMarketParams = (text) => {
     }
   }
 
-  let matchedCommodity = "Potato";
+  let matchedCommodity = "";
   for (const [kw, normName] of Object.entries(COMMODITY_MAP)) {
     if (lower.includes(kw)) {
       matchedCommodity = normName;

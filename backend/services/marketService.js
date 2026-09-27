@@ -100,13 +100,16 @@ const filterRecords = (records, queryParams = {}) => {
     return true;
   });
 
-  // If specific filters match nothing, try matching commodity only
-  // If a specific commodity was requested but no records match, return empty to indicate no market data
+  // Fallback 1: If a specific state/district filter was requested alongside a commodity but matched 0 records,
+  // fall back to matching the requested commodity across all states so real Agmarknet price benchmarks are returned.
   if (matched.length === 0 && qComm) {
-    return [];
+    matched = records.filter((rec) => {
+      const rComm = (rec.commodity || "").toLowerCase().trim();
+      return rComm.includes(qComm) || qComm.includes(rComm);
+    });
   }
 
-  // If no specific commodity requested and still empty, default to records
+  // Fallback 2: If no specific filters matched and still empty, default to all records
   if (matched.length === 0 && !qComm && !qState && !qDist) {
     matched = [...records];
   }
