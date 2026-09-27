@@ -47,7 +47,7 @@ export const OpportunitiesPage = () => {
   // Fetch potential buyers
   const fetchBuyers = async () => {
     try {
-      const res = await API.get('/buyer-verification/buyers')
+      const res = await API.get('/buyers')
       setPotentialBuyers(res.data?.buyers || [])
     } catch (err) {
       console.error('Fetch Buyers Error in OpportunitiesPage:', err)

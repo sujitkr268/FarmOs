@@ -53,6 +53,10 @@ const SEED_AGMARKNET_RECORDS = [
 // Dynamic cache updated whenever data.gov.in succeeds
 let dynamicCache = [...SEED_AGMARKNET_RECORDS];
 
+// High-performance query-level response cache
+const marketResponseCache = new Map();
+const MARKET_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes TTL
+
 const getSafeStr = (val) => {
   if (!val) return "";
   if (typeof val === "string") return val.toLowerCase().trim();
@@ -114,6 +118,21 @@ const fetchMandiPrices = async (queryParams = {}) => {
   try {
     const limit = queryParams && queryParams.limit ? parseInt(queryParams.limit, 10) : 12;
     const offset = queryParams && queryParams.offset ? parseInt(queryParams.offset, 10) : 0;
+    const stateVal = queryParams.state || (queryParams.filters && queryParams.filters.state) || "";
+    const distVal = queryParams.district || (queryParams.filters && queryParams.filters.district) || "";
+    const commVal = queryParams.commodity || (queryParams.filters && queryParams.filters.commodity) || "";
+    const mktVal = queryParams.market || (queryParams.filters && queryParams.filters.market) || "";
+
+    const cacheKey = `mkt_${getSafeStr(stateVal)}_${getSafeStr(distVal)}_${getSafeStr(commVal)}_${getSafeStr(mktVal)}_${limit}_${offset}`;
+    const now = Date.now();
+
+    if (marketResponseCache.has(cacheKey)) {
+      const cached = marketResponseCache.get(cacheKey);
+      if (now - cached.timestamp < MARKET_CACHE_TTL_MS) {
+        return cached.data;
+      }
+    }
+
     const apiKey = process.env.DATA_GOV_API_KEY || "579b464db66ec23bdd000001fb34c61dc1764ff840bfc0882b9ae96e";
 
     let lastError = null;
@@ -129,10 +148,6 @@ const fetchMandiPrices = async (queryParams = {}) => {
       url.searchParams.append("limit", limit.toString());
       url.searchParams.append("offset", offset.toString());
 
-      const stateVal = queryParams.state || (queryParams.filters && queryParams.filters.state);
-      const distVal = queryParams.district || (queryParams.filters && queryParams.filters.district);
-      const mktVal = queryParams.market || (queryParams.filters && queryParams.filters.market);
-      const commVal = queryParams.commodity || (queryParams.filters && queryParams.filters.commodity);
       const varVal = queryParams.variety || (queryParams.filters && queryParams.filters.variety);
       const grdVal = queryParams.grade || (queryParams.filters && queryParams.filters.grade);
 
@@ -143,9 +158,9 @@ const fetchMandiPrices = async (queryParams = {}) => {
       if (varVal && typeof varVal === "string") url.searchParams.append("filters[variety]", varVal);
       if (grdVal && typeof grdVal === "string") url.searchParams.append("filters[grade]", grdVal);
 
-      // Fast-fail fetch with 1500ms timeout
+      // Fast-fail fetch with 600ms timeout
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 1500);
+      const timer = setTimeout(() => controller.abort(), 600);
 
       try {
         const response = await fetch(url.toString(), {
@@ -155,6 +170,7 @@ const fetchMandiPrices = async (queryParams = {}) => {
           },
           signal: controller.signal
         });
+        clearTimeout(timer);
         clearTimeout(timer);
 
         if (response.ok) {
@@ -206,6 +222,7 @@ const fetchMandiPrices = async (queryParams = {}) => {
     }
 
     if (responseData) {
+      marketResponseCache.set(cacheKey, { timestamp: now, data: responseData });
       return responseData;
     }
 
@@ -213,7 +230,7 @@ const fetchMandiPrices = async (queryParams = {}) => {
     const filtered = filterRecords(dynamicCache, queryParams);
     const paginated = filtered.slice(offset, offset + limit);
 
-    return {
+    const fallbackResult = {
       success: true,
       count: paginated.length,
       total: filtered.length,
@@ -223,6 +240,9 @@ const fetchMandiPrices = async (queryParams = {}) => {
       source: "agmarknet_record_store",
       warning: "Data served from Agmarknet record store due to data.gov.in upstream latency."
     };
+
+    marketResponseCache.set(cacheKey, { timestamp: now, data: fallbackResult });
+    return fallbackResult;
   } catch (globalErr) {
     console.error("fetchMandiPrices exception handled cleanly:", globalErr.message);
     const limit = queryParams && queryParams.limit ? parseInt(queryParams.limit, 10) : 12;

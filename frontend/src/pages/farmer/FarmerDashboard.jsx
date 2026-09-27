@@ -128,7 +128,7 @@ const FarmerDashboard = () => {
   const fetchBuyers = async () => {
     setBuyersLoading(true)
     try {
-      const res = await API.get('/buyer-verification/buyers')
+      const res = await API.get('/buyers')
       const buyersList = res.data?.buyers || []
       setPotentialBuyers(buyersList)
     } catch (err) {

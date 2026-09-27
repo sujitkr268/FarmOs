@@ -57,12 +57,17 @@ const fetchWeatherData = async (lat, lon) => {
 
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum&timezone=auto`
 
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), 2000)
+
   try {
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'FarmOS-Backend/1.0'
-      }
+      },
+      signal: controller.signal
     })
+    clearTimeout(timer)
 
     if (!response.ok) {
       // 2. Handle HTTP 429 or upstream errors gracefully
