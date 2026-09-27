@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
 import { getMarketPriceHistory, getMarketDemandSupply } from '../../api/marketApi'
+import { compareMarketOpportunities } from '../../api/opportunityApi'
 
 const COMMODITY_OPTIONS = [
   'Potato', 'Tomato', 'Rice', 'Wheat', 'Onion', 'Brinjal', 'Jute', 'Tea', 'Groundnut', 'Cotton', 'Maize', 'Soyabean', 'Mustard'
@@ -30,12 +31,55 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
   const [demandSupplyData, setDemandSupplyData] = useState(null)
   const [demandLoading, setDemandLoading] = useState(false)
 
+  // Automatic Opportunity calculation state when opportunityData prop is missing
+  const [autoOppData, setAutoOppData] = useState(null)
+  const [autoOppLoading, setAutoOppLoading] = useState(false)
+
   // Sync selectedCommodity with prop cropName if provided
   useEffect(() => {
     if (cropName && COMMODITY_OPTIONS.includes(cropName)) {
       setSelectedCommodity(cropName)
     }
   }, [cropName])
+
+  // Automatic opportunity comparison fetch if opportunityData prop is missing or empty
+  useEffect(() => {
+    const hasPropData = opportunityData && (opportunityData.opportunities || opportunityData.comparison)?.length > 0
+    if (hasPropData) {
+      setAutoOppData(null)
+      return
+    }
+
+    const targetCrop = selectedCommodity || cropName || 'Potato'
+    let isMounted = true
+    setAutoOppLoading(true)
+
+    const params = {
+      crop: targetCrop,
+      quantity: quantity || 2000,
+      unit: unit || 'kg',
+      state: selectedState && selectedState !== 'All States' ? selectedState : ''
+    }
+
+    compareMarketOpportunities(params)
+      .then((res) => {
+        if (isMounted) {
+          setAutoOppData(res)
+          setAutoOppLoading(false)
+        }
+      })
+      .catch((err) => {
+        if (isMounted) {
+          console.error("Auto Opportunity Fetch Error:", err)
+          setAutoOppData(null)
+          setAutoOppLoading(false)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [opportunityData, selectedCommodity, cropName, selectedState, quantity, unit])
 
   // Fetch historical market prices when Price Trend tab is active or filters change
   useEffect(() => {
@@ -132,7 +176,11 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
     }
   }, [activeTab, selectedCommodity, cropName])
 
-  const opportunities = opportunityData?.opportunities || opportunityData?.comparison || []
+  const effectiveOppData = (opportunityData && (opportunityData.opportunities || opportunityData.comparison)?.length > 0)
+    ? opportunityData
+    : autoOppData
+
+  const opportunities = effectiveOppData?.opportunities || effectiveOppData?.comparison || []
   const hasOpportunities = opportunities.length > 0
   const topOpp = opportunities[0] || {}
 
@@ -219,7 +267,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
             onClick={() => setActiveTab('net_return')}
             style={{
               padding: '0.45rem 0.85rem',
-              borderRadius: '9px',
+              borderRadius: '99px',
               fontSize: '0.82rem',
               fontWeight: 700,
               backgroundColor: activeTab === 'net_return' ? '#10b981' : 'transparent',
@@ -287,18 +335,24 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
         <div>
           <div style={{ marginBottom: '1.25rem' }}>
             <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.2rem' }}>
-              🎯 {t('analytics.whereEarnMore') || 'Highest Net Earning Mandis'}
+              🎯 {t('analytics.whereEarnMore') || 'Highest Net Earning Mandis'} ({selectedCommodity || cropName || 'Harvest'})
             </h3>
             <p style={{ fontSize: '0.83rem', color: '#64748b', margin: 0 }}>
               {t('analytics.netReturnSubtitle') || 'Estimated net payout after deducting transport freight from gross value (1 quintal = 100 kg)'}
             </p>
           </div>
 
-          {!hasOpportunities ? (
+          {autoOppLoading ? (
+            <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '2.5rem', textAlign: 'center' }}>
+              <span style={{ fontSize: '1rem', color: '#059669', fontWeight: 600 }}>
+                ⏳ Calculating market opportunities and net returns across regional mandis...
+              </span>
+            </div>
+          ) : !hasOpportunities ? (
             <div style={{ textAlign: 'center', padding: '3rem 1.5rem', backgroundColor: '#f8fafc', borderRadius: '14px', border: '1px dashed #cbd5e1' }}>
               <span style={{ fontSize: '2rem', display: 'block', marginBottom: '0.5rem' }}>🌾</span>
               <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0 }}>
-                Calculate market opportunities above to see net return comparison across mandis.
+                Select a harvest or commodity above to compare net returns across mandis.
               </p>
             </div>
           ) : (
@@ -361,18 +415,24 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
         <div>
           <div style={{ marginBottom: '1.25rem' }}>
             <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.2rem' }}>
-              🚚 {t('analytics.sellingVsTransportTitle') || 'Transport Logistics vs Gross Value'}
+              🚚 {t('analytics.sellingVsTransportTitle') || 'Transport Logistics vs Gross Value'} ({selectedCommodity || cropName || 'Harvest'})
             </h3>
             <p style={{ fontSize: '0.83rem', color: '#64748b', margin: 0 }}>
               {t('analytics.sellingVsTransportSubtitle') || 'Visual breakdown showing how transport costs impact gross revenue across locations'}
             </p>
           </div>
 
-          {!hasOpportunities ? (
+          {autoOppLoading ? (
+            <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '2.5rem', textAlign: 'center' }}>
+              <span style={{ fontSize: '1rem', color: '#059669', fontWeight: 600 }}>
+                ⏳ Calculating freight logistics breakdown...
+              </span>
+            </div>
+          ) : !hasOpportunities ? (
             <div style={{ textAlign: 'center', padding: '3rem 1.5rem', backgroundColor: '#f8fafc', borderRadius: '14px', border: '1px dashed #cbd5e1' }}>
               <span style={{ fontSize: '2rem', display: 'block', marginBottom: '0.5rem' }}>🚚</span>
               <p style={{ fontSize: '0.9rem', color: '#64748b', margin: 0 }}>
-                Freight logistics breakdown will appear after calculating market opportunities.
+                Freight logistics breakdown will appear after selecting a harvest or commodity.
               </p>
             </div>
           ) : (
@@ -777,7 +837,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
             <div style={{ textAlign: 'center', padding: '3rem 1.5rem', backgroundColor: '#f8fafc', borderRadius: '14px', border: '1px dashed #cbd5e1' }}>
               <span style={{ fontSize: '2.2rem', display: 'block', marginBottom: '0.6rem' }}>🏢</span>
               <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#334155', marginBottom: '0.3rem' }}>
-                No active buyer demand found for {selectedCommodity || cropName || 'this commodity'}.
+                Active buyer demand unavailable for {selectedCommodity || cropName || 'this commodity'}.
               </h4>
               <p style={{ fontSize: '0.84rem', color: '#64748b', margin: 0 }}>
                 There are currently no active buyer procurement listings for this crop in the database.
@@ -801,13 +861,13 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
               {/* Regional Buyer Demand Card */}
               <div style={{ backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '16px', padding: '1.25rem' }}>
                 <span style={{ fontSize: '0.8rem', color: '#1e40af', fontWeight: 700, textTransform: 'uppercase', display: 'block', marginBottom: '0.3rem' }}>
-                  🏢 Regional Procurement Demand
+                  🏢 Active Buyer Demand
                 </span>
                 <strong style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', display: 'block', marginBottom: '0.2rem' }}>
                   {demandSupplyData.demand_kg.toLocaleString()} kg
                 </strong>
                 <span style={{ fontSize: '0.82rem', color: '#334155' }}>
-                  Active procurement demand from {demandSupplyData.active_buyers_count} verified buyers & regional wholesalers
+                  Active procurement demand from {demandSupplyData.active_buyers_count} registered buyers
                 </span>
               </div>
             </div>
