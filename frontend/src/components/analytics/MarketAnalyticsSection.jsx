@@ -1,9 +1,89 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useLanguage } from '../../context/LanguageContext'
+import { getMarketPriceHistory } from '../../api/marketApi'
+
+const COMMODITY_OPTIONS = [
+  'Potato', 'Tomato', 'Rice', 'Wheat', 'Onion', 'Brinjal', 'Jute', 'Tea', 'Groundnut', 'Cotton', 'Maize', 'Soyabean', 'Mustard'
+]
+
+const STATE_OPTIONS = [
+  'All States', 'West Bengal', 'Maharashtra', 'Uttar Pradesh', 'Punjab', 'Gujarat', 'Karnataka', 'Tamil Nadu', 'Haryana', 'Bihar', 'Madhya Pradesh', 'Kerala'
+]
 
 export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropName = 'Potato', quantity = 2000, unit = 'kg' }) => {
   const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState('net_return') // 'net_return' | 'price_trend' | 'logistics' | 'demand'
+
+  // Controls for Price Trend filter
+  const [selectedCommodity, setSelectedCommodity] = useState(cropName || 'Potato')
+  const [selectedState, setSelectedState] = useState('West Bengal')
+  const [selectedMarket, setSelectedMarket] = useState('')
+  const [dateRange, setDateRange] = useState('30d') // '30d' | '6m' | 'all'
+
+  // Price Trend state
+  const [historyRecords, setHistoryRecords] = useState([])
+  const [historyLoading, setHistoryLoading] = useState(false)
+  const [historyError, setHistoryError] = useState(null)
+  const [hoveredPoint, setHoveredPoint] = useState(null)
+
+  // Sync selectedCommodity with prop cropName if user hasn't modified it
+  useEffect(() => {
+    if (cropName && COMMODITY_OPTIONS.includes(cropName)) {
+      setSelectedCommodity(cropName)
+    }
+  }, [cropName])
+
+  // Fetch historical market prices when Price Trend tab is active or filters change
+  useEffect(() => {
+    if (activeTab !== 'price_trend') return
+
+    let isMounted = true
+    setHistoryLoading(true)
+    setHistoryError(null)
+
+    let fromStr = ''
+    const now = new Date()
+    if (dateRange === '30d') {
+      const d = new Date(now)
+      d.setDate(d.getDate() - 30)
+      fromStr = d.toISOString().split('T')[0]
+    } else if (dateRange === '6m') {
+      const d = new Date(now)
+      d.setMonth(d.getMonth() - 6)
+      fromStr = d.toISOString().split('T')[0]
+    }
+
+    const params = {
+      commodity: selectedCommodity,
+      state: selectedState === 'All States' ? '' : selectedState,
+      market: selectedMarket,
+      from: fromStr
+    }
+
+    getMarketPriceHistory(params)
+      .then((res) => {
+        if (isMounted) {
+          if (res && Array.isArray(res.records)) {
+            setHistoryRecords(res.records)
+          } else {
+            setHistoryRecords([])
+          }
+          setHistoryLoading(false)
+        }
+      })
+      .catch((err) => {
+        if (isMounted) {
+          console.error("Historical prices fetch error:", err)
+          setHistoryError("Failed to fetch historical market prices")
+          setHistoryRecords([])
+          setHistoryLoading(false)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [activeTab, selectedCommodity, selectedState, selectedMarket, dateRange])
 
   const opportunities = opportunityData?.opportunities || opportunityData?.comparison || []
   const hasOpportunities = opportunities.length > 0
@@ -28,18 +108,18 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
     freight: i.freight,
     net: i.net
   }))
-  const maxGrossValue = Math.max(...logisticsItems.map(i => i.gross), 1)
 
-  // 3. Prepare data for Market Price Trend (from live market records)
-  const priceTrendData = Array.isArray(marketData) && marketData.length > 0
-    ? marketData.slice(0, 6).map((item, idx) => ({
-        label: item.arrival_date || item.market || `Day ${idx + 1}`,
-        price: Number(item.modal_price || item.min_price || 0),
-        mandi: item.market
-      }))
-    : []
+  // 3. Compute stats for historical trend SVG chart
+  const sortedHistory = [...historyRecords].sort((a, b) => {
+    const dA = new Date(a.arrival_date || a.date)
+    const dB = new Date(b.arrival_date || b.date)
+    return dA - dB
+  })
 
-  const hasTrendData = priceTrendData.length > 1
+  const prices = sortedHistory.map(r => Number(r.modal_price || 0))
+  const minPrice = prices.length > 0 ? Math.min(...prices) : 0
+  const maxPrice = prices.length > 0 ? Math.max(...prices) : 0
+  const avgPrice = prices.length > 0 ? Math.round(prices.reduce((a, b) => a + b, 0) / prices.length) : 0
 
   return (
     <div style={{
@@ -65,11 +145,11 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.2rem' }}>
             <span style={{ fontSize: '1.3rem' }}>📊</span>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-              {t('analytics.understandMarket')}
+              {t('analytics.understandMarket') || 'Market Analytics & Price Intelligence'}
             </h2>
           </div>
           <p style={{ fontSize: '0.88rem', color: '#64748b', margin: 0 }}>
-            {t('analytics.whereEarnMore')}
+            {t('analytics.whereEarnMore') || 'Compare net returns, historical price trends, and logistics costs across mandis'}
           </p>
         </div>
 
@@ -92,6 +172,8 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
               fontWeight: 700,
               backgroundColor: activeTab === 'net_return' ? '#10b981' : 'transparent',
               color: activeTab === 'net_return' ? '#ffffff' : '#64748b',
+              border: 'none',
+              cursor: 'pointer',
               transition: 'all 0.2s ease'
             }}
           >
@@ -106,6 +188,8 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
               fontWeight: 700,
               backgroundColor: activeTab === 'logistics' ? '#10b981' : 'transparent',
               color: activeTab === 'logistics' ? '#ffffff' : '#64748b',
+              border: 'none',
+              cursor: 'pointer',
               transition: 'all 0.2s ease'
             }}
           >
@@ -120,6 +204,8 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
               fontWeight: 700,
               backgroundColor: activeTab === 'price_trend' ? '#10b981' : 'transparent',
               color: activeTab === 'price_trend' ? '#ffffff' : '#64748b',
+              border: 'none',
+              cursor: 'pointer',
               transition: 'all 0.2s ease'
             }}
           >
@@ -134,6 +220,8 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
               fontWeight: 700,
               backgroundColor: activeTab === 'demand' ? '#10b981' : 'transparent',
               color: activeTab === 'demand' ? '#ffffff' : '#64748b',
+              border: 'none',
+              cursor: 'pointer',
               transition: 'all 0.2s ease'
             }}
           >
@@ -147,10 +235,10 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
         <div>
           <div style={{ marginBottom: '1.25rem' }}>
             <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.2rem' }}>
-              🎯 {t('analytics.whereEarnMore')}
+              🎯 {t('analytics.whereEarnMore') || 'Highest Net Earning Mandis'}
             </h3>
             <p style={{ fontSize: '0.83rem', color: '#64748b', margin: 0 }}>
-              {t('analytics.netReturnSubtitle')}
+              {t('analytics.netReturnSubtitle') || 'Estimated net payout after deducting transport freight from gross value'}
             </p>
           </div>
 
@@ -194,7 +282,6 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
                       </div>
                     </div>
 
-                    {/* Progress / Bar Indicator */}
                     <div style={{ width: '100%', height: '10px', backgroundColor: '#e2e8f0', borderRadius: '6px', overflow: 'hidden' }}>
                       <div style={{
                         width: `${percentage}%`,
@@ -222,10 +309,10 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
         <div>
           <div style={{ marginBottom: '1.25rem' }}>
             <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.2rem' }}>
-              🚚 {t('analytics.sellingVsTransportTitle')}
+              🚚 {t('analytics.sellingVsTransportTitle') || 'Transport Logistics vs Gross Value'}
             </h3>
             <p style={{ fontSize: '0.83rem', color: '#64748b', margin: 0 }}>
-              {t('analytics.sellingVsTransportSubtitle')}
+              {t('analytics.sellingVsTransportSubtitle') || 'Visual breakdown showing how transport costs impact gross revenue across locations'}
             </p>
           </div>
 
@@ -248,10 +335,9 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
                       <span style={{ fontSize: '0.85rem', color: '#334155', fontWeight: 600 }}>Gross Value: <strong>₹{item.gross.toLocaleString()}</strong></span>
                     </div>
 
-                    {/* Multi-segment Bar */}
                     <div style={{ width: '100%', height: '14px', backgroundColor: '#e2e8f0', borderRadius: '8px', overflow: 'hidden', display: 'flex', marginBottom: '0.6rem' }}>
-                      <div style={{ width: `${netPct}%`, backgroundColor: '#10b981', height: '100%', title: 'Net Return' }} />
-                      <div style={{ width: `${freightPct}%`, backgroundColor: '#ef4444', height: '100%', title: 'Transport Freight' }} />
+                      <div style={{ width: `${netPct}%`, backgroundColor: '#10b981', height: '100%' }} title="Net Return" />
+                      <div style={{ width: `${freightPct}%`, backgroundColor: '#ef4444', height: '100%' }} title="Transport Freight" />
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#64748b' }}>
@@ -266,76 +352,326 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
         </div>
       )}
 
-      {/* GRAPH 1: MARKET PRICE TREND (LINE / SVG CHART OR EMPTY STATE) */}
+      {/* GRAPH 1: HISTORICAL MARKET PRICE TREND WITH INTERACTIVE FILTERS */}
       {activeTab === 'price_trend' && (
         <div>
-          <div style={{ marginBottom: '1.25rem' }}>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.2rem' }}>
-              📈 {t('analytics.priceTrendTitle')} ({cropName})
-            </h3>
-            <p style={{ fontSize: '0.83rem', color: '#64748b', margin: 0 }}>
-              {t('analytics.priceTrendSubtitle')}
-            </p>
+          {/* Header & Controls */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
+            <div>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.2rem' }}>
+                📈 Historical Mandi Price Trend
+              </h3>
+              <p style={{ fontSize: '0.83rem', color: '#64748b', margin: 0 }}>
+                Authentic Agmarknet daily price history and modal trend line (₹/quintal)
+              </p>
+            </div>
+
+            {/* Filter Bar */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
+              {/* Commodity Selector */}
+              <select
+                value={selectedCommodity}
+                onChange={(e) => setSelectedCommodity(e.target.value)}
+                style={{
+                  padding: '0.45rem 0.75rem',
+                  borderRadius: '10px',
+                  border: '1px solid #cbd5e1',
+                  backgroundColor: '#ffffff',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  color: '#0f172a',
+                  outline: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                {COMMODITY_OPTIONS.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+
+              {/* State Selector */}
+              <select
+                value={selectedState}
+                onChange={(e) => setSelectedState(e.target.value)}
+                style={{
+                  padding: '0.45rem 0.75rem',
+                  borderRadius: '10px',
+                  border: '1px solid #cbd5e1',
+                  backgroundColor: '#ffffff',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  color: '#0f172a',
+                  outline: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                {STATE_OPTIONS.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+
+              {/* Mandi Input */}
+              <input
+                type="text"
+                placeholder="Filter Mandi (optional)..."
+                value={selectedMarket}
+                onChange={(e) => setSelectedMarket(e.target.value)}
+                style={{
+                  padding: '0.45rem 0.75rem',
+                  borderRadius: '10px',
+                  border: '1px solid #cbd5e1',
+                  backgroundColor: '#ffffff',
+                  fontSize: '0.82rem',
+                  fontWeight: 500,
+                  color: '#0f172a',
+                  width: '160px',
+                  outline: 'none'
+                }}
+              />
+
+              {/* Date Range Buttons */}
+              <div style={{ display: 'flex', backgroundColor: '#f1f5f9', borderRadius: '8px', padding: '0.2rem', gap: '0.2rem' }}>
+                <button
+                  onClick={() => setDateRange('30d')}
+                  style={{
+                    padding: '0.35rem 0.65rem',
+                    borderRadius: '6px',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    border: 'none',
+                    backgroundColor: dateRange === '30d' ? '#ffffff' : 'transparent',
+                    color: dateRange === '30d' ? '#059669' : '#64748b',
+                    boxShadow: dateRange === '30d' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  30 Days
+                </button>
+                <button
+                  onClick={() => setDateRange('6m')}
+                  style={{
+                    padding: '0.35rem 0.65rem',
+                    borderRadius: '6px',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    border: 'none',
+                    backgroundColor: dateRange === '6m' ? '#ffffff' : 'transparent',
+                    color: dateRange === '6m' ? '#059669' : '#64748b',
+                    boxShadow: dateRange === '6m' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  6 Months
+                </button>
+                <button
+                  onClick={() => setDateRange('all')}
+                  style={{
+                    padding: '0.35rem 0.65rem',
+                    borderRadius: '6px',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    border: 'none',
+                    backgroundColor: dateRange === 'all' ? '#ffffff' : 'transparent',
+                    color: dateRange === 'all' ? '#059669' : '#64748b',
+                    boxShadow: dateRange === 'all' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  All
+                </button>
+              </div>
+            </div>
           </div>
 
-          {!hasTrendData ? (
+          {/* Loading Skeleton */}
+          {historyLoading && (
+            <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '2rem', textAlign: 'center' }}>
+              <div style={{ height: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: '1rem', color: '#059669', fontWeight: 600 }}>
+                  ⏳ Loading authentic historical Mandi records...
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Error State */}
+          {!historyLoading && historyError && (
+            <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '14px', padding: '1.25rem', color: '#991b1b', fontSize: '0.88rem' }}>
+              ⚠️ {historyError}. Please check connection or try selecting another commodity.
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!historyLoading && !historyError && sortedHistory.length === 0 && (
             <div style={{ textAlign: 'center', padding: '3rem 1.5rem', backgroundColor: '#f8fafc', borderRadius: '14px', border: '1px dashed #cbd5e1' }}>
               <span style={{ fontSize: '2.2rem', display: 'block', marginBottom: '0.6rem' }}>📉</span>
               <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#334155', marginBottom: '0.3rem' }}>
-                {t('analytics.priceTrendEmpty')}
+                No historical mandi records are available for this selection.
               </h4>
               <p style={{ fontSize: '0.84rem', color: '#64748b', margin: 0 }}>
-                Live benchmark records are updated daily. Select a state and commodity in Market Analysis to inspect active rates.
+                Try selecting a different commodity or state (e.g. Potato in West Bengal, Onion in Maharashtra, Wheat in Punjab).
               </p>
             </div>
-          ) : (
+          )}
+
+          {/* Interactive Line Chart */}
+          {!historyLoading && !historyError && sortedHistory.length > 0 && (
             <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '1.25rem' }}>
-              {/* Responsive Line Chart SVG */}
-              <div style={{ width: '100%', height: '180px', position: 'relative' }}>
-                <svg width="100%" height="100%" viewBox="0 0 500 150" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
-                  {/* Grid Lines */}
-                  <line x1="0" y1="30" x2="500" y2="30" stroke="#e2e8f0" strokeDasharray="4 4" />
-                  <line x1="0" y1="75" x2="500" y2="75" stroke="#e2e8f0" strokeDasharray="4 4" />
-                  <line x1="0" y1="120" x2="500" y2="120" stroke="#e2e8f0" strokeDasharray="4 4" />
+              {/* Top Metrics Summary */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.25rem', backgroundColor: '#ffffff', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                <div style={{ fontSize: '0.82rem', color: '#64748b' }}>
+                  Selection: <strong style={{ color: '#0f172a' }}>{selectedCommodity} ({selectedState})</strong>
+                </div>
+                <div style={{ display: 'flex', gap: '1.25rem', fontSize: '0.82rem' }}>
+                  <span>Lowest: <strong style={{ color: '#2563eb' }}>₹{minPrice.toLocaleString()}</strong>/q</span>
+                  <span>Average: <strong style={{ color: '#059669' }}>₹{avgPrice.toLocaleString()}</strong>/q</span>
+                  <span>Highest: <strong style={{ color: '#dc2626' }}>₹{maxPrice.toLocaleString()}</strong>/q</span>
+                </div>
+              </div>
 
-                  {/* Polyline */}
-                  <polyline
-                    fill="none"
-                    stroke="#10b981"
-                    strokeWidth="3"
-                    points={priceTrendData.map((d, i) => {
-                      const x = (i / (priceTrendData.length - 1)) * 480 + 10
-                      const minP = Math.min(...priceTrendData.map(p => p.price))
-                      const maxP = Math.max(...priceTrendData.map(p => p.price))
-                      const range = Math.max(maxP - minP, 100)
-                      const y = 130 - ((d.price - minP) / range) * 90
-                      return `${x},${y}`
-                    }).join(' ')}
-                  />
+              {/* Chart SVG */}
+              <div style={{ width: '100%', height: '220px', position: 'relative' }}>
+                <svg width="100%" height="100%" viewBox="0 0 540 180" style={{ overflow: 'visible' }}>
+                  <defs>
+                    <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#10b981" stopOpacity="0.25" />
+                      <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+                    </linearGradient>
+                  </defs>
 
-                  {/* Points & Labels */}
-                  {priceTrendData.map((d, i) => {
-                    const x = (i / (priceTrendData.length - 1)) * 480 + 10
-                    const minP = Math.min(...priceTrendData.map(p => p.price))
-                    const maxP = Math.max(...priceTrendData.map(p => p.price))
-                    const range = Math.max(maxP - minP, 100)
-                    const y = 130 - ((d.price - minP) / range) * 90
+                  {/* Y-Axis Grid & Benchmark Lines */}
+                  {(() => {
+                    const yMin = Math.max(0, minPrice - (maxPrice - minPrice > 0 ? (maxPrice - minPrice) * 0.15 : minPrice * 0.1))
+                    const yMax = maxPrice + (maxPrice - minPrice > 0 ? (maxPrice - minPrice) * 0.15 : maxPrice * 0.1)
+                    const range = Math.max(yMax - yMin, 100)
+
+                    const getY = (val) => 150 - ((val - yMin) / range) * 120
+
+                    const yAvgPos = getY(avgPrice)
+                    const yMinPos = getY(minPrice)
+                    const yMaxPos = getY(maxPrice)
+
                     return (
-                      <g key={i}>
-                        <circle cx={x} cy={y} r="5" fill="#10b981" stroke="#ffffff" strokeWidth="2" />
-                        <text x={x} y={y - 10} textAnchor="middle" fontSize="11" fontWeight="700" fill="#0f172a">
-                          ₹{d.price}
-                        </text>
+                      <g key="grid">
+                        {/* Minimum Line */}
+                        <line x1="40" y1={yMinPos} x2="520" y2={yMinPos} stroke="#cbd5e1" strokeDasharray="3 3" />
+                        <text x="35" y={yMinPos + 3} textAnchor="end" fontSize="9" fill="#94a3b8">₹{minPrice}</text>
+
+                        {/* Benchmark Average Line */}
+                        <line x1="40" y1={yAvgPos} x2="520" y2={yAvgPos} stroke="#10b981" strokeDasharray="4 4" strokeWidth="1.5" />
+                        <text x="525" y={yAvgPos + 3} textAnchor="start" fontSize="9" fontWeight="700" fill="#059669">Avg ₹{avgPrice}</text>
+
+                        {/* Maximum Line */}
+                        <line x1="40" y1={yMaxPos} x2="520" y2={yMaxPos} stroke="#cbd5e1" strokeDasharray="3 3" />
+                        <text x="35" y={yMaxPos + 3} textAnchor="end" fontSize="9" fill="#94a3b8">₹{maxPrice}</text>
+
+                        {/* Gradient Fill under polyline */}
+                        {sortedHistory.length > 1 && (() => {
+                          const pts = sortedHistory.map((d, i) => {
+                            const x = 40 + (i / (sortedHistory.length - 1)) * 480
+                            const y = getY(Number(d.modal_price || 0))
+                            return `${x},${y}`
+                          }).join(' ')
+                          const areaPts = `40,150 ${pts} 520,150`
+                          return <polygon points={areaPts} fill="url(#trendGradient)" />
+                        })()}
+
+                        {/* Trend Polyline */}
+                        {sortedHistory.length > 1 && (() => {
+                          const pts = sortedHistory.map((d, i) => {
+                            const x = 40 + (i / (sortedHistory.length - 1)) * 480
+                            const y = getY(Number(d.modal_price || 0))
+                            return `${x},${y}`
+                          }).join(' ')
+                          return <polyline fill="none" stroke="#10b981" strokeWidth="3" points={pts} />
+                        })()}
+
+                        {/* Data Point Circles & Tooltips */}
+                        {sortedHistory.map((d, i) => {
+                          const x = sortedHistory.length === 1 ? 280 : 40 + (i / (sortedHistory.length - 1)) * 480
+                          const y = getY(Number(d.modal_price || 0))
+                          const dateStr = d.arrival_date ? d.arrival_date.split('T')[0] : (d.date || '')
+                          const isHovered = hoveredPoint === i
+
+                          return (
+                            <g key={i}>
+                              <circle
+                                cx={x}
+                                cy={y}
+                                r={isHovered ? "7" : "5"}
+                                fill={isHovered ? "#047857" : "#10b981"}
+                                stroke="#ffffff"
+                                strokeWidth="2.5"
+                                style={{ cursor: 'pointer', transition: 'all 0.15s ease' }}
+                                onMouseEnter={() => setHoveredPoint(i)}
+                                onMouseLeave={() => setHoveredPoint(null)}
+                              />
+
+                              {/* Price Label above point */}
+                              <text
+                                x={x}
+                                y={y - 10}
+                                textAnchor="middle"
+                                fontSize="10"
+                                fontWeight="800"
+                                fill="#0f172a"
+                              >
+                                ₹{d.modal_price}
+                              </text>
+
+                              {/* Interactive Hover Card Tooltip */}
+                              {isHovered && (
+                                <g>
+                                  <rect
+                                    x={Math.min(Math.max(x - 65, 10), 400)}
+                                    y={y - 55}
+                                    width="130"
+                                    height="42"
+                                    rx="6"
+                                    fill="#0f172a"
+                                    fillOpacity="0.92"
+                                  />
+                                  <text
+                                    x={Math.min(Math.max(x, 75), 465)}
+                                    y={y - 40}
+                                    textAnchor="middle"
+                                    fontSize="10"
+                                    fontWeight="700"
+                                    fill="#ffffff"
+                                  >
+                                    {d.market} ({d.variety || 'FAQ'})
+                                  </text>
+                                  <text
+                                    x={Math.min(Math.max(x, 75), 465)}
+                                    y={y - 25}
+                                    textAnchor="middle"
+                                    fontSize="10"
+                                    fontWeight="500"
+                                    fill="#34d399"
+                                  >
+                                    {dateStr} • ₹{d.modal_price}/q
+                                  </text>
+                                </g>
+                              )}
+                            </g>
+                          )
+                        })}
                       </g>
                     )
-                  })}
+                  })()}
                 </svg>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', borderTop: '1px solid #e2e8f0', paddingTop: '0.6rem', fontSize: '0.78rem', color: '#64748b' }}>
-                {priceTrendData.map((d, i) => (
-                  <span key={i} style={{ textAlign: 'center' }}>{d.label}</span>
-                ))}
+              {/* X-Axis Date Labels */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.25rem', borderTop: '1px solid #e2e8f0', paddingTop: '0.6rem', fontSize: '0.78rem', color: '#64748b' }}>
+                {sortedHistory.map((d, i) => {
+                  const dateStr = d.arrival_date ? d.arrival_date.split('T')[0] : (d.date || '')
+                  return (
+                    <span key={i} style={{ textAlign: 'center', fontWeight: 600 }}>
+                      {dateStr}
+                    </span>
+                  )
+                })}
               </div>
             </div>
           )}
@@ -347,10 +683,10 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
         <div>
           <div style={{ marginBottom: '1.25rem' }}>
             <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.2rem' }}>
-              🤝 {t('analytics.demandVsSupplyTitle')} ({cropName})
+              🤝 {t('analytics.demandVsSupplyTitle') || 'Regional Buyer Demand vs Harvest Supply'} ({cropName})
             </h3>
             <p style={{ fontSize: '0.83rem', color: '#64748b', margin: 0 }}>
-              {t('analytics.demandVsSupplySubtitle')}
+              {t('analytics.demandVsSupplySubtitle') || 'Comparing harvest volume against active procurement requirements from verified buyers'}
             </p>
           </div>
 
@@ -358,26 +694,26 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
             {/* Farmer Supply Card */}
             <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '16px', padding: '1.25rem' }}>
               <span style={{ fontSize: '0.8rem', color: '#166534', fontWeight: 700, textTransform: 'uppercase', display: 'block', marginBottom: '0.3rem' }}>
-                🌾 Available Supply
+                🌾 Available Harvest Supply
               </span>
               <strong style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', display: 'block', marginBottom: '0.2rem' }}>
                 {Number(quantity).toLocaleString()} {unit}
               </strong>
               <span style={{ fontSize: '0.82rem', color: '#334155' }}>
-                Listed by farmer for harvest sale
+                Listed quantity by farmer for current season sale
               </span>
             </div>
 
             {/* Regional Buyer Demand Card */}
             <div style={{ backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '16px', padding: '1.25rem' }}>
               <span style={{ fontSize: '0.8rem', color: '#1e40af', fontWeight: 700, textTransform: 'uppercase', display: 'block', marginBottom: '0.3rem' }}>
-                🏢 Regional Buyer Requirement
+                🏢 Regional Procurement Demand
               </span>
               <strong style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', display: 'block', marginBottom: '0.2rem' }}>
                 1,500 {unit}
               </strong>
               <span style={{ fontSize: '0.82rem', color: '#334155' }}>
-                Active demand from verified regional wholesalers & millers
+                Active demand from verified regional wholesalers & processing units
               </span>
             </div>
           </div>

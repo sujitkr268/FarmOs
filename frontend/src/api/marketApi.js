@@ -124,3 +124,28 @@ export const getMarketPrices = async (params = {}) => {
     }
   }
 }
+
+/**
+ * Fetch Mandi Market Price History from FarmOS Backend API
+ * @param {Object} params - Query parameters (commodity, state, district, market, from, to)
+ */
+export const getMarketPriceHistory = async (params = {}) => {
+  try {
+    const response = await API.get('/market/history', { params })
+    if (response && response.data) {
+      return response.data
+    }
+    throw new Error('Invalid backend response format')
+  } catch (err) {
+    console.warn('Backend market history API request error:', err.message)
+    return {
+      success: false,
+      commodity: params.commodity || null,
+      state: params.state || null,
+      market: params.market || null,
+      unit: '₹/quintal',
+      source: 'Agmarknet',
+      records: []
+    }
+  }
+}

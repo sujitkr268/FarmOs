@@ -23,6 +23,7 @@ const { connectDB } = require("./config/db");
 const User = require("./models/User");
 const { createPublicTradersTable } = require("./models/PublicTrader");
 const { seedPublicTraders } = require("./database/seedTraders");
+const { createMarketPriceHistoryTable } = require("./models/MarketPriceHistory");
 
 // Routes
 const authRoutes = require("./routes/authRoutes");
@@ -109,6 +110,7 @@ const ensureDBInit = async () => {
       await User.createUsersTable();
       await createPublicTradersTable();
       await seedPublicTraders();
+      await createMarketPriceHistoryTable();
       dbInitialized = true;
     } catch (err) {
       console.error("Database initialization failed:", err.message);

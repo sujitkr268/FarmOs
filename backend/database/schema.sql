@@ -160,3 +160,30 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS show_contact_publicly BOOLEAN DEFAULT
 ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_status VARCHAR(50) DEFAULT 'pending';
 ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_notes TEXT;
 
+
+-- =====================================
+-- MARKET PRICE HISTORY TABLE
+-- =====================================
+
+CREATE TABLE IF NOT EXISTS market_price_history (
+    id SERIAL PRIMARY KEY,
+    arrival_date DATE NOT NULL,
+    state VARCHAR(100) NOT NULL,
+    district VARCHAR(100) NOT NULL,
+    market VARCHAR(100) NOT NULL,
+    commodity VARCHAR(100) NOT NULL,
+    variety VARCHAR(100) DEFAULT 'FAQ',
+    grade VARCHAR(50) DEFAULT 'FAQ',
+    min_price DECIMAL(10,2) NOT NULL,
+    max_price DECIMAL(10,2) NOT NULL,
+    modal_price DECIMAL(10,2) NOT NULL,
+    price_unit VARCHAR(50) DEFAULT '₹/quintal',
+    source VARCHAR(100) DEFAULT 'Agmarknet',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_mandi_record UNIQUE (arrival_date, state, market, commodity, variety, grade)
+);
+
+CREATE INDEX IF NOT EXISTS idx_mph_comm_state_date ON market_price_history (commodity, state, arrival_date);
+CREATE INDEX IF NOT EXISTS idx_mph_comm_state_mkt_date ON market_price_history (commodity, state, market, arrival_date);
+
+
