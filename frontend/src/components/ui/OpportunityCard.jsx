@@ -30,9 +30,38 @@ export const OpportunityCard = ({ data, onViewClick }) => {
   const cropUnit = data.unit || 'kg'
   const cropGrade = bestMarket.grade || 'FAQ Grade'
 
-  const grossVal = Number(bestMarket.estimated_gross_value || bestMarket.gross_revenue || 37000)
-  const freightCost = Number(bestMarket.estimated_freight_cost || bestMarket.freight || 2400)
-  const netReturn = Number(bestMarket.estimated_net_return || bestMarket.net_return || (grossVal - freightCost))
+  const grossVal = Number(bestMarket.estimated_gross_value || bestMarket.gross_revenue || (data ? 0 : 37000))
+
+  const hasFreight = (bestMarket.estimated_freight_cost !== null && bestMarket.estimated_freight_cost !== undefined) ||
+                     (bestMarket.freight !== null && bestMarket.freight !== undefined) ||
+                     (bestMarket.estimated_transport_cost !== null && bestMarket.estimated_transport_cost !== undefined && bestMarket.estimated_transport_cost !== 'Not available')
+
+  const rawFreight = bestMarket.estimated_freight_cost ?? bestMarket.freight ?? (bestMarket.estimated_transport_cost !== 'Not available' ? bestMarket.estimated_transport_cost : null)
+  const freightCost = (hasFreight && rawFreight !== null) ? Number(rawFreight) : (data ? 0 : 2400)
+
+  const netReturn = grossVal > 0 ? (grossVal - freightCost) : Number(bestMarket.estimated_net_return || bestMarket.net_return || 0)
+
+  const distanceNum = typeof bestMarket.distance_km === 'number'
+    ? bestMarket.distance_km
+    : parseFloat(bestMarket.estimated_distance)
+
+  const hasValidDistance = !isNaN(distanceNum) && distanceNum > 0
+
+  const distanceText = hasValidDistance
+    ? `${distanceNum} km away`
+    : 'Distance unavailable'
+
+  const travelMins = typeof bestMarket.travel_time_mins === 'number' && bestMarket.travel_time_mins > 0
+    ? bestMarket.travel_time_mins
+    : null
+
+  const travelTimeText = travelMins
+    ? `⏱️ ~${Math.round((travelMins / 60) * 10) / 10} hours`
+    : null
+
+  const distanceInfo = travelTimeText
+    ? `📍 ${distanceText} • ${travelTimeText}`
+    : `📍 ${distanceText}`
 
   return (
     <div style={{
@@ -90,7 +119,7 @@ export const OpportunityCard = ({ data, onViewClick }) => {
         </div>
 
         <div style={{ fontSize: '0.88rem', color: '#334155', fontWeight: 600 }}>
-          📍 {bestMarket.estimated_distance || '45 km'} away • ⏱️ ~{Math.round((bestMarket.travel_time_mins || 72) / 60 * 10) / 10} hours
+          {distanceInfo}
         </div>
       </div>
 
