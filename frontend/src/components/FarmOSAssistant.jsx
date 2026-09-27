@@ -344,38 +344,57 @@ export const FarmOSAssistant = ({ isCompact = false }) => {
             }}
           >
             {/* Context Badge indicator for assistant response */}
-            {msg.sender === 'assistant' && msg.context?.type && (
-              <span style={{
-                fontSize: '0.72rem',
-                fontWeight: 700,
-                color: msg.context.type === 'opportunity'
-                  ? 'var(--accent-gold)'
-                  : msg.context.type === 'market'
-                    ? 'var(--accent-gold-light)'
-                    : '#60a5fa',
-                backgroundColor: msg.context.type === 'opportunity'
-                  ? 'rgba(212, 175, 55, 0.2)'
-                  : msg.context.type === 'market'
-                    ? 'rgba(212, 175, 55, 0.15)'
-                    : 'rgba(96, 165, 250, 0.15)',
-                border: '1px solid ' + (
-                  msg.context.type === 'opportunity' || msg.context.type === 'market'
-                    ? 'var(--border-gold)'
-                    : 'rgba(96, 165, 250, 0.3)'
-                ),
-                padding: '0.15rem 0.55rem',
-                borderRadius: '12px',
-                marginBottom: '0.4rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.04em'
-              }}>
-                {msg.context.type === 'opportunity'
-                  ? '🏆 FarmOS Opportunity Engine Evaluated'
-                  : msg.context.type === 'market'
-                    ? '📊 Real-Time Mandi Data Injected'
-                    : '🌤️ Live Open-Meteo Weather Injected'}
-              </span>
-            )}
+            {msg.sender === 'assistant' && msg.context?.type && (() => {
+              const ctxType = msg.context.type
+              const ctxData = msg.context.data
+              const recordsCount = (ctxData?.records?.length || ctxData?.total_records || 0)
+
+              // If market query returned no records or null data, do NOT render an injected data badge
+              if (ctxType === 'market' && (!ctxData || recordsCount === 0)) {
+                return null
+              }
+
+              let badgeText = ''
+              let badgeColor = 'var(--accent-gold-light)'
+              let badgeBg = 'rgba(212, 175, 55, 0.15)'
+              let badgeBorder = 'var(--border-gold)'
+
+              if (ctxType === 'opportunity') {
+                badgeText = '🏆 FarmOS Opportunity Engine Evaluated'
+                badgeColor = 'var(--accent-gold)'
+                badgeBg = 'rgba(212, 175, 55, 0.2)'
+              } else if (ctxType === 'weather') {
+                badgeText = '🌤️ Live Open-Meteo Weather Injected'
+                badgeColor = '#60a5fa'
+                badgeBg = 'rgba(96, 165, 250, 0.15)'
+                badgeBorder = 'rgba(96, 165, 250, 0.3)'
+              } else if (ctxType === 'market') {
+                if (ctxData?.source === 'live_agmarknet') {
+                  badgeText = '📊 Real-Time Live Mandi Data Injected'
+                } else {
+                  badgeText = '📊 Latest Available FarmOS Mandi Data Used'
+                }
+              }
+
+              if (!badgeText) return null
+
+              return (
+                <span style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  color: badgeColor,
+                  backgroundColor: badgeBg,
+                  border: '1px solid ' + badgeBorder,
+                  padding: '0.15rem 0.55rem',
+                  borderRadius: '12px',
+                  marginBottom: '0.4rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em'
+                }}>
+                  {badgeText}
+                </span>
+              )
+            })()}
 
             {/* Bubble Box */}
             <div style={{

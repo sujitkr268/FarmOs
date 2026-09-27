@@ -161,6 +161,17 @@ const processChatMessage = async (req, res) => {
       }
     }
 
+    // Server-side diagnostic logging (no secrets, keys, or tokens logged)
+    const recordsCount = (contextData && (contextData.records ? contextData.records.length : (contextData.total_records || 0))) || 0;
+    console.log("[CHAT DEBUG]", {
+      commodity: (contextData && contextData.requested_commodity) || "none",
+      state: (contextData && contextData.requested_state) || "none",
+      recordsFound: recordsCount,
+      fallbackUsed: (contextData && contextData.source) || "none",
+      contextInjected: !!contextData && recordsCount > 0,
+      backendVersion: "dcc5fc6-v1.3"
+    });
+
     // 4. Send message + context data to Gemini AI
     const result = await generateAgricultureResponse(trimmedMsg, contextData, intentType, targetLang);
     return res.status(200).json(result);
