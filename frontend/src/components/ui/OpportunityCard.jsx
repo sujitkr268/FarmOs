@@ -3,6 +3,7 @@ import { useLanguage } from '../../context/LanguageContext'
 
 export const OpportunityCard = ({ data, onViewClick }) => {
   const { t } = useLanguage()
+  const [showExplanation, setShowExplanation] = React.useState(false)
 
   if (!data) {
     return (
@@ -45,6 +46,10 @@ export const OpportunityCard = ({ data, onViewClick }) => {
 
   const hasFreightCost = !isNaN(parsedFreight) && parsedFreight > 0
   const freightCost = hasFreightCost ? parsedFreight : 0
+  const isEstimatedFreight = bestMarket.is_estimated_freight ?? (hasFreightCost ? true : false)
+  const freightRate = bestMarket.base_rate_per_km || 30
+  const vehicleName = bestMarket.vehicle_name || 'Standard Truck'
+  const vehiclesRequired = bestMarket.vehicles_required || 1
 
   // Net Return Evaluation
   const backendNetReturn = Number(bestMarket.estimated_net_return ?? bestMarket.net_return ?? bestMarket.estimated_net_value ?? NaN)
@@ -69,9 +74,13 @@ export const OpportunityCard = ({ data, onViewClick }) => {
     : parseFloat(distanceCandidate)
 
   const hasValidDistance = !isNaN(parsedDistance) && parsedDistance > 0
+  const isEstimatedDistance = bestMarket.is_estimated_distance ?? (bestMarket.distance_type === 'estimated' || (hasValidDistance && !bestMarket.distance_km))
+
   const distanceText = hasValidDistance
-    ? `${parsedDistance} km away`
-    : 'Distance unavailable'
+    ? (isEstimatedDistance
+        ? `📍 ${t('opportunity.estimatedDistance', 'Estimated distance')}: ${parsedDistance} km`
+        : `📍 ${parsedDistance} km away`)
+    : `📍 ${t('opportunity.distanceUnavailable', 'Distance unavailable')}`
 
   // Travel Time Evaluation
   const travelMinsCandidate = bestMarket.travel_time_mins ?? bestMarket.travel_time
@@ -85,8 +94,8 @@ export const OpportunityCard = ({ data, onViewClick }) => {
     : null
 
   const distanceInfo = travelTimeText
-    ? `📍 ${distanceText} • ${travelTimeText}`
-    : `📍 ${distanceText}`
+    ? `${distanceText} • ${travelTimeText}`
+    : distanceText
 
   return (
     <div style={{
@@ -154,7 +163,7 @@ export const OpportunityCard = ({ data, onViewClick }) => {
         border: '1px solid #bbf7d0',
         borderRadius: '16px',
         padding: '1.25rem',
-        marginBottom: '1.25rem'
+        marginBottom: '1rem'
       }}>
         <span style={{ fontSize: '0.78rem', color: '#15803d', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '0.75rem' }}>
           FINANCIAL SUMMARY
@@ -169,9 +178,11 @@ export const OpportunityCard = ({ data, onViewClick }) => {
           </div>
 
           <div>
-            <span style={{ fontSize: '0.75rem', color: '#dc2626', fontWeight: 600, display: 'block' }}>Freight Transport Cost</span>
+            <span style={{ fontSize: '0.75rem', color: '#dc2626', fontWeight: 600, display: 'block' }}>
+              {hasFreightCost ? (isEstimatedFreight ? t('opportunity.estimatedFreight', 'Estimated Freight Transport Cost') : t('opportunity.freightCostLabel', 'Freight Transport Cost')) : t('opportunity.freightCostLabel', 'Freight Transport Cost')}
+            </span>
             <span style={{ fontSize: '1.1rem', fontWeight: 700, color: hasFreightCost ? '#dc2626' : '#64748b' }}>
-              {hasFreightCost ? `−₹${freightCost.toLocaleString()}` : 'Data unavailable'}
+              {hasFreightCost ? `−₹${freightCost.toLocaleString()}` : t('opportunity.dataUnavailable', 'Data unavailable')}
             </span>
           </div>
 
@@ -189,6 +200,51 @@ export const OpportunityCard = ({ data, onViewClick }) => {
           </div>
         </div>
       </div>
+
+      {/* ESTIMATED FREIGHT NOTICE & EXPANDABLE EXPLANATION */}
+      {hasFreightCost && (
+        <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '0.65rem 0.9rem', marginBottom: '1.25rem', fontSize: '0.8rem', color: '#334155' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.4rem' }}>
+            <span>ℹ️ {t('opportunity.estimatedNotice', 'Freight is estimated from distance. Actual transport cost may vary.')}</span>
+            <button
+              type="button"
+              onClick={() => setShowExplanation(!showExplanation)}
+              style={{ background: 'none', border: 'none', color: '#059669', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+            >
+              {t('opportunity.howIsThisEstimated', 'How is this estimated?')} {showExplanation ? '▲' : '▼'}
+            </button>
+          </div>
+
+          {showExplanation && (
+            <div style={{ borderTop: '1px solid #cbd5e1', marginTop: '0.65rem', paddingTop: '0.65rem', fontSize: '0.8rem', color: '#334155' }}>
+              <strong style={{ display: 'block', marginBottom: '0.4rem', color: '#0f172a' }}>
+                {t('opportunity.howIsThisEstimated', 'How is this estimated?')}
+              </strong>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                <div>
+                  <span style={{ color: '#64748b', display: 'block', fontSize: '0.72rem' }}>Distance:</span>
+                  <strong>{parsedDistance} km</strong> ({isEstimatedDistance ? 'Geographical estimate' : 'Actual road route'})
+                </div>
+                <div>
+                  <span style={{ color: '#64748b', display: 'block', fontSize: '0.72rem' }}>{t('opportunity.transportRate', 'Transport rate')}:</span>
+                  <strong>₹{freightRate}/km</strong> ({vehicleName})
+                </div>
+                <div>
+                  <span style={{ color: '#64748b', display: 'block', fontSize: '0.72rem' }}>Estimated freight:</span>
+                  <strong>₹{freightCost.toLocaleString()}</strong> ({parsedDistance} km × ₹{freightRate}/km × {vehiclesRequired} vehicle)
+                </div>
+                <div>
+                  <span style={{ color: '#64748b', display: 'block', fontSize: '0.72rem' }}>{t('opportunity.estNetReturn', 'Estimated Net Return')}:</span>
+                  <strong>₹{grossVal.toLocaleString()} − ₹{freightCost.toLocaleString()} = ₹{netReturn.toLocaleString()}</strong>
+                </div>
+              </div>
+              <p style={{ margin: 0, fontSize: '0.74rem', color: '#64748b', fontStyle: 'italic' }}>
+                "{t('opportunity.actualTransportVaries', 'Actual transport charges may vary depending on vehicle type, load, fuel prices and local transport rates.')}"
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* WHY FARMOS RECOMMENDS THIS */}
       <div style={{ marginBottom: '1.25rem' }}>

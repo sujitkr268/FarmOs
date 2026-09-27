@@ -334,6 +334,7 @@ const evaluateOpportunities = async (params = {}) => {
       const estimatedGrossValue = Math.round(qtyInQuintals * modalPrice);
 
       let freight = null;
+      let routeInfo = null;
       if (originCoords) {
         const destInput = `${item.market}, ${item.district || item.state}`;
         let destCoords = await geocodeLocation(destInput);
@@ -342,7 +343,7 @@ const evaluateOpportunities = async (params = {}) => {
         }
 
         if (destCoords) {
-          const routeInfo = await getRoadRoute(originCoords, destCoords);
+          routeInfo = await getRoadRoute(originCoords, destCoords);
           if (routeInfo) {
             freight = calculateFreight(
               routeInfo.distance_km,
@@ -390,6 +391,10 @@ const evaluateOpportunities = async (params = {}) => {
         Math.max(0, priceFactor + netReturnFactor + stabilityFactor + logisticsFactor + gradeFactor)
       );
 
+      const isEstimatedDist = freight ? Boolean(routeInfo?.is_fallback) : false;
+      const distanceType = freight ? (routeInfo?.is_fallback ? 'estimated' : 'actual') : 'unavailable';
+      const freightType = freight ? 'estimated' : 'unavailable';
+
       return {
         market: item.market || "Unknown APMC Mandi",
         district: item.district || item.state || "N/A",
@@ -405,9 +410,16 @@ const evaluateOpportunities = async (params = {}) => {
         
         estimated_distance: freight ? `${freight.distance_km} km` : "Not available",
         distance_km: freight ? freight.distance_km : null,
+        distance_type: distanceType,
+        is_estimated_distance: isEstimatedDist,
         travel_time_mins: freight ? freight.duration_minutes : null,
+        
         estimated_freight_cost: estimatedFreightCost !== null ? estimatedFreightCost : null,
         estimated_transport_cost: estimatedFreightCost !== null ? estimatedFreightCost : "Not available",
+        freight_type: freightType,
+        is_estimated_freight: freight ? true : false,
+        base_rate_per_km: freight ? freight.base_rate_per_km : 20,
+        
         estimated_net_return: estimatedNetReturn,
         estimated_net_value: estimatedNetReturn,
         vehicle_type: freight ? freight.vehicle_type : null,
