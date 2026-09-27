@@ -8,6 +8,7 @@ const createHarvest = async (req, res) => {
       crop_name,
       quantity,
       unit,
+      grade,
       price,
       location,
       description
@@ -37,11 +38,12 @@ const createHarvest = async (req, res) => {
         crop_name,
         quantity,
         unit,
+        grade,
         price,
         location,
         description
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *
       `,
       [
@@ -49,6 +51,7 @@ const createHarvest = async (req, res) => {
         crop_name.trim(),
         quantity,
         unit.trim(),
+        (grade || 'FAQ Grade').trim(),
         price,
         location.trim(),
         description || null
@@ -78,8 +81,11 @@ const createHarvest = async (req, res) => {
 
 const getAllHarvests = async (req, res) => {
   try {
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = Math.min(parseInt(req.query.limit, 10) || 100, 100);
+    const offset = (page - 1) * limit;
 
-    // Get all available harvests
+    // Get available harvests with pagination
     const result = await pool.query(
       `
       SELECT
@@ -87,6 +93,7 @@ const getAllHarvests = async (req, res) => {
         harvests.crop_name,
         harvests.quantity,
         harvests.unit,
+        harvests.grade,
         harvests.price,
         harvests.location,
         harvests.description,
@@ -104,11 +111,16 @@ const getAllHarvests = async (req, res) => {
       ON harvests.farmer_id = users.id
 
       ORDER BY harvests.created_at DESC
-      `
+      LIMIT $1 OFFSET $2
+      `,
+      [limit, offset]
     );
 
     return res.status(200).json({
+      success: true,
       count: result.rows.length,
+      page,
+      limit,
       harvests: result.rows
     });
 
@@ -185,6 +197,7 @@ const updateHarvest = async (req, res) => {
       crop_name,
       quantity,
       unit,
+      grade,
       price,
       location,
       description,
@@ -225,13 +238,14 @@ const updateHarvest = async (req, res) => {
         crop_name = $1,
         quantity = $2,
         unit = $3,
-        price = $4,
-        location = $5,
-        description = $6,
-        status = $7,
+        grade = $4,
+        price = $5,
+        location = $6,
+        description = $7,
+        status = $8,
         updated_at = CURRENT_TIMESTAMP
 
-      WHERE id = $8
+      WHERE id = $9
 
       RETURNING *
       `,
@@ -239,6 +253,7 @@ const updateHarvest = async (req, res) => {
         crop_name || harvest.crop_name,
         quantity || harvest.quantity,
         unit || harvest.unit,
+        grade || harvest.grade || 'FAQ Grade',
         price || harvest.price,
         location || harvest.location,
         description || harvest.description,

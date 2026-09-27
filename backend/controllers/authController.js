@@ -82,16 +82,17 @@ const registerUser = async (req, res) => {
         mandi,
         commodities,
         buying_capacity,
+        required_grade,
         enam_reference,
         udyam_reference,
         official_website,
         show_contact_publicly,
         verification_status
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
       RETURNING
         id, name, email, role, phone, location, business_name, contact_person,
-        state, district, mandi, commodities, buying_capacity, enam_reference,
+        state, district, mandi, commodities, buying_capacity, required_grade, enam_reference,
         udyam_reference, official_website, show_contact_publicly, verification_status, created_at
       `,
       [
@@ -108,6 +109,7 @@ const registerUser = async (req, res) => {
         mandi ? mandi.trim() : null,
         commodities ? commodities.trim() : null,
         buying_capacity ? buying_capacity.trim() : null,
+        req.body.required_grade ? req.body.required_grade.trim() : 'Any',
         enam_reference ? enam_reference.trim() : null,
         udyam_reference ? udyam_reference.trim() : null,
         official_website ? official_website.trim() : null,
@@ -277,6 +279,7 @@ const updateProfile = async (req, res) => {
       mandi,
       commodities,
       buying_capacity,
+      required_grade,
       enam_reference,
       udyam_reference,
       official_website,
@@ -308,6 +311,7 @@ const updateProfile = async (req, res) => {
     const newMandi = mandi !== undefined ? (mandi ? mandi.trim() : null) : current.mandi;
     const newCommodities = commodities !== undefined ? (commodities ? commodities.trim() : null) : current.commodities;
     const newBuyingCapacity = buying_capacity !== undefined ? (buying_capacity ? buying_capacity.trim() : null) : current.buying_capacity;
+    const newRequiredGrade = required_grade !== undefined ? (required_grade ? required_grade.trim() : 'Any') : (current.required_grade || 'Any');
     const newEnamRef = enam_reference !== undefined ? (enam_reference ? enam_reference.trim() : null) : current.enam_reference;
     const newUdyamRef = udyam_reference !== undefined ? (udyam_reference ? udyam_reference.trim() : null) : current.udyam_reference;
     const newWebsite = official_website !== undefined ? (official_website ? official_website.trim() : null) : current.official_website;
@@ -340,21 +344,22 @@ const updateProfile = async (req, res) => {
         mandi = $9,
         commodities = $10,
         buying_capacity = $11,
-        enam_reference = $12,
-        udyam_reference = $13,
-        official_website = $14,
-        farm_size = $15,
-        crops_grown = $16,
-        village = $17,
-        farmer_reference = $18,
-        fpo_info = $19,
-        verification_evidence = $20,
-        verification_status = $21,
+        required_grade = $12,
+        enam_reference = $13,
+        udyam_reference = $14,
+        official_website = $15,
+        farm_size = $16,
+        crops_grown = $17,
+        village = $18,
+        farmer_reference = $19,
+        fpo_info = $20,
+        verification_evidence = $21,
+        verification_status = $22,
         updated_at = CURRENT_TIMESTAMP
-      WHERE id = $22
+      WHERE id = $23
       RETURNING
         id, name, email, role, phone, location, business_name, contact_person,
-        state, district, mandi, commodities, buying_capacity, enam_reference,
+        state, district, mandi, commodities, buying_capacity, required_grade, enam_reference,
         udyam_reference, official_website, show_contact_publicly, verification_status,
         verification_notes, farm_size, crops_grown, village, farmer_reference,
         fpo_info, verification_evidence, created_at
@@ -371,6 +376,7 @@ const updateProfile = async (req, res) => {
         newMandi,
         newCommodities,
         newBuyingCapacity,
+        newRequiredGrade,
         newEnamRef,
         newUdyamRef,
         newWebsite,

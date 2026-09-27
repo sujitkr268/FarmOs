@@ -9,6 +9,9 @@ if (!connectionString) {
 
 const pool = new Pool({
   connectionString,
+  max: parseInt(process.env.PG_MAX_POOL, 10) || 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
   ssl: {
     rejectUnauthorized: false,
   },

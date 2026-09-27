@@ -97,23 +97,13 @@ const filterRecords = (records, queryParams = {}) => {
   });
 
   // If specific filters match nothing, try matching commodity only
+  // If a specific commodity was requested but no records match, return empty to indicate no market data
   if (matched.length === 0 && qComm) {
-    matched = records.filter((rec) => {
-      const rComm = (rec.commodity || "").toLowerCase().trim();
-      return rComm.includes(qComm) || qComm.includes(rComm);
-    });
+    return [];
   }
 
-  // If still empty, try matching state only
-  if (matched.length === 0 && qState) {
-    matched = records.filter((rec) => {
-      const rState = (rec.state || "").toLowerCase().trim();
-      return rState.includes(qState) || qState.includes(rState);
-    });
-  }
-
-  // If still empty, return all available records
-  if (matched.length === 0) {
+  // If no specific commodity requested and still empty, default to records
+  if (matched.length === 0 && !qComm && !qState && !qDist) {
     matched = [...records];
   }
 

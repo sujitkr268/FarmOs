@@ -10,8 +10,14 @@ const getPublicTraders = async (req, res) => {
       commodity,
       business_type,
       verification_status,
-      search
+      search,
+      page: pageQuery,
+      limit: limitQuery
     } = req.query;
+
+    const page = parseInt(pageQuery, 10) || 1;
+    const limit = Math.min(parseInt(limitQuery, 10) || 50, 100);
+    const offset = (page - 1) * limit;
 
     let queryText = `
       SELECT
@@ -90,13 +96,16 @@ const getPublicTraders = async (req, res) => {
       paramIndex++;
     }
 
-    queryText += ` ORDER BY CASE WHEN verification_status = 'source_verified' THEN 1 WHEN verification_status = 'website_verified' THEN 2 ELSE 3 END, created_at DESC`;
+    queryText += ` ORDER BY CASE WHEN verification_status = 'source_verified' THEN 1 WHEN verification_status = 'website_verified' THEN 2 ELSE 3 END, created_at DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+    queryParams.push(limit, offset);
 
     const result = await pool.query(queryText, queryParams);
 
     return res.status(200).json({
       success: true,
       count: result.rows.length,
+      page,
+      limit,
       traders: result.rows
     });
   } catch (error) {

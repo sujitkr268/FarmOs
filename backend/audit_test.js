@@ -14,6 +14,7 @@ const fs = require("fs");
 });
 
 const { pool, connectDB } = require("./config/db");
+const User = require("./models/User");
 const { getPublicTraders } = require("./controllers/traderController");
 const { getRegisteredBuyers, verifyBuyer, rejectBuyer, updateBuyerProfile } = require("./controllers/buyerController");
 const { evaluateOpportunities } = require("./services/opportunityService");
@@ -24,6 +25,7 @@ const runAudit = async () => {
   console.log("=================================================\n");
 
   await connectDB();
+  await User.createUsersTable();
 
   const auditResults = [];
 
@@ -250,6 +252,75 @@ const runAudit = async () => {
     recordResult("5.1", "Sensitive user fields (passwords, admin notes) NEVER exposed in public API", "PASS");
   } else {
     recordResult("5.1", "Sensitive user fields (passwords, admin notes) NEVER exposed in public API", "FAIL");
+  }
+
+  // ---------------------------------------------------------
+  // FLOW 6: Grade-Aware Matching & Explainable Opportunity Score
+  // ---------------------------------------------------------
+  console.log("\n--- AUDITING FLOW 6: Grade-Aware Matching & Opportunity Score ---");
+  const { checkGradeCompatibility } = require("./services/opportunityService");
+
+  // CASE 1: Farmer Grade A, Buyer accepts Grade A -> MATCH
+  const case1 = checkGradeCompatibility("Grade A", "Grade A");
+  if (case1.compatible) {
+    recordResult("6.1", "CASE 1: Farmer Grade A, Buyer accepts Grade A -> MATCH", "PASS", case1.reason);
+  } else {
+    recordResult("6.1", "CASE 1: Farmer Grade A, Buyer accepts Grade A -> MATCH", "FAIL");
+  }
+
+  // CASE 2: Farmer Grade A, Buyer accepts A/B -> MATCH
+  const case2 = checkGradeCompatibility("Grade A", "A/B");
+  if (case2.compatible) {
+    recordResult("6.2", "CASE 2: Farmer Grade A, Buyer accepts A/B -> MATCH", "PASS", case2.reason);
+  } else {
+    recordResult("6.2", "CASE 2: Farmer Grade A, Buyer accepts A/B -> MATCH", "FAIL");
+  }
+
+  // CASE 3: Farmer Grade C, Buyer requires Grade A -> NO GRADE MATCH
+  const case3 = checkGradeCompatibility("Grade C", "Grade A");
+  if (!case3.compatible) {
+    recordResult("6.3", "CASE 3: Farmer Grade C, Buyer requires Grade A -> NO GRADE MATCH", "PASS", case3.reason);
+  } else {
+    recordResult("6.3", "CASE 3: Farmer Grade C, Buyer requires Grade A -> NO GRADE MATCH", "FAIL");
+  }
+
+  // CASE 4: Buyer does not specify grade (or specifies Any) -> Farmer NOT rejected
+  const case4 = checkGradeCompatibility("Grade C", "Any");
+  if (case4.compatible) {
+    recordResult("6.4", "CASE 4: Buyer specifies Any grade -> Farmer NOT rejected", "PASS", case4.reason);
+  } else {
+    recordResult("6.4", "CASE 4: Buyer specifies Any grade -> Farmer NOT rejected", "FAIL");
+  }
+
+  // Check Opportunity Scoring & Reasons
+  const oppScoreCheck = await evaluateOpportunities({
+    crop: "Potato",
+    quantity: 1000,
+    unit: "kg",
+    grade: "Grade A",
+    state: "West Bengal",
+    district: "Hooghly",
+    location: "Hooghly, West Bengal"
+  });
+
+  if (oppScoreCheck.score_status === "available" && typeof oppScoreCheck.opportunityScore === "number" && Array.isArray(oppScoreCheck.reasons) && oppScoreCheck.reasons.length > 0) {
+    recordResult("6.5", "Backend calculates explainable Opportunity Score (0-100) with reasons", "PASS", `Score: ${oppScoreCheck.opportunityScore}, Reasons: ${oppScoreCheck.reasons.length}`);
+  } else {
+    recordResult("6.5", "Backend calculates explainable Opportunity Score (0-100) with reasons", "FAIL");
+  }
+
+  // Check Insufficient Data Handling
+  const noDataCheck = await evaluateOpportunities({
+    crop: "NonExistentUnknownCrop12345",
+    quantity: 500,
+    unit: "kg",
+    state: "West Bengal"
+  });
+
+  if (noDataCheck.score_status === "insufficient_data" && noDataCheck.opportunityScore === null) {
+    recordResult("6.6", "Insufficient data handling returns score_status = insufficient_data (no fake score)", "PASS");
+  } else {
+    recordResult("6.6", "Insufficient data handling returns score_status = insufficient_data (no fake score)", "FAIL");
   }
 
   // Cleanup audit users

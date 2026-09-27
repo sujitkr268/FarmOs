@@ -16,6 +16,7 @@ const sanitizeBuyerRecord = (buyer, isAdmin = false) => {
     mandi: buyer.mandi || "",
     commodities: buyer.commodities || "",
     buying_capacity: buyer.buying_capacity || "Not specified",
+    required_grade: buyer.required_grade || "Any",
     official_website: buyer.official_website || null,
     enam_reference: buyer.enam_reference || null,
     udyam_reference: buyer.udyam_reference || null,
@@ -38,8 +39,14 @@ const getRegisteredBuyers = async (req, res) => {
       mandi,
       commodity,
       verification_status,
-      search
+      search,
+      page: pageQuery,
+      limit: limitQuery
     } = req.query;
+
+    const page = parseInt(pageQuery, 10) || 1;
+    const limit = Math.min(parseInt(limitQuery, 10) || 50, 100);
+    const offset = (page - 1) * limit;
 
     const isAdmin = req.user && req.user.role === "admin";
 
@@ -58,6 +65,7 @@ const getRegisteredBuyers = async (req, res) => {
         mandi,
         commodities,
         buying_capacity,
+        required_grade,
         enam_reference,
         udyam_reference,
         official_website,
@@ -115,7 +123,8 @@ const getRegisteredBuyers = async (req, res) => {
       paramIndex++;
     }
 
-    queryText += ` ORDER BY created_at DESC`;
+    queryText += ` ORDER BY created_at DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+    queryParams.push(limit, offset);
 
     const result = await pool.query(queryText, queryParams);
 
@@ -124,6 +133,8 @@ const getRegisteredBuyers = async (req, res) => {
     return res.status(200).json({
       success: true,
       count: sanitizedBuyers.length,
+      page,
+      limit,
       buyers: sanitizedBuyers
     });
   } catch (error) {

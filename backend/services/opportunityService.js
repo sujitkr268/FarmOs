@@ -3,8 +3,9 @@ const { fetchMandiPrices } = require("./marketService");
 const { geocodeLocation, getRoadRoute, calculateFreight } = require("./logisticsService");
 
 /**
- * FarmOS Opportunity Engine Service with Smart Freight Logistics
- * & Potential Buyer / Relevant Trader Matching
+ * FarmOS Opportunity Engine Service
+ * Provides performance-optimized, grade-aware buyer matching
+ * & explainable multi-factor Opportunity Scoring (0-100)
  */
 
 const convertToQuintals = (quantity, unit = "kg") => {
@@ -31,30 +32,98 @@ const normalizeCommodity = (commodityStr) => {
   return commodityStr.trim();
 };
 
-const findPotentialBuyers = async (crop, state = "", district = "") => {
+/**
+ * Grade Compatibility Checker
+ * Evaluates farmer's harvest grade vs buyer's required grade
+ */
+const checkGradeCompatibility = (farmerGradeStr, buyerRequiredGradeStr) => {
+  const fGrade = (farmerGradeStr || "FAQ Grade").trim();
+  const bGrade = (buyerRequiredGradeStr || "Any").trim();
+  const fLower = fGrade.toLowerCase();
+  const bLower = bGrade.toLowerCase();
+
+  // If buyer does not specify grade requirement (Any, All, None, N/A, empty) -> Farmer is NOT rejected
+  if (!bLower || bLower === "any" || bLower === "all" || bLower === "none" || bLower === "n/a") {
+    return {
+      compatible: true,
+      matchType: "any_accepted",
+      reason: "Buyer accepts any grade"
+    };
+  }
+
+  // Exact match (e.g. Grade A vs Grade A)
+  if (fLower === bLower) {
+    return {
+      compatible: true,
+      matchType: "exact_match",
+      reason: `Farmer grade (${fGrade}) matches buyer required grade (${bGrade})`
+    };
+  }
+
+  // Buyer accepts A/B or Grade A/B
+  if ((bLower.includes("a") && bLower.includes("b")) || bLower === "a/b" || bLower === "grade a/b") {
+    if (fLower.includes("a") || fLower.includes("b") || fLower.includes("faq") || fLower.includes("super")) {
+      return {
+        compatible: true,
+        matchType: "range_match",
+        reason: `Farmer grade (${fGrade}) is within buyer's accepted range (${bGrade})`
+      };
+    }
+  }
+
+  // Superior farmer grade (e.g., Grade A vs Grade B / FAQ Grade)
+  if ((fLower.includes("a") || fLower.includes("super")) && (fLower !== bLower) && (bLower.includes("b") || bLower.includes("faq"))) {
+    return {
+      compatible: true,
+      matchType: "superior_grade",
+      reason: `Farmer grade (${fGrade}) exceeds buyer required grade (${bGrade})`
+    };
+  }
+
+  // FAQ Grade standard match
+  if (fLower.includes("faq") && bLower.includes("faq")) {
+    return {
+      compatible: true,
+      matchType: "faq_match",
+      reason: "FAQ Grade standard match"
+    };
+  }
+
+  // Incompatible grade match
+  return {
+    compatible: false,
+    matchType: "grade_mismatch",
+    reason: `Farmer grade (${fGrade}) does not meet buyer required grade (${bGrade})`
+  };
+};
+
+/**
+ * Find potential buyers for crop, region, and optional farmer grade
+ */
+const findPotentialBuyers = async (crop, state = "", district = "", farmerGrade = "FAQ Grade") => {
   try {
     const normCrop = normalizeCommodity(crop);
 
-    // 1. Fetch public traders
-    const publicTradersRes = await pool.query(
-      `SELECT
-        id, business_name, business_type, state, district, city, mandi,
-        commodities, buying_capacity, official_website, official_contact_url,
-        public_phone, public_email, verification_source, source_url, source_type,
-        verification_status, 'public_trader' AS category
-       FROM public_traders
-       WHERE verification_status IN ('source_verified', 'website_verified', 'unverified')`
-    );
-
-    // 2. Fetch verified registered FarmOS buyers
-    const registeredBuyersRes = await pool.query(
-      `SELECT
-        id, name, business_name, role, location, state, district, mandi,
-        commodities, buying_capacity, official_website, enam_reference, udyam_reference,
-        show_contact_publicly, phone, email, verification_status, 'registered_buyer' AS category
-       FROM users
-       WHERE role = 'buyer' AND verification_status = 'verified'`
-    );
+    // Parallel query database for public traders and registered buyers
+    const [publicTradersRes, registeredBuyersRes] = await Promise.all([
+      pool.query(
+        `SELECT
+          id, business_name, business_type, state, district, city, mandi,
+          commodities, buying_capacity, official_website, official_contact_url,
+          public_phone, public_email, verification_source, source_url, source_type,
+          verification_status, 'public_trader' AS category
+         FROM public_traders
+         WHERE verification_status IN ('source_verified', 'website_verified', 'unverified')`
+      ),
+      pool.query(
+        `SELECT
+          id, name, business_name, role, location, state, district, mandi,
+          commodities, buying_capacity, required_grade, official_website, enam_reference, udyam_reference,
+          show_contact_publicly, phone, email, verification_status, 'registered_buyer' AS category
+         FROM users
+         WHERE role = 'buyer' AND verification_status = 'verified'`
+      )
+    ]);
 
     const candidates = [];
 
@@ -78,6 +147,9 @@ const findPotentialBuyers = async (crop, state = "", district = "") => {
 
         if (pt.buying_capacity) score += 10;
 
+        // Public traders default to accepting standard grades
+        const gradeComp = checkGradeCompatibility(farmerGrade, "Any");
+
         candidates.push({
           id: pt.id,
           category: 'public_trader',
@@ -89,6 +161,9 @@ const findPotentialBuyers = async (crop, state = "", district = "") => {
           mandi: pt.mandi || 'N/A',
           commodities: pt.commodities,
           buying_capacity: pt.buying_capacity || 'Not specified',
+          required_grade: 'Any',
+          grade_compatible: gradeComp.compatible,
+          grade_match_reason: gradeComp.reason,
           official_website: pt.official_website,
           official_contact_url: pt.official_contact_url,
           public_phone: pt.public_phone,
@@ -106,7 +181,7 @@ const findPotentialBuyers = async (crop, state = "", district = "") => {
       }
     }
 
-    // Process registered buyers
+    // Process registered buyers with Grade-Aware Matching
     for (const rb of registeredBuyersRes.rows) {
       const buyerCommodities = (rb.commodities || "").toLowerCase();
       if (buyerCommodities.includes(normCrop.toLowerCase()) || buyerCommodities.includes(crop.toLowerCase())) {
@@ -123,7 +198,17 @@ const findPotentialBuyers = async (crop, state = "", district = "") => {
           score += 10;
         }
 
-        score += 30; // Verified buyer
+        score += 30; // Verified buyer base score
+
+        // Grade compatibility evaluation
+        const buyerRequiredGrade = rb.required_grade || "Any";
+        const gradeComp = checkGradeCompatibility(farmerGrade, buyerRequiredGrade);
+
+        if (gradeComp.compatible) {
+          score += 20; // Grade compatible bonus
+        } else {
+          score -= 30; // Grade mismatch penalty
+        }
 
         const showContact = Boolean(rb.show_contact_publicly);
 
@@ -138,6 +223,9 @@ const findPotentialBuyers = async (crop, state = "", district = "") => {
           mandi: rb.mandi || 'N/A',
           commodities: rb.commodities,
           buying_capacity: rb.buying_capacity || 'Not specified',
+          required_grade: buyerRequiredGrade,
+          grade_compatible: gradeComp.compatible,
+          grade_match_reason: gradeComp.reason,
           official_website: rb.official_website || null,
           has_enam_ref: Boolean(rb.enam_reference),
           has_udyam_ref: Boolean(rb.udyam_reference),
@@ -169,12 +257,13 @@ const evaluateOpportunities = async (params = {}) => {
   const crop = params.crop || params.commodity || "Potato";
   const quantityInput = params.quantity !== undefined ? params.quantity : 500;
   const unitInput = params.unit || "kg";
+  const farmerGrade = params.grade || params.quality || "FAQ Grade";
   const state = params.state || "West Bengal";
   const district = params.district || "";
   const farmerLocation = params.location || params.origin || "";
   const requestedVehicleType = params.vehicle_type || "";
 
-  const cacheKey = `${crop.toLowerCase()}_${quantityInput}_${unitInput}_${state.toLowerCase()}_${district.toLowerCase()}_${farmerLocation.toLowerCase()}`;
+  const cacheKey = `${crop.toLowerCase()}_${quantityInput}_${unitInput}_${farmerGrade.toLowerCase()}_${state.toLowerCase()}_${district.toLowerCase()}_${farmerLocation.toLowerCase()}`;
   const now = Date.now();
 
   if (opportunityCache.has(cacheKey)) {
@@ -187,50 +276,47 @@ const evaluateOpportunities = async (params = {}) => {
   const qtyInQuintals = convertToQuintals(quantityInput, unitInput);
   const qtyInKg = Math.round(qtyInQuintals * 100);
 
-  // Fetch real market records from data.gov.in service
-  let marketResult = await fetchMandiPrices({
-    state: state,
-    district: district,
-    commodity: crop,
-    limit: 15
-  });
-
-  if ((!marketResult.data || marketResult.data.length === 0) && district) {
-    marketResult = await fetchMandiPrices({
-      state: state,
-      commodity: crop,
-      limit: 15
-    });
-  }
-
-  if (!marketResult.data || marketResult.data.length === 0) {
-    marketResult = await fetchMandiPrices({
-      commodity: crop,
-      limit: 15
-    });
-  }
+  // Parallelize market prices query and potential buyer search
+  const [marketResult, potentialBuyers] = await Promise.all([
+    (async () => {
+      let res = await fetchMandiPrices({ state, district, commodity: crop, limit: 15 });
+      if ((!res.data || res.data.length === 0) && district) {
+        res = await fetchMandiPrices({ state, commodity: crop, limit: 15 });
+      }
+      if (!res.data || res.data.length === 0) {
+        res = await fetchMandiPrices({ commodity: crop, limit: 15 });
+      }
+      return res;
+    })(),
+    findPotentialBuyers(crop, state, district, farmerGrade)
+  ]);
 
   const rawRecords = marketResult.data || [];
 
-  // Find potential buyers matching this crop and region
-  const potentialBuyers = await findPotentialBuyers(crop, state, district);
-
+  // INSUFFICIENT DATA HANDLING (STEP 13)
   if (rawRecords.length === 0) {
-    return {
+    const insufficientResult = {
       success: true,
       data_source: "Govt of India Agmarknet (data.gov.in)",
       commodity: crop,
+      farmer_grade: farmerGrade,
       quantity_quintals: qtyInQuintals,
       user_quantity: quantityInput,
       user_unit: unitInput,
       user_location: farmerLocation || state,
       has_location: Boolean(farmerLocation || district),
       total_markets_analyzed: 0,
+      score_status: "insufficient_data",
+      opportunityScore: null,
+      recommendation: false,
+      reasons: [`No active mandi price records found matching crop "${crop}". Score unavailable due to insufficient market data.`],
       recommended: null,
       comparison: [],
       potential_buyers: potentialBuyers,
       message: `No active mandi price records found matching crop "${crop}".`
     };
+    opportunityCache.set(cacheKey, { timestamp: Date.now(), data: insufficientResult });
+    return insufficientResult;
   }
 
   const originInput = farmerLocation || (district ? `${district}, ${state}` : state);
@@ -238,6 +324,7 @@ const evaluateOpportunities = async (params = {}) => {
 
   const maxModalPrice = Math.max(...rawRecords.map((r) => Number(r.modal_price) || 0), 1);
 
+  // Parallelize destination geocodings and freight calculations
   const processedMarkets = await Promise.all(
     rawRecords.map(async (item) => {
       const modalPrice = Number(item.modal_price) || 0;
@@ -245,15 +332,6 @@ const evaluateOpportunities = async (params = {}) => {
       const maxPrice = Number(item.max_price) || 0;
 
       const estimatedGrossValue = Math.round(qtyInQuintals * modalPrice);
-
-      const priceScore = maxModalPrice > 0 ? (modalPrice / maxModalPrice) * 70 : 0;
-      const consistencyRatio = (maxPrice > 0 && minPrice > 0) ? Math.min(1, minPrice / maxPrice) : 0.8;
-      const rangeConsistencyScore = consistencyRatio * 30;
-
-      const farmosOpportunityScore = Math.min(
-        100,
-        Math.max(0, Math.round(priceScore + rangeConsistencyScore))
-      );
 
       let freight = null;
       if (originCoords) {
@@ -278,6 +356,39 @@ const evaluateOpportunities = async (params = {}) => {
 
       const estimatedFreightCost = freight ? freight.estimated_freight_cost : null;
       const estimatedNetReturn = freight ? (estimatedGrossValue - estimatedFreightCost) : estimatedGrossValue;
+
+      // EXPLAINABLE MULTI-FACTOR OPPORTUNITY SCORING (0 - 100)
+      // Factor 1: Price Competitiveness (up to 35 pts)
+      const priceFactor = maxModalPrice > 0 ? Math.round((modalPrice / maxModalPrice) * 35) : 0;
+
+      // Factor 2: Net Return Ratio (up to 35 pts)
+      const maxGrossPotential = qtyInQuintals * maxModalPrice;
+      const netReturnRatio = maxGrossPotential > 0 ? Math.max(0, estimatedNetReturn / maxGrossPotential) : 0;
+      const netReturnFactor = Math.round(Math.min(35, netReturnRatio * 35));
+
+      // Factor 3: Price Range Stability (up to 15 pts)
+      const consistencyRatio = (maxPrice > 0 && minPrice > 0) ? Math.min(1, minPrice / maxPrice) : 0.8;
+      const stabilityFactor = Math.round(consistencyRatio * 15);
+
+      // Factor 4: Logistics & Distance Efficiency (up to 10 pts)
+      let logisticsFactor = 5; // Neutral default if coords unavailable
+      if (freight && freight.distance_km !== null) {
+        const dist = freight.distance_km;
+        if (dist <= 50) logisticsFactor = 10;
+        else if (dist <= 150) logisticsFactor = 7;
+        else if (dist <= 300) logisticsFactor = 4;
+        else logisticsFactor = 2;
+      }
+
+      // Factor 5: Grade & Buyer Match Factor (up to 5 pts)
+      const gradeComp = checkGradeCompatibility(farmerGrade, item.grade || "FAQ");
+      const gradeFactor = gradeComp.compatible ? 5 : 1;
+
+      // Total Explainable Score (0 - 100)
+      const totalOpportunityScore = Math.min(
+        100,
+        Math.max(0, priceFactor + netReturnFactor + stabilityFactor + logisticsFactor + gradeFactor)
+      );
 
       return {
         market: item.market || "Unknown APMC Mandi",
@@ -306,7 +417,14 @@ const evaluateOpportunities = async (params = {}) => {
         
         arrival_quantity: "Not available",
         traded_quantity: "Not available",
-        farmos_opportunity_score: farmosOpportunityScore
+        farmos_opportunity_score: totalOpportunityScore,
+        score_factors: {
+          price_competitiveness: priceFactor,
+          net_return_ratio: netReturnFactor,
+          price_range_stability: stabilityFactor,
+          logistics_efficiency: logisticsFactor,
+          grade_and_buyer_match: gradeFactor
+        }
       };
     })
   );
@@ -329,24 +447,27 @@ const evaluateOpportunities = async (params = {}) => {
 
   const warnings = [
     "Estimated opportunity based on reported Agmarknet benchmark prices, not a guaranteed profit.",
-    "Potential buyers/traders listed below are matching relevant businesses based on commodity and location. FarmOS does not guarantee transactions."
+    "Potential buyers/traders listed below are matching relevant businesses based on commodity, location, and grade requirement. FarmOS does not guarantee transactions."
   ];
 
   if (!hasLocation) {
     warnings.push("Location not specified. Provide your location to compute estimated road distance and freight cost.");
   }
 
+  // Generate clear explainable recommendation reasons (STEP 11 & 12)
   const whyBullets = [];
   if (recommended.estimated_freight_cost !== null) {
     whyBullets.push(
-      `Highest estimated net return of ₹${recommended.estimated_net_return.toLocaleString()} after deducting Estimated Freight Cost of ₹${recommended.estimated_freight_cost.toLocaleString()}.`,
-      `Benchmark modal price of ₹${recommended.modal_price.toLocaleString()}/quintal in ${recommended.market}.`,
-      `Estimated transport via ${recommended.vehicles_required} ${recommended.vehicle_name} (${recommended.estimated_distance}, approx ${recommended.travel_time_mins} mins).`
+      `Strong expected net return of ₹${recommended.estimated_net_return.toLocaleString()} after deducting freight cost of ₹${recommended.estimated_freight_cost.toLocaleString()}.`,
+      `Benchmark modal price of ₹${recommended.modal_price.toLocaleString()}/quintal in ${recommended.market} APMC Mandi.`,
+      `Farmer grade (${farmerGrade}) matches Mandi benchmark standard (${recommended.grade}).`,
+      `Road transport via ${recommended.vehicles_required} ${recommended.vehicle_name} (${recommended.estimated_distance}, approx ${recommended.travel_time_mins} mins).`
     );
   } else {
     whyBullets.push(
       `Highest reported benchmark modal price of ₹${recommended.modal_price.toLocaleString()}/quintal in the region.`,
-      `High price-range consistency indicator (Min ₹${recommended.min_price.toLocaleString()} to Max ₹${recommended.max_price.toLocaleString()}/qtl).`,
+      `Price range stability indicator (Min ₹${recommended.min_price.toLocaleString()} to Max ₹${recommended.max_price.toLocaleString()}/qtl).`,
+      `Farmer grade (${farmerGrade}) matches Mandi standard (${recommended.grade}).`,
       `Estimated gross return of ₹${recommended.estimated_gross_value.toLocaleString()} for ${qtyInQuintals} quintal (${quantityInput} ${unitInput}).`
     );
   }
@@ -355,6 +476,7 @@ const evaluateOpportunities = async (params = {}) => {
     success: true,
     data_source: "Govt of India Agmarknet (data.gov.in)",
     commodity: crop,
+    farmer_grade: farmerGrade,
     quantity_quintals: qtyInQuintals,
     quantity_kg: qtyInKg,
     user_quantity: quantityInput,
@@ -363,6 +485,11 @@ const evaluateOpportunities = async (params = {}) => {
     has_location: hasLocation,
     logistics_enabled: hasLogisticsData,
     total_markets_analyzed: processedMarkets.length,
+    score_status: "available",
+    opportunityScore: recommended.farmos_opportunity_score,
+    recommendation: Boolean(recommended.farmos_opportunity_score >= 50 && recommended.estimated_net_return > 0),
+    reasons: whyBullets,
+    score_factors: recommended.score_factors,
     recommended: {
       market: recommended.market,
       district: recommended.district,
@@ -385,11 +512,13 @@ const evaluateOpportunities = async (params = {}) => {
     comparison: processedMarkets,
     potential_buyers: potentialBuyers,
     scoring_documentation: {
-      score_name: "FarmOS Opportunity Score & Net Return Ranking",
+      score_name: "FarmOS Explainable Multi-Factor Opportunity Score",
       scale: "0 - 100",
-      price_ratio_points: "Up to 70 points based on modal price relative to peak regional market.",
-      price_range_consistency_points: "Up to 30 points based on min/max price range consistency indicator.",
-      net_return_formula: "Estimated Net Return = Estimated Gross Revenue - Estimated Freight Cost"
+      price_competitiveness_pts: "Up to 35 points based on modal price relative to peak regional market.",
+      net_return_pts: "Up to 35 points based on net revenue after freight deductions.",
+      stability_pts: "Up to 15 points based on min/max price range consistency.",
+      logistics_pts: "Up to 10 points based on road distance efficiency.",
+      grade_and_buyer_pts: "Up to 5 points based on farmer grade & buyer requirement compatibility."
     }
   };
 
@@ -400,5 +529,6 @@ const evaluateOpportunities = async (params = {}) => {
 module.exports = {
   evaluateOpportunities,
   convertToQuintals,
-  findPotentialBuyers
+  findPotentialBuyers,
+  checkGradeCompatibility
 };

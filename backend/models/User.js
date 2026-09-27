@@ -34,13 +34,25 @@ const createUsersTable = async () => {
     ALTER TABLE users ADD COLUMN IF NOT EXISTS farmer_reference VARCHAR(100);
     ALTER TABLE users ADD COLUMN IF NOT EXISTS fpo_info VARCHAR(255);
     ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_evidence TEXT;
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS required_grade VARCHAR(50) DEFAULT 'Any';
+
+    ALTER TABLE harvests ADD COLUMN IF NOT EXISTS grade VARCHAR(50) DEFAULT 'FAQ Grade';
+
+    -- Performance Indexes
+    CREATE INDEX IF NOT EXISTS idx_users_role_status ON users(role, verification_status);
+    CREATE INDEX IF NOT EXISTS idx_users_district_state ON users(district, state);
+    CREATE INDEX IF NOT EXISTS idx_harvests_farmer_status ON harvests(farmer_id, status);
+    CREATE INDEX IF NOT EXISTS idx_harvests_crop_name ON harvests(crop_name);
+    CREATE INDEX IF NOT EXISTS idx_harvests_created_at ON harvests(created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_traders_status ON public_traders(verification_status);
+    CREATE INDEX IF NOT EXISTS idx_traders_state_district ON public_traders(state, district);
   `;
 
   try {
     await pool.query(query);
-    console.log("Users table & buyer columns ready");
+    console.log("Users table, grade columns & DB indexes ready");
   } catch (error) {
-    console.error("Error creating/updating users table:", error.message);
+    console.error("Error creating/updating users table & indexes:", error.message);
   }
 };
 
