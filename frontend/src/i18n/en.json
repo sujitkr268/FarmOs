@@ -199,9 +199,13 @@
     "netReturnSubtitle": "Comparison of estimated net profit after deducting transport freight",
     "sellingVsTransportTitle": "Selling Value vs Freight Transport",
     "sellingVsTransportSubtitle": "Gross value vs freight cost breakdown showing logistics impact",
-    "demandVsSupplyTitle": "Buyer Demand vs Available Supply",
-    "demandVsSupplySubtitle": "Comparison of farmer harvest supply and regional buyer requirements",
-    "demandVsSupplyEmpty": "Demand breakdown will appear when regional buyer requirements are active."
+    "demandVsSupplyTitle": "Buyer Buying Capacity vs Harvest Supply",
+    "demandVsSupplySubtitle": "Comparison of harvest supply and total regional buyer procurement capacity",
+    "demandVsSupplyEmpty": "Demand breakdown will appear when regional buyer requirements are active.",
+    "buyerBuyingCapacity": "Buyer Buying Capacity",
+    "availableSupply": "Available Harvest Supply",
+    "basedOnRouteDistance": "Estimated from distance and standard transport rate model.",
+    "historicalLimited": "Multi-day historical trend data is limited for this selection. Displaying latest reported Mandi benchmark."
   },
   "market": {
     "title": "Market Analysis",

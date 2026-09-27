@@ -121,9 +121,13 @@
     "netReturnSubtitle": "পরিবহন খরচ বাদ দেওয়ার পর সম্ভাব্য নিট লাভের তুলনা",
     "sellingVsTransportTitle": "বিক্রয় মূল্য বনাম পরিবহন খরচ",
     "sellingVsTransportSubtitle": "মোট আয় ও যাতায়াত খরচের বিশ্লেষণ",
-    "demandVsSupplyTitle": "ক্রেতার চাহিদা বনাম সরবরাহ",
-    "demandVsSupplySubtitle": "কৃষকের সরবরাহ ও আঞ্চলিক ক্রেতার চাহিদার তুলনা",
-    "demandVsSupplyEmpty": "আঞ্চলিক ক্রেতার চাহিদা সক্রিয় হলে বিস্তারিত দেখানো হবে।"
+    "demandVsSupplyTitle": "ক্রেতার ক্রয়ক্ষমতা বনাম ফসল সরবরাহ",
+    "demandVsSupplySubtitle": "কৃষকের ফসল সরবরাহ ও আঞ্চলিক ক্রেতার মোট ক্রয়ক্ষমতার তুলনা",
+    "demandVsSupplyEmpty": "আঞ্চলিক ক্রেতার চাহিদা সক্রিয় হলে বিস্তারিত দেখানো হবে।",
+    "buyerBuyingCapacity": "ক্রেতার ক্রয়ক্ষমতা",
+    "availableSupply": "উপলব্ধ ফসল সরবরাহ",
+    "basedOnRouteDistance": "দূরত্ব এবং মানক পরিবহন হার মডেল থেকে আনুমানিক।",
+    "historicalLimited": "এই নির্বাচনের জন্য ঐতিহাসিক দর ডেটা সীমিত। সাম্প্রতিকতম সরকারি মন্ডির দর দেখানো হচ্ছে।"
   },
   "market": {
     "title": "বাজার বিশ্লেষণ",
