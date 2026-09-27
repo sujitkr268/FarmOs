@@ -10,13 +10,13 @@ const STATE_OPTIONS = [
   'All States', 'West Bengal', 'Maharashtra', 'Uttar Pradesh', 'Punjab', 'Gujarat', 'Karnataka', 'Tamil Nadu', 'Haryana', 'Bihar', 'Madhya Pradesh', 'Kerala'
 ]
 
-export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropName = 'Potato', quantity = 2000, unit = 'kg' }) => {
+export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropName = '', quantity = 2000, unit = 'kg' }) => {
   const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState('net_return') // 'net_return' | 'price_trend' | 'logistics' | 'demand'
 
-  // Controls for Price Trend filter
-  const [selectedCommodity, setSelectedCommodity] = useState(cropName || 'Potato')
-  const [selectedState, setSelectedState] = useState('West Bengal')
+  // Neutral initial filter states: No state forced (defaults to "All States")
+  const [selectedCommodity, setSelectedCommodity] = useState(cropName || '')
+  const [selectedState, setSelectedState] = useState('All States')
   const [selectedMarket, setSelectedMarket] = useState('')
   const [dateRange, setDateRange] = useState('30d') // '30d' | '6m' | 'all'
 
@@ -26,7 +26,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
   const [historyError, setHistoryError] = useState(null)
   const [hoveredPoint, setHoveredPoint] = useState(null)
 
-  // Sync selectedCommodity with prop cropName if user hasn't modified it
+  // Sync selectedCommodity with prop cropName if provided
   useEffect(() => {
     if (cropName && COMMODITY_OPTIONS.includes(cropName)) {
       setSelectedCommodity(cropName)
@@ -36,6 +36,12 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
   // Fetch historical market prices when Price Trend tab is active or filters change
   useEffect(() => {
     if (activeTab !== 'price_trend') return
+
+    if (!selectedCommodity) {
+      setHistoryRecords([])
+      setHistoryLoading(false)
+      return
+    }
 
     let isMounted = true
     setHistoryLoading(true)
@@ -54,10 +60,20 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
     }
 
     const params = {
-      commodity: selectedCommodity,
-      state: selectedState === 'All States' ? '' : selectedState,
-      market: selectedMarket,
-      from: fromStr
+      commodity: selectedCommodity
+    }
+
+    // Omit state parameter when "All States" is selected
+    if (selectedState && selectedState !== 'All States') {
+      params.state = selectedState
+    }
+
+    if (selectedMarket && selectedMarket.trim()) {
+      params.market = selectedMarket.trim()
+    }
+
+    if (fromStr) {
+      params.from = fromStr
     }
 
     getMarketPriceHistory(params)
@@ -109,14 +125,16 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
     net: i.net
   }))
 
-  // 3. Compute stats for historical trend SVG chart
+  // 3. Compute stats for historical trend SVG chart with normalized price parsing
   const sortedHistory = [...historyRecords].sort((a, b) => {
     const dA = new Date(a.arrival_date || a.date)
     const dB = new Date(b.arrival_date || b.date)
     return dA - dB
   })
 
-  const prices = sortedHistory.map(r => Number(r.modal_price || 0))
+  const getRecordPrice = (r) => Number(r.price ?? r.modal_price ?? 0)
+
+  const prices = sortedHistory.map(r => getRecordPrice(r))
   const minPrice = prices.length > 0 ? Math.min(...prices) : 0
   const maxPrice = prices.length > 0 ? Math.max(...prices) : 0
   const avgPrice = prices.length > 0 ? Math.round(prices.reduce((a, b) => a + b, 0) / prices.length) : 0
@@ -230,7 +248,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
         </div>
       </div>
 
-      {/* GRAPH 2: NET RETURN BY MARKET (HORIZONTAL BAR CHART) */}
+      {/* TAB 1: NET RETURN BY MARKET (HORIZONTAL BAR CHART) */}
       {activeTab === 'net_return' && (
         <div>
           <div style={{ marginBottom: '1.25rem' }}>
@@ -304,7 +322,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
         </div>
       )}
 
-      {/* GRAPH 3: SELLING VALUE VS TRANSPORT (STACKED / COMPARISON BAR) */}
+      {/* TAB 2: SELLING VALUE VS TRANSPORT (STACKED / COMPARISON BAR) */}
       {activeTab === 'logistics' && (
         <div>
           <div style={{ marginBottom: '1.25rem' }}>
@@ -352,7 +370,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
         </div>
       )}
 
-      {/* GRAPH 1: HISTORICAL MARKET PRICE TREND WITH INTERACTIVE FILTERS */}
+      {/* TAB 3: HISTORICAL MARKET PRICE TREND WITH INTERACTIVE FILTERS */}
       {activeTab === 'price_trend' && (
         <div>
           {/* Header & Controls */}
@@ -384,6 +402,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
                   cursor: 'pointer'
                 }}
               >
+                <option value="">Select Commodity...</option>
                 {COMMODITY_OPTIONS.map((c) => (
                   <option key={c} value={c}>{c}</option>
                 ))}
@@ -483,8 +502,21 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
             </div>
           </div>
 
+          {/* Neutral Initial State when no commodity selected */}
+          {!selectedCommodity && (
+            <div style={{ textAlign: 'center', padding: '3rem 1.5rem', backgroundColor: '#f8fafc', borderRadius: '14px', border: '1px dashed #cbd5e1' }}>
+              <span style={{ fontSize: '2.2rem', display: 'block', marginBottom: '0.6rem' }}>📊</span>
+              <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#334155', marginBottom: '0.3rem' }}>
+                Select a commodity to view historical mandi prices.
+              </h4>
+              <p style={{ fontSize: '0.84rem', color: '#64748b', margin: 0 }}>
+                Choose a crop from the commodity dropdown above to inspect historical market rates across mandis.
+              </p>
+            </div>
+          )}
+
           {/* Loading Skeleton */}
-          {historyLoading && (
+          {selectedCommodity && historyLoading && (
             <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '2rem', textAlign: 'center' }}>
               <div style={{ height: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span style={{ fontSize: '1rem', color: '#059669', fontWeight: 600 }}>
@@ -495,14 +527,14 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
           )}
 
           {/* Error State */}
-          {!historyLoading && historyError && (
+          {selectedCommodity && !historyLoading && historyError && (
             <div style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: '14px', padding: '1.25rem', color: '#991b1b', fontSize: '0.88rem' }}>
               ⚠️ {historyError}. Please check connection or try selecting another commodity.
             </div>
           )}
 
-          {/* Empty State */}
-          {!historyLoading && !historyError && sortedHistory.length === 0 && (
+          {/* Empty State when no records exist for user selection */}
+          {selectedCommodity && !historyLoading && !historyError && sortedHistory.length === 0 && (
             <div style={{ textAlign: 'center', padding: '3rem 1.5rem', backgroundColor: '#f8fafc', borderRadius: '14px', border: '1px dashed #cbd5e1' }}>
               <span style={{ fontSize: '2.2rem', display: 'block', marginBottom: '0.6rem' }}>📉</span>
               <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#334155', marginBottom: '0.3rem' }}>
@@ -515,12 +547,12 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
           )}
 
           {/* Interactive Line Chart */}
-          {!historyLoading && !historyError && sortedHistory.length > 0 && (
+          {selectedCommodity && !historyLoading && !historyError && sortedHistory.length > 0 && (
             <div style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '1.25rem' }}>
               {/* Top Metrics Summary */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.25rem', backgroundColor: '#ffffff', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                 <div style={{ fontSize: '0.82rem', color: '#64748b' }}>
-                  Selection: <strong style={{ color: '#0f172a' }}>{selectedCommodity} ({selectedState})</strong>
+                  Selection: <strong style={{ color: '#0f172a' }}>{selectedCommodity} ({selectedState === 'All States' ? 'All States (Aggregated)' : selectedState})</strong>
                 </div>
                 <div style={{ display: 'flex', gap: '1.25rem', fontSize: '0.82rem' }}>
                   <span>Lowest: <strong style={{ color: '#2563eb' }}>₹{minPrice.toLocaleString()}</strong>/q</span>
@@ -569,7 +601,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
                         {sortedHistory.length > 1 && (() => {
                           const pts = sortedHistory.map((d, i) => {
                             const x = 40 + (i / (sortedHistory.length - 1)) * 480
-                            const y = getY(Number(d.modal_price || 0))
+                            const y = getY(getRecordPrice(d))
                             return `${x},${y}`
                           }).join(' ')
                           const areaPts = `40,150 ${pts} 520,150`
@@ -580,7 +612,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
                         {sortedHistory.length > 1 && (() => {
                           const pts = sortedHistory.map((d, i) => {
                             const x = 40 + (i / (sortedHistory.length - 1)) * 480
-                            const y = getY(Number(d.modal_price || 0))
+                            const y = getY(getRecordPrice(d))
                             return `${x},${y}`
                           }).join(' ')
                           return <polyline fill="none" stroke="#10b981" strokeWidth="3" points={pts} />
@@ -588,8 +620,9 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
 
                         {/* Data Point Circles & Tooltips */}
                         {sortedHistory.map((d, i) => {
+                          const priceVal = getRecordPrice(d)
                           const x = sortedHistory.length === 1 ? 280 : 40 + (i / (sortedHistory.length - 1)) * 480
-                          const y = getY(Number(d.modal_price || 0))
+                          const y = getY(priceVal)
                           const dateStr = d.arrival_date ? d.arrival_date.split('T')[0] : (d.date || '')
                           const isHovered = hoveredPoint === i
 
@@ -616,7 +649,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
                                 fontWeight="800"
                                 fill="#0f172a"
                               >
-                                ₹{d.modal_price}
+                                ₹{priceVal}
                               </text>
 
                               {/* Interactive Hover Card Tooltip */}
@@ -639,7 +672,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
                                     fontWeight="700"
                                     fill="#ffffff"
                                   >
-                                    {d.market} ({d.variety || 'FAQ'})
+                                    {d.market || selectedState} ({d.variety || 'FAQ'})
                                   </text>
                                   <text
                                     x={Math.min(Math.max(x, 75), 465)}
@@ -649,7 +682,7 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
                                     fontWeight="500"
                                     fill="#34d399"
                                   >
-                                    {dateStr} • ₹{d.modal_price}/q
+                                    {dateStr} • ₹{priceVal}/q
                                   </text>
                                 </g>
                               )}
@@ -678,12 +711,12 @@ export const MarketAnalyticsSection = ({ opportunityData, marketData = [], cropN
         </div>
       )}
 
-      {/* GRAPH 4: BUYER DEMAND VS SUPPLY CHART */}
+      {/* TAB 4: BUYER DEMAND VS SUPPLY CHART */}
       {activeTab === 'demand' && (
         <div>
           <div style={{ marginBottom: '1.25rem' }}>
             <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.2rem' }}>
-              🤝 {t('analytics.demandVsSupplyTitle') || 'Regional Buyer Demand vs Harvest Supply'} ({cropName})
+              🤝 {t('analytics.demandVsSupplyTitle') || 'Regional Buyer Demand vs Harvest Supply'} ({selectedCommodity || cropName || 'Harvest'})
             </h3>
             <p style={{ fontSize: '0.83rem', color: '#64748b', margin: 0 }}>
               {t('analytics.demandVsSupplySubtitle') || 'Comparing harvest volume against active procurement requirements from verified buyers'}

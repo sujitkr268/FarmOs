@@ -121,7 +121,8 @@ const getHistoricalPrices = async ({ commodity, state, district, market, from, t
     query = `
       SELECT 
         TO_CHAR(arrival_date, 'YYYY-MM-DD') AS date,
-        ROUND(AVG(modal_price))::INTEGER AS price
+        ROUND(AVG(modal_price))::INTEGER AS price,
+        ROUND(AVG(modal_price))::INTEGER AS modal_price
       FROM market_price_history
       ${whereString}
       GROUP BY arrival_date
@@ -132,7 +133,8 @@ const getHistoricalPrices = async ({ commodity, state, district, market, from, t
     query = `
       SELECT 
         TO_CHAR(arrival_date, 'YYYY-MM-DD') AS date,
-        ROUND(AVG(modal_price))::INTEGER AS price
+        ROUND(AVG(modal_price))::INTEGER AS price,
+        ROUND(AVG(modal_price))::INTEGER AS modal_price
       FROM market_price_history
       ${whereString}
       GROUP BY arrival_date
