@@ -255,26 +255,7 @@ export const MandiPrices = () => {
         </div>
       </form>
 
-      {/* Fallback Transparency Notice */}
-      {(apiSource === 'agmarknet_record_store' || warningMsg) && (
-        <div style={{
-          backgroundColor: 'rgba(59, 130, 246, 0.08)',
-          border: '1px solid rgba(59, 130, 246, 0.25)',
-          borderRadius: '12px',
-          padding: '0.75rem 1.25rem',
-          marginBottom: '1.5rem',
-          fontSize: '0.86rem',
-          color: 'var(--text-secondary)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.6rem'
-        }}>
-          <span style={{ fontSize: '1.1rem' }}>ℹ️</span>
-          <span>
-            <strong style={{ color: '#93c5fd' }}>{t('market.fallbackNotice')}</strong> — {t('market.fallbackNoticeDetail')}
-          </span>
-        </div>
-      )}
+
 
       {/* Error Alert State */}
       {error && (
