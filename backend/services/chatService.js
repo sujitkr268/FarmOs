@@ -46,7 +46,7 @@ The FarmOS Opportunity Engine evaluated real Agmarknet mandi market data and com
 
   promptContent += `User Question: ${userMessage}`
 
-  const models = ['gemini-3.5-flash', 'gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-2.5-flash']
+  const models = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-flash-lite-latest']
   let lastError = null
 
   for (const model of models) {
@@ -70,8 +70,19 @@ The FarmOS Opportunity Engine evaluated real Agmarknet mandi market data and com
 
       if (!response.ok) {
         const errJson = await response.json().catch(() => ({}))
-        const errorMsg = errJson.error?.message || `Gemini API HTTP status ${response.status}`
-        throw new Error(errorMsg)
+        const rawMsg = errJson.error?.message || `Gemini API HTTP status ${response.status}`
+        let errorCategory = 'UPSTREAM_ERROR'
+        if (response.status === 401 || response.status === 403 || rawMsg.toLowerCase().includes('api key')) {
+          errorCategory = 'AUTHENTICATION_FAILURE'
+        } else if (response.status === 404 || rawMsg.toLowerCase().includes('not found')) {
+          errorCategory = 'UNSUPPORTED_MODEL'
+        } else if (response.status === 429 || rawMsg.toLowerCase().includes('resource_exhausted') || rawMsg.toLowerCase().includes('quota')) {
+          errorCategory = 'QUOTA_EXHAUSTED'
+        } else if (response.status === 400) {
+          errorCategory = 'INVALID_REQUEST'
+        }
+        console.warn(`[GEMINI DIAGNOSTIC] Model ${model} failed (${errorCategory}): status ${response.status}`);
+        throw new Error(`[${errorCategory}] ${rawMsg}`)
       }
 
       const json = await response.json()
@@ -80,6 +91,7 @@ The FarmOS Opportunity Engine evaluated real Agmarknet mandi market data and com
       if (aiResponse) {
         return {
           success: true,
+          model_used: model,
           message: aiResponse,
           context: {
             type: contextType,
