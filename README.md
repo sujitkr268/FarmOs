@@ -4,19 +4,7 @@
 
 FarmOS is a smart agricultural decision-support and marketplace platform designed to eliminate information asymmetry in agricultural trade. By unifying live government mandi market data, road freight logistics, hyper-local weather forecasts, verified business directories, and conversational AI, FarmOS turns complex data into actionable selling decisions for farmers and transparent procurement for buyers.
 
----
 
-## 📸 Platform Preview
-
-| **Landing Page & Feature Overview** | **Live Mandi Market Prices** |
-| :---: | :---: |
-| ![FarmOS Landing Page](./docs/images/landing_page.png) | ![Live Mandi Prices](./docs/images/mandi_prices.png) |
-
-| **Floating AI Assistant Panel** |
-| :---: |
-| ![Floating AI Assistant](./docs/images/floating_assistant.png) |
-
----
 
 ## 📋 Table of Contents
 1. [Project Introduction](#-1-project-introduction)
